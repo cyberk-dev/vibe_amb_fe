@@ -4,7 +4,7 @@ import { useAppKit } from "@reown/appkit/react";
 import { useAccount, useBalance, useDisconnect } from "wagmi";
 import { ConnectButton } from "./connect-button";
 import { WalletInfo } from "./wallet-info";
-import { numberUtils } from "@/libs/helpers";
+import { numberUtils } from "@/lib/helpers";
 
 export const WalletConnectContainer = () => {
   const { open } = useAppKit();

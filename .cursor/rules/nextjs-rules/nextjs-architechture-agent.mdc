@@ -9,7 +9,7 @@ alwaysApply: false
 ## Core Principles
 
 - **Monorepo Architecture**: The application is built using Turbo monorepo with clear separation between apps and packages
-- **Shared Packages**: UI components and configurations are shared via workspace packages to ensure consistency
+- **Shared Packages**: UI components and configurations are shared via global components to ensure consistency
 - **Type Safety**: Strict TypeScript enforcement across all applications and packages
 - **Component Architecture**: Clear separation between presentation and container components
 - **State Management**: Layered state management with Zustand for application state and React Query for server state
@@ -18,14 +18,13 @@ alwaysApply: false
 ## Technology Stack
 
 ### Core Framework & Build Tools
-- **Monorepo**: Turbo repo for task orchestration and caching
 - **Frontend**: Next.js 14+ with App Router
 - **TypeScript**: Strict type checking enabled
 - **Styling**: TailwindCSS for utility-first styling
 - **Package Manager**: pnpm for efficient dependency management
 
 ### UI & Component Libraries
-- **Component Library**: shadcn/ui components in shared `@workspace/ui` package
+- **Component Library**: shadcn/ui components in shared `components/ui`
 - **Form Handling**: React Hook Form with Zod validation schemas
 - **Icons**: Lucide React or similar icon system
 
@@ -50,22 +49,9 @@ alwaysApply: false
 
 ## Directory Structure & Purpose
 
-### Monorepo Root Structure
+### Application Structure
 ```plaintext
-cyberk-next-boilerplate/
-├── apps/
-│   └── web/                    # Main Next.js application
-├── packages/
-│   ├── ui/                     # Shared UI component library
-│   ├── eslint-config/          # Shared ESLint configurations
-│   └── typescript-config/      # Shared TypeScript configurations
-├── turbo.json                  # Turbo pipeline configuration
-└── package.json               # Workspace root dependencies
-```
-
-### Application Structure (`apps/web/`)
-```plaintext
-apps/web/
+src/
 ├── app/                        # Next.js App Router directory
 │   ├── (dashboard)/            # Route groups for layout organization
 │   │   ├── dashboard/          # Defines app pages in this directory
@@ -82,7 +68,7 @@ apps/web/
 ├── components/                 # Global components for the app
 │   ├── layout/                 # Layout-related components
 │   ├── forms/                  # Reusable form components
-│   └── ui/                     # App-specific UI components
+│   └── ui/                     # Shadcn UI components
 ├── hooks/                      # Global custom hooks
 │   ├── use-auth.ts             # Authentication hook
 │   ├── use-api-client.ts       # API client hook
@@ -173,6 +159,3 @@ apps/web/app/profile/
 │   ├── profile-container.tsx   # Container component with business logic
 │   └── avatar-upload.tsx       # Feature-specific component
 ```
-
-
-

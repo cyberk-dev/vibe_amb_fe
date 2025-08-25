@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { stringUtils } from "@/libs/helpers";
+import { stringUtils } from "@/lib/helpers";
 import { CheckCircle, Copy, LogOut } from "lucide-react";
 import { useState } from "react";
 
@@ -15,11 +15,11 @@ interface WalletInfoProps {
   onDisconnect: () => void;
 }
 
-export const WalletInfo = ({ 
-  address, 
-  chainName, 
-  balance, 
-  onDisconnect 
+export const WalletInfo = ({
+  address,
+  chainName,
+  balance,
+  onDisconnect,
 }: WalletInfoProps) => {
   const [copied, setCopied] = useState(false);
 
@@ -40,7 +40,9 @@ export const WalletInfo = ({
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">Address</label>
+            <label className="text-sm font-medium text-muted-foreground">
+              Address
+            </label>
             <div className="flex items-center gap-2">
               <code className="flex-1 px-2 py-1 bg-muted rounded text-sm font-mono">
                 {stringUtils.truncateMiddle(address, 6, 4)}
@@ -59,29 +61,29 @@ export const WalletInfo = ({
               </Button>
             </div>
           </div>
-          
+
           <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">Network</label>
+            <label className="text-sm font-medium text-muted-foreground">
+              Network
+            </label>
             <Badge variant="secondary" className="w-fit">
               {chainName}
             </Badge>
           </div>
         </div>
-        
+
         <Separator />
-        
+
         <div className="space-y-2">
-          <label className="text-sm font-medium text-muted-foreground">Balance</label>
+          <label className="text-sm font-medium text-muted-foreground">
+            Balance
+          </label>
           <p className="text-2xl font-bold">{balance} ETH</p>
         </div>
-        
+
         <Separator />
-        
-        <Button 
-          onClick={onDisconnect} 
-          variant="outline" 
-          className="w-full"
-        >
+
+        <Button onClick={onDisconnect} variant="outline" className="w-full">
           <LogOut className="h-4 w-4 mr-2" />
           Disconnect Wallet
         </Button>
