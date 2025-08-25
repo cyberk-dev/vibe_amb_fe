@@ -32,6 +32,11 @@ export default function Home() {
               🔗 Wallet Demo
             </a>
           </Button>
+          <Button asChild>
+            <a href="/crud">
+              📝 CRUD Demo
+            </a>
+          </Button>
           <Button variant="outline" asChild>
             <a
               href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"

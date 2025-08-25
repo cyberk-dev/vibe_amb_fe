@@ -1,7 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
-import { useConfirmDialog } from "@/lib/hooks/use-confirm-dialog";
+import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
 import {
   useSaveSettingsMutation,
   useDeleteUserMutation,
@@ -11,7 +11,7 @@ import {
   useBackupDatabaseMutation,
   useClearCacheMutation,
   useResetSettingsMutation,
-} from "@/lib/hooks/use-mutations";
+} from "@/hooks/use-mutations";
 import { BasicConfirmDialog } from "./basic-confirm-dialog";
 import { DestructiveActionDialog } from "./destructive-action-dialog";
 import { CustomUploadDialog } from "./custom-upload-dialog";

@@ -1,22 +1,28 @@
-import { ConfirmDialogExamplesContainer } from './_components';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Check, Code, Zap } from 'lucide-react';
+import { ConfirmDialogExamplesContainer } from "./_components";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Check, Code, Zap } from "lucide-react";
 
 const GlobalDialogPage = () => {
   const features = [
-    'Global Zustand store for dialog state management',
-    'Promise-based API with async mutation support',
-    'Loading states with spinner indicators',
-    'Customizable dialog appearance and text',
-    'Destructive action styling with warning icons',
-    'Multi-step workflows with progress tracking',
-    'Error handling and retry mechanisms',
-    'TypeScript support with strict typing'
+    "Global Zustand store for dialog state management",
+    "Promise-based API with async mutation support",
+    "Loading states with spinner indicators",
+    "Customizable dialog appearance and text",
+    "Destructive action styling with warning icons",
+    "Multi-step workflows with progress tracking",
+    "Error handling and retry mechanisms",
+    "TypeScript support with strict typing",
   ];
 
-  const codeExample = `import { useConfirmDialog } from '@/lib/hooks/use-confirm-dialog';
+  const codeExample = `import { useConfirmDialog } from '@/hooks/use-confirm-dialog';
 import { deleteItemMutation } from '@/lib/mocks/async-mutations';
 
 const MyComponent = () => {
@@ -54,9 +60,12 @@ const MyComponent = () => {
           <Badge variant="outline" className="text-xs">
             Demo
           </Badge>
-          <h1 className="text-4xl font-bold tracking-tight">Global Confirm Dialog</h1>
+          <h1 className="text-4xl font-bold tracking-tight">
+            Global Confirm Dialog
+          </h1>
           <p className="text-muted-foreground text-lg">
-            Zustand-powered global confirmation dialogs with async mutations, loading states, and error handling
+            Zustand-powered global confirmation dialogs with async mutations,
+            loading states, and error handling
           </p>
         </div>
 
@@ -85,9 +94,7 @@ const MyComponent = () => {
                   <Code className="h-5 w-5 text-blue-500" />
                   Usage Example
                 </CardTitle>
-                <CardDescription>
-                  Basic implementation pattern
-                </CardDescription>
+                <CardDescription>Basic implementation pattern</CardDescription>
               </CardHeader>
               <CardContent>
                 <pre className="text-sm bg-muted p-4 rounded-lg overflow-x-auto">
