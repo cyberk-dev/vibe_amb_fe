@@ -11,6 +11,50 @@ export interface MutationOptions {
   successRate?: number;
 }
 
+// Type definitions for specific mutation results
+export interface DeleteUserData {
+  userId: string;
+  deletedAt: string;
+}
+
+export interface LogoutData {
+  loggedOutAt: string;
+}
+
+export interface UploadFilesData {
+  uploadedFiles: Array<{
+    name: string;
+    id: string;
+    uploadedAt: string;
+  }>;
+}
+
+export interface ProcessPaymentData {
+  transactionId: string;
+  amount: number;
+  processedAt: string;
+}
+
+export interface BackupDatabaseData {
+  backupId: string;
+  backupSize: string;
+  createdAt: string;
+}
+
+export interface SaveSettingsData {
+  settings: Record<string, unknown>;
+  savedAt: string;
+}
+
+export interface ClearCacheData {
+  clearedItems: number;
+  clearedAt: string;
+}
+
+export interface ResetSettingsData {
+  resetAt: string;
+}
+
 // Simulate network delay and potential failures
 const simulateAsyncOperation = async (
   options: MutationOptions = {}
@@ -27,7 +71,7 @@ const simulateAsyncOperation = async (
 // User Management Actions
 export const deleteUserMutation = async (
   userId: string
-): Promise<MutationResult> => {
+): Promise<MutationResult<DeleteUserData>> => {
   try {
     await simulateAsyncOperation({ delay: 1500, successRate: 0.9 });
     return {
@@ -42,7 +86,7 @@ export const deleteUserMutation = async (
   }
 };
 
-export const logoutMutation = async (): Promise<MutationResult> => {
+export const logoutMutation = async (): Promise<MutationResult<LogoutData>> => {
   try {
     await simulateAsyncOperation({ delay: 1000, successRate: 0.95 });
     return {
@@ -60,7 +104,7 @@ export const logoutMutation = async (): Promise<MutationResult> => {
 // File Management Actions
 export const uploadFilesMutation = async (
   files: string[]
-): Promise<MutationResult> => {
+): Promise<MutationResult<UploadFilesData>> => {
   try {
     await simulateAsyncOperation({ delay: 3000, successRate: 0.8 });
     return {
@@ -84,7 +128,7 @@ export const uploadFilesMutation = async (
 // Payment Actions
 export const processPaymentMutation = async (
   amount: number
-): Promise<MutationResult> => {
+): Promise<MutationResult<ProcessPaymentData>> => {
   try {
     await simulateAsyncOperation({ delay: 2500, successRate: 0.7 });
     return {
@@ -104,7 +148,7 @@ export const processPaymentMutation = async (
 };
 
 // Database Actions
-export const backupDatabaseMutation = async (): Promise<MutationResult> => {
+export const backupDatabaseMutation = async (): Promise<MutationResult<BackupDatabaseData>> => {
   try {
     await simulateAsyncOperation({ delay: 4000, successRate: 0.9 });
     return {
@@ -126,7 +170,7 @@ export const backupDatabaseMutation = async (): Promise<MutationResult> => {
 // Settings Actions
 export const saveSettingsMutation = async (
   settings: Record<string, unknown>
-): Promise<MutationResult> => {
+): Promise<MutationResult<SaveSettingsData>> => {
   try {
     await simulateAsyncOperation({ delay: 800, successRate: 0.95 });
     return {
@@ -145,7 +189,7 @@ export const saveSettingsMutation = async (
 };
 
 // Batch Actions
-export const clearCacheMutation = async (): Promise<MutationResult> => {
+export const clearCacheMutation = async (): Promise<MutationResult<ClearCacheData>> => {
   try {
     await simulateAsyncOperation({ delay: 1200, successRate: 0.9 });
     return {
@@ -163,7 +207,7 @@ export const clearCacheMutation = async (): Promise<MutationResult> => {
   }
 };
 
-export const resetSettingsMutation = async (): Promise<MutationResult> => {
+export const resetSettingsMutation = async (): Promise<MutationResult<ResetSettingsData>> => {
   try {
     await simulateAsyncOperation({ delay: 1000, successRate: 0.9 });
     return {
