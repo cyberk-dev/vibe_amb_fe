@@ -109,24 +109,6 @@ apps/web/
 └── types/                      # Global TypeScript type definitions
 ```
 
-### Shared UI Package (`packages/ui/`)
-```plaintext
-packages/ui/
-├── src/
-│   ├── components/             # Shared UI components
-│   │   ├── ui/                 # shadcn/ui components
-│   │   │   ├── button.tsx
-│   │   │   ├── input.tsx
-│   │   │   └── form.tsx
-│   │   ├── layout/             # Layout components
-│   │   └── forms/              # Form-related components
-│   ├── hooks/                  # Shared hooks
-│   ├── utils.ts                # Shared utilities
-│   └── index.ts                # Package exports
-├── package.json                # Package dependencies
-└── tsconfig.json               # Package-specific TypeScript config
-```
-
 ## Critical Architecture Rules
 
 ### Page Organization
@@ -175,7 +157,7 @@ packages/ui/
 
 - **Apps** depend on **Packages**: `apps/web` imports from `@workspace/ui`, etc.
 - **Packages** are independent: Shared packages should not depend on each other unnecessarily
-- **Page-specific** resources stay local: `_components/`, `_hooks/`, `_stores/` don't import from global directories
+- **Page-specific** resources stay local: `_components/` don't import from global directories
 - **Global** resources are shared: `components/`, `hooks/`, `stores/` can be imported by pages
 - **No circular dependencies**: Enforce strict dependency direction
 
@@ -190,11 +172,6 @@ apps/web/app/profile/
 │   ├── profile-form.tsx        # Presentation component
 │   ├── profile-container.tsx   # Container component with business logic
 │   └── avatar-upload.tsx       # Feature-specific component
-├── _hooks/
-│   ├── use-profile-query.ts    # React Query hook for profile data
-│   └── use-profile-mutation.ts # Mutation hook for profile updates
-└── _stores/
-    └── profile-store.ts        # Page-specific state management
 ```
 
 
