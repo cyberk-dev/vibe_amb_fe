@@ -1,36 +1,145 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CyberK Next.js Boilerplate
 
-## Getting Started
+A modern, production-ready Next.js boilerplate with Web3 wallet integration, built with the latest technologies and best practices.
 
-First, run the development server:
+## ✨ Features
 
+- 🚀 **Next.js 15.5.0** with App Router and Turbopack
+- ⚛️ **React 19.1.0** with latest features
+- 🎨 **Tailwind CSS v4** for styling
+- 🎯 **TypeScript** with strict configuration
+- 🔗 **Web3 Integration** with Wagmi and AppKit
+- 🎨 **Shadcn/ui** components for consistent UI
+- 🌐 **Multi-environment** support (.env.local, .env.dev, .env.production)
+- 📱 **Responsive Design** with mobile-first approach
+- 🎛️ **ESLint** configuration for code quality
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Framework**: Next.js 15.5.0 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4 + PostCSS
+- **UI Components**: Shadcn/ui (Radix UI primitives)
+- **Icons**: Lucide React
+- **Fonts**: Geist Sans & Mono (optimized with next/font)
+
+### Web3 & Blockchain
+- **Wallet Integration**: @reown/appkit (formerly WalletConnect)
+- **React Hooks**: Wagmi v2.16.4
+- **Blockchain Utilities**: Viem v2.34.0
+- **Supported Networks**: Ethereum, Arbitrum, Polygon
+- **State Management**: TanStack Query v5.85.5
+
+### Development Tools
+- **Bundler**: Turbopack (Next.js experimental)
+- **Linting**: ESLint with Next.js rules
+- **Environment**: Dotenv with multi-env support
+- **Package Manager**: PNPM (recommended)
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+ 
+- PNPM (recommended) or npm/yarn
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd cyberk-nextjs-boilerplate
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   # Copy environment templates
+   cp .env.local .env.local.example
+   cp .env.dev .env.dev.example
+   cp .env.production .env.production.example
+   ```
+
+4. **Configure WalletConnect Project ID**
+   ```bash
+   # Edit .env.local and add your WalletConnect Project ID
+   NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your-project-id-here
+   ```
+
+   Get your project ID from [WalletConnect Cloud](https://cloud.walletconnect.com/)
+
+### Development Scripts
+
+#### Local Development
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Run with .env.local (default)
+pnpm dev:local
+
+# Build with local environment
+pnpm build:local
+
+# Start production server with local env
+pnpm start:local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### Development Environment
+```bash
+# Run with .env.dev
+pnpm dev:dev
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Build with dev environment
+pnpm build:dev
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Start with dev environment
+pnpm start:dev
+```
 
-## Learn More
+#### Production Environment
+```bash
+# Run with .env.production
+pnpm dev:prod
 
-To learn more about Next.js, take a look at the following resources:
+# Build with production environment
+pnpm build:prod
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Start with production environment
+pnpm start:prod
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+#### Other Commands
+```bash
+# Lint code
+pnpm lint
 
-## Deploy on Vercel
+# Add Shadcn components
+pnpx shadcn@latest add [component-name]
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🌍 Environment Configuration
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The project supports multiple environments with dedicated configuration files:
+
+### `.env.local` (Local Development)
+```env
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your-project-id
+```
+
+## 🔗 Web3 Wallet Integration
+
+### Demo
+Visit `/wallet-connect` to see the wallet integration in action.
+
+### Adding New Components
+```bash
+# Add individual components
+pnpx shadcn@latest add button
+pnpx shadcn@latest add card
+pnpx shadcn@latest add dialog
+
+# View all available components
+pnpx shadcn@latest add
+```
