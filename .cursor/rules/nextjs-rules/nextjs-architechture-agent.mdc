@@ -1,0 +1,201 @@
+---
+description: "Defines the high-level architectural patterns and best practices for this NextJS monorepo project, focusing on modularity, shared packages, and maintainability. Apply when designing new features, structuring applications, or refactoring existing code."
+globs: apps/web/**/*.*, packages/**/*.*
+alwaysApply: false
+---
+
+# NextJS Project Architecture Standards
+
+## Core Principles
+
+- **Monorepo Architecture**: The application is built using Turbo monorepo with clear separation between apps and packages
+- **Shared Packages**: UI components and configurations are shared via workspace packages to ensure consistency
+- **Type Safety**: Strict TypeScript enforcement across all applications and packages
+- **Component Architecture**: Clear separation between presentation and container components
+- **State Management**: Layered state management with Zustand for application state and React Query for server state
+- **Co-location**: Page-specific resources (components, hooks, stores) are co-located with their pages
+
+## Technology Stack
+
+### Core Framework & Build Tools
+- **Monorepo**: Turbo repo for task orchestration and caching
+- **Frontend**: Next.js 14+ with App Router
+- **TypeScript**: Strict type checking enabled
+- **Styling**: TailwindCSS for utility-first styling
+- **Package Manager**: pnpm for efficient dependency management
+
+### UI & Component Libraries
+- **Component Library**: shadcn/ui components in shared `@workspace/ui` package
+- **Form Handling**: React Hook Form with Zod validation schemas
+- **Icons**: Lucide React or similar icon system
+
+### State Management
+- **Application State**: Zustand stores with persistence
+- **Server State**: TanStack React Query for data fetching and caching
+- **Form State**: React Hook Form for form-specific state
+
+### Web3 & Blockchain (Optional)
+- **Wallet Connection**: Reown AppKit for wallet connectivity
+- **Blockchain Interaction**: Viem for low-level blockchain operations
+- **React Integration**: Wagmi for React hooks and wallet management
+
+### HTTP & API
+- **HTTP Client**: Axios with custom configurations
+- **API Organization**: Structured endpoint definitions and client setup
+
+### Monitoring & Quality
+- **Error Tracking**: Sentry for production error monitoring
+- **Linting**: ESLint with shared configurations
+- **Code Quality**: Prettier for consistent formatting
+
+## Directory Structure & Purpose
+
+### Monorepo Root Structure
+```plaintext
+cyberk-next-boilerplate/
+├── apps/
+│   └── web/                    # Main Next.js application
+├── packages/
+│   ├── ui/                     # Shared UI component library
+│   ├── eslint-config/          # Shared ESLint configurations
+│   └── typescript-config/      # Shared TypeScript configurations
+├── turbo.json                  # Turbo pipeline configuration
+└── package.json               # Workspace root dependencies
+```
+
+### Application Structure (`apps/web/`)
+```plaintext
+apps/web/
+├── app/                        # Next.js App Router directory
+│   ├── (dashboard)/            # Route groups for layout organization
+│   │   ├── dashboard/          # Defines app pages in this directory
+│   │   │   ├── page.tsx        # Dashboard page component
+│   │   │   ├── layout.tsx      # Dashboard-specific layout
+│   │   │   ├── _components/    # Private components for dashboard page
+│   │   └── settings/
+│   │       ├── page.tsx        # Settings page component
+│   │       └── _components/    # Private components for settings page
+│   ├── api/                    # API routes (if using Next.js API)
+│   ├── globals.css             # Global styles and Tailwind imports
+│   ├── layout.tsx              # Root layout component
+│   └── page.tsx                # Home page component
+├── components/                 # Global components for the app
+│   ├── layout/                 # Layout-related components
+│   ├── forms/                  # Reusable form components
+│   └── ui/                     # App-specific UI components
+├── hooks/                      # Global custom hooks
+│   ├── use-auth.ts             # Authentication hook
+│   ├── use-api-client.ts       # API client hook
+│   └── use-wallet.ts           # Wallet connection hook
+├── stores/                     # Global Zustand stores
+│   ├── auth-store.ts           # Authentication state
+│   ├── app-store.ts            # Application-wide state
+│   └── index.ts                # Store exports
+├── lib/                        # Application utilities and configurations
+│   ├── api/                    # API client and endpoint definitions
+│   │   ├── client.ts           # Axios configuration
+│   │   ├── endpoints/          # API endpoint definitions
+│   │   └── types.ts            # API type definitions
+│   ├── providers/              # React context providers
+│   │   ├── query-provider.tsx  # React Query provider
+│   │   ├── wallet-provider.tsx # Wallet provider
+│   │   └── theme-provider.tsx  # Theme provider
+│   ├── configs/                # Application configurations
+│   │   ├── env.ts              # Environment variables
+│   │   └── constants.ts        # Application constants
+│   ├── utils.ts                # Utility functions
+│   ├── wagmi.ts                # Wagmi configuration
+│   └── form-schemas.ts         # Zod validation schemas
+└── types/                      # Global TypeScript type definitions
+```
+
+### Shared UI Package (`packages/ui/`)
+```plaintext
+packages/ui/
+├── src/
+│   ├── components/             # Shared UI components
+│   │   ├── ui/                 # shadcn/ui components
+│   │   │   ├── button.tsx
+│   │   │   ├── input.tsx
+│   │   │   └── form.tsx
+│   │   ├── layout/             # Layout components
+│   │   └── forms/              # Form-related components
+│   ├── hooks/                  # Shared hooks
+│   ├── utils.ts                # Shared utilities
+│   └── index.ts                # Package exports
+├── package.json                # Package dependencies
+└── tsconfig.json               # Package-specific TypeScript config
+```
+
+## Critical Architecture Rules
+
+### Page Organization
+- **Server Components**: Use server components by default for pages (`app/{route}/page.tsx`)
+- **Client Components**: Mark with `"use client"` only when necessary for interactivity
+- **Co-location**: Keep page-specific resources in `_components/`, `_hooks/`, and `_stores/` directories
+- **Layouts**: Use `layout.tsx` files for shared layouts within route groups
+
+### Component Architecture
+- **Presentation Components**: Pure UI components in `components/` directories
+- **Container Components**: Business logic components that use hooks and stores
+- **Shared Components**: Reusable components in `@workspace/ui` package
+- **Page Components**: Minimal logic, primarily composition of other components
+
+### State Management Rules
+- **Local State**: Use `useState` for component-internal state
+- **Page State**: Use page-specific stores in `_stores/` for complex page state
+- **Global State**: Use global stores in `stores/` for app-wide state
+- **Server State**: Use React Query hooks for all server data interactions
+- **Form State**: Use React Hook Form with Zod schemas for form management
+
+### Import Patterns
+- **Workspace Imports**: Use `@workspace/ui` for shared components
+- **Relative Imports**: Use relative imports for local components and utilities
+- **Absolute Imports**: Use `@/` alias for app-level imports
+- **Type Imports**: Use `import type` for type-only imports
+
+### API Organization
+- **Client Configuration**: Centralize Axios configuration in `lib/api/client.ts`
+- **Endpoint Definitions**: Organize API endpoints in `lib/api/endpoints/`
+- **Type Safety**: Define API types in `lib/api/types.ts`
+- **Error Handling**: Implement consistent error handling across API calls
+
+### Environment & Configuration
+- **Environment Variables**: Define in `.env.local` and validate in `lib/configs/env.ts`
+- **Constants**: Centralize application constants in `lib/configs/constants.ts`
+- **Feature Flags**: Use environment variables for feature toggles
+
+### Testing Strategy
+- **Component Testing**: Unit tests for shared UI components
+- **Integration Testing**: Test page components with their associated hooks and stores
+- **E2E Testing**: Test critical user flows across page boundaries
+- **API Testing**: Mock API responses for consistent testing
+
+## Dependency Flow Rules
+
+- **Apps** depend on **Packages**: `apps/web` imports from `@workspace/ui`, etc.
+- **Packages** are independent: Shared packages should not depend on each other unnecessarily
+- **Page-specific** resources stay local: `_components/`, `_hooks/`, `_stores/` don't import from global directories
+- **Global** resources are shared: `components/`, `hooks/`, `stores/` can be imported by pages
+- **No circular dependencies**: Enforce strict dependency direction
+
+## Example Feature Structure
+
+### User Profile Feature
+```plaintext
+apps/web/app/profile/
+├── page.tsx                    # Server component page entry
+├── layout.tsx                  # Profile-specific layout (optional)
+├── _components/
+│   ├── profile-form.tsx        # Presentation component
+│   ├── profile-container.tsx   # Container component with business logic
+│   └── avatar-upload.tsx       # Feature-specific component
+├── _hooks/
+│   ├── use-profile-query.ts    # React Query hook for profile data
+│   └── use-profile-mutation.ts # Mutation hook for profile updates
+└── _stores/
+    └── profile-store.ts        # Page-specific state management
+```
+
+
+

@@ -1,0 +1,409 @@
+---
+description: "Defines standards for Zustand state management in Next.js applications. Apply when creating or modifying global state stores, managing client-side state, or implementing state persistence patterns."
+globs: "**/{stores,lib/stores}/**/*.ts"
+alwaysApply: false
+---
+
+# Zustand State Management Standards
+
+## Core Principles
+
+- **Atomic Selectors:** Export granular hooks that select specific pieces of state to minimize re-renders
+- **Separation of Concerns:** Separate actions from state using dedicated action objects
+- **Custom Hooks Only:** Never export the base store; always export custom hooks for clean interfaces
+- **Event-Based Actions:** Model actions as domain events rather than simple setters
+- **Small Store Scope:** Keep stores focused on single domains rather than monolithic global state
+
+## Store Structure & Organization
+
+### File Structure
+```plaintext
+lib/stores/
+├── auth-store.ts         # Authentication state and actions
+├── app-store.ts          # Global app state (modals, notifications)
+├── {feature}-store.ts    # Feature-specific stores
+└── index.ts             # Re-export custom hooks only
+```
+
+### Store Implementation Pattern (Zustand v5)
+```typescript
+import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
+
+// Internal store interface
+interface AuthState {
+  user: User | null
+  isAuthenticated: boolean
+  // Separate actions namespace
+  actions: {
+    login: (credentials: LoginCredentials) => Promise<void>
+    logout: () => void
+    updateProfile: (profile: Partial<UserProfile>) => void
+  }
+}
+
+// Private store - NOT exported
+const useAuthStore = create<AuthState>()(
+  persist(
+    (set, get) => ({
+      user: null,
+      isAuthenticated: false,
+      actions: {
+        login: async (credentials) => {
+          try {
+            // Business logic here
+            const user = await loginUser(credentials)
+            set({ user, isAuthenticated: true })
+          } catch (error) {
+            // Handle login errors
+            throw error
+          }
+        },
+        logout: () => {
+          set({ user: null, isAuthenticated: false })
+          // Clear related caches, redirect, etc.
+        },
+        updateProfile: (profile) => {
+          const currentUser = get().user
+          if (currentUser) {
+            set({ user: { ...currentUser, ...profile } })
+          }
+        }
+      }
+    }),
+    {
+      name: 'auth-storage',
+      storage: createJSONStorage(() => localStorage), // v5 explicit storage
+      partialize: (state) => ({ 
+        user: state.user, 
+        isAuthenticated: state.isAuthenticated 
+        // actions excluded from persistence
+      }),
+      version: 1,
+      migrate: (persistedState: any, version: number) => {
+        // Handle migrations when store structure changes
+        if (version === 0) {
+          // Migration logic from v0 to v1
+        }
+        return persistedState as AuthState
+      }
+    }
+  )
+)
+
+// Exported atomic selectors
+export const useUser = () => useAuthStore((state) => state.user)
+export const useIsAuthenticated = () => useAuthStore((state) => state.isAuthenticated)
+export const useAuthActions = () => useAuthStore((state) => state.actions)
+```
+
+## Critical Rules
+
+### 1. Store Export Pattern
+- **Never export the base store** - Always export custom hooks
+- **Use atomic selectors** - Each hook should select minimal state
+- **Single action hook** - Export one hook for all actions in the actions namespace
+
+```typescript
+// ❌ BAD: Exporting base store
+export const useAuthStore = create(...)
+
+// ❌ BAD: Selecting multiple values without shallow comparison
+const { user, isAuthenticated } = useAuthStore()
+
+// ✅ GOOD: Atomic selectors
+export const useUser = () => useAuthStore((state) => state.user)
+export const useIsAuthenticated = () => useAuthStore((state) => state.isAuthenticated)
+export const useAuthActions = () => useAuthStore((state) => state.actions)
+```
+
+### 2. Action Organization
+- **Separate actions namespace** - Keep actions in their own object
+- **Event-based naming** - Use domain events (login, logout) not setters (setUser)
+- **Business logic in store** - Actions contain logic, components just trigger events
+
+```typescript
+// ✅ GOOD: Actions as events with business logic
+actions: {
+  login: async (credentials) => {
+    const user = await authenticateUser(credentials)
+    set({ user, isAuthenticated: true })
+    // Additional side effects like analytics
+  },
+  logout: () => {
+    set({ user: null, isAuthenticated: false })
+    // Clear related caches, redirect, etc.
+  }
+}
+
+// ❌ BAD: Actions as simple setters
+actions: {
+  setUser: (user) => set({ user }),
+  setAuthenticated: (isAuth) => set({ isAuthenticated: isAuth })
+}
+```
+
+### 3. Store Scope & Composition
+- **Keep stores small** - One store per domain/feature
+- **Compose with custom hooks** - Combine stores at the hook level
+- **Prefer server/URL state** - Only use Zustand for true client state
+
+```typescript
+// ✅ GOOD: Composing multiple stores
+export const useCurrentUserProfile = () => {
+  const userId = useAuthStore((state) => state.user?.id)
+  const profile = useProfileStore((state) => 
+    userId ? state.profiles[userId] : null
+  )
+  return profile
+}
+
+// ✅ GOOD: Combining with other hooks
+export const useFilteredTodos = () => {
+  const filters = useFilterStore((state) => state.applied)
+  return useQuery({
+    queryKey: ['todos', filters],
+    queryFn: () => getTodos(filters)
+  })
+}
+```
+
+### 4. Persistence Configuration (v5)
+- **Use partialize** - Only persist necessary state
+- **Avoid persisting actions** - Actions are functions and don't need persistence
+- **Explicit storage** - Use createJSONStorage for better control
+- **Versioning** - Add version and migration support for schema changes
+
+```typescript
+// ✅ GOOD: Selective persistence with v5 features
+import { createJSONStorage } from 'zustand/middleware'
+
+persist(
+  (set, get) => ({ /* store definition */ }),
+  {
+    name: 'auth-storage',
+    storage: createJSONStorage(() => localStorage), // Explicit storage
+    partialize: (state) => ({ 
+      user: state.user, 
+      isAuthenticated: state.isAuthenticated 
+      // actions excluded from persistence
+    }),
+    version: 1,
+    migrate: (persistedState: any, version: number) => {
+      // Handle schema migrations between versions
+      if (version === 0) {
+        // Example: migrate old user structure
+        return {
+          ...persistedState,
+          user: {
+            ...persistedState.user,
+            id: persistedState.user.userId // rename field
+          }
+        }
+      }
+      return persistedState
+    }
+  }
+)
+
+// ✅ GOOD: Alternative storage options
+// SessionStorage for temporary state
+storage: createJSONStorage(() => sessionStorage)
+
+// Custom storage adapter
+storage: createJSONStorage(() => ({
+  getItem: (name) => customGet(name),
+  setItem: (name, value) => customSet(name, value),
+  removeItem: (name) => customRemove(name)
+}))
+```
+
+### 5. TypeScript Integration
+- **Define interfaces** - Type your state and actions
+- **Generic store creation** - Use proper TypeScript generics
+- **Export hook types** - Make hook return types clear
+
+```typescript
+interface AuthState {
+  user: User | null
+  isAuthenticated: boolean
+  actions: AuthActions
+}
+
+interface AuthActions {
+  login: (credentials: LoginCredentials) => Promise<void>
+  logout: () => void
+  updateProfile: (profile: Partial<UserProfile>) => void
+}
+
+const useAuthStore = create<AuthState>()(...)
+```
+
+## Zustand v5 Specific Features
+
+### useShallow Hook for Multiple Values
+- **Prevents infinite loops** - When selectors return new references
+- **Alternative to atomic selectors** - For when you need multiple values efficiently
+
+```typescript
+import { useShallow } from 'zustand/shallow'
+
+// ✅ GOOD: Using useShallow for multiple values (v5)
+const LoginForm = () => {
+  const { user, isAuthenticated } = useAuthStore(
+    useShallow((state) => ({
+      user: state.user,
+      isAuthenticated: state.isAuthenticated
+    }))
+  )
+  
+  // Component logic...
+}
+
+// ✅ ALTERNATIVE: Still prefer atomic selectors when possible
+const user = useUser()
+const isAuthenticated = useIsAuthenticated()
+```
+
+### Custom Equality Functions (v5)
+```typescript
+import { createWithEqualityFn } from 'zustand/traditional'
+import { shallow } from 'zustand/shallow'
+
+// For stores that need custom equality (use sparingly)
+const useCustomStore = createWithEqualityFn<StoreState>()(
+  (set) => ({
+    // store definition
+  }),
+  shallow
+)
+```
+
+### Vanilla Store Usage
+```typescript
+import { createStore } from 'zustand/vanilla'
+
+// Create vanilla store (no React hook)
+const bearStore = createStore((set) => ({
+  bears: 0,
+  increasePopulation: () => set((state) => ({ bears: state.bears + 1 }))
+}))
+
+// Use in React with custom hook
+const useBearStore = () => {
+  return useStore(bearStore)
+}
+
+// Access outside React
+bearStore.getState().bears
+bearStore.setState({ bears: 10 })
+```
+
+## Integration with Next.js
+
+### SSR Considerations
+- **Client-only state** - Zustand is for client state only
+- **Hydration handling** - Be careful with persisted state and SSR
+- **Initial state** - Consider how store initializes on server vs client
+- **React 18+ Required** - Zustand v5 requires React 18 for useSyncExternalStore
+
+### Component Usage
+```typescript
+// ✅ GOOD: Using atomic selectors (preferred)
+const LoginForm = () => {
+  const { login } = useAuthActions()
+  const isAuthenticated = useIsAuthenticated()
+  
+  const handleSubmit = async (data) => {
+    try {
+      await login(data) // Business logic is in the store
+    } catch (error) {
+      // Handle login error in UI
+      console.error('Login failed:', error)
+    }
+  }
+  
+  if (isAuthenticated) return <Navigate to="/dashboard" replace />
+  return <form onSubmit={handleSubmit}>...</form>
+}
+
+// ✅ ACCEPTABLE: Using useShallow for multiple values
+const UserProfile = () => {
+  const { user, isAuthenticated } = useAuthStore(
+    useShallow((state) => ({
+      user: state.user,
+      isAuthenticated: state.isAuthenticated
+    }))
+  )
+  
+  if (!isAuthenticated || !user) return <LoginPrompt />
+  return <div>{user.name}</div>
+}
+```
+
+## Migration from v4 to v5
+
+### Breaking Changes
+- **React 18+ Required** - Drop support for React < 18
+- **TypeScript 4.5+ Required** - Drop support for older TS versions
+- **No ES5 Support** - Modern JS only
+- **Custom equality removed** - Use `createWithEqualityFn` from `zustand/traditional`
+
+### Migration Steps
+```typescript
+// ❌ OLD v4: Custom equality in create
+import { create } from 'zustand'
+import { shallow } from 'zustand/shallow'
+
+const useStore = create((set) => ({ /* ... */ }), shallow)
+
+// ✅ NEW v5: Use createWithEqualityFn
+import { createWithEqualityFn } from 'zustand/traditional'
+import { shallow } from 'zustand/shallow'
+
+const useStore = createWithEqualityFn((set) => ({ /* ... */ }), shallow)
+
+// ✅ BETTER v5: Use useShallow hook
+import { useShallow } from 'zustand/shallow'
+
+const Component = () => {
+  const data = useStore(
+    useShallow((state) => ({ a: state.a, b: state.b }))
+  )
+}
+```
+
+## Common Anti-Patterns to Avoid
+
+- **Subscribing to entire store** - Always use selectors
+- **Complex selectors returning objects** - Use atomic selectors or useShallow
+- **Business logic in components** - Keep logic in store actions
+- **Monolithic stores** - Split into domain-specific stores
+- **Exposing internal store** - Only export custom hooks
+- **Ignoring React 18 requirement** - Upgrade React for v5 compatibility
+
+## Testing Considerations
+
+- **Test store logic** - Actions should be unit testable
+- **Mock store state** - Create test utilities for store mocking
+- **Integration tests** - Test component + store interactions
+- **Vanilla store testing** - Test business logic without React dependencies
+
+```typescript
+// ✅ GOOD: Testing store actions
+import { renderHook, act } from '@testing-library/react'
+import { useAuthActions, useIsAuthenticated } from './auth-store'
+
+test('login updates authentication state', async () => {
+  const { result } = renderHook(() => ({
+    actions: useAuthActions(),
+    isAuthenticated: useIsAuthenticated()
+  }))
+  
+  await act(async () => {
+    await result.current.actions.login({ username: 'test', password: 'pass' })
+  })
+  
+  expect(result.current.isAuthenticated).toBe(true)
+})
+```

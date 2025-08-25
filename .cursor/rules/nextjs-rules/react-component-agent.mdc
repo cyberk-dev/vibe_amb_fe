@@ -1,0 +1,286 @@
+---
+description: "Defines React component architecture patterns for presentation and container components, focusing on separation of concerns, prop management, and composition patterns. Apply when creating new components, refactoring existing components, or designing component hierarchies."
+globs: apps/web/**/*.tsx, packages/ui/**/*.tsx
+alwaysApply: true
+---
+
+# React Component Architecture Standards
+
+You are a React component architect. Follow these strict patterns for component organization and structure.
+
+## Core Principles
+
+- **Separation of Concerns**: Presentation components handle UI display, container components handle business logic
+- **Pure Presentation**: Presentation components must be pure with no side effects or business logic
+- **Composition Over Props**: Use component composition to avoid prop drilling beyond 3 layers
+- **Explicit Contracts**: Define clear TypeScript interfaces for all component props
+- **Single Responsibility**: Each component serves a single, well-defined purpose
+
+## Component Architecture Types
+
+### Presentation Components
+- **Purpose**: UI display and internal state management only
+- **File naming**: `{component-name}.tsx`
+- **Characteristics**:
+  - Pure components without side effects
+  - Handle only internal UI state (form inputs, toggles, local animations)
+  - Receive callback props to communicate state changes to parent
+  - Maximum 3 layers of prop drilling allowed
+  - Use composition pattern for complex component trees
+  - No direct API calls or business logic
+
+### Container Components  
+- **Purpose**: Business logic orchestration and data management
+- **File naming**: `{component-name}-container.tsx`
+- **Characteristics**:
+  - Handle all business logic and data fetching
+  - Manage application state via Zustand stores
+  - Inject custom hooks and external dependencies
+  - Orchestrate presentation components
+  - Handle error states and loading states
+  - Manage side effects (API calls, localStorage, etc.)
+
+## Implementation Rules
+
+### ✅ Correct Implementation
+
+**Presentation Component Example:**
+```tsx
+// user-profile.tsx
+interface UserProfileProps {
+  name: string;
+  email: string;
+  avatar?: string;
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
+export function UserProfile({ 
+  name, 
+  email, 
+  avatar, 
+  onEdit, 
+  onDelete 
+}: UserProfileProps) {
+  return (
+    <div className="user-profile">
+      <Avatar src={avatar} alt={name} />
+      <div className="user-info">
+        <h3>{name}</h3>
+        <p>{email}</p>
+      </div>
+      <div className="actions">
+        <Button onClick={onEdit}>Edit</Button>
+        <Button onClick={onDelete} variant="destructive">Delete</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+**Container Component Example:**
+```tsx
+// user-profile-container.tsx
+import { useUser } from '@/hooks/use-user';
+import { useNotifications } from '@/hooks/use-notifications';
+import { UserProfile } from './user-profile';
+
+interface UserProfileContainerProps {
+  userId: string;
+}
+
+export function UserProfileContainer({ userId }: UserProfileContainerProps) {
+  const { user, updateUser, deleteUser } = useUser(userId);
+  const { showNotification } = useNotifications();
+
+  const handleEdit = async () => {
+    // Business logic here
+    try {
+      await updateUser(userId, userData);
+      showNotification('User updated successfully');
+    } catch (error) {
+      showNotification('Failed to update user', 'error');
+    }
+  };
+
+  const handleDelete = async () => {
+    // Business logic here
+    try {
+      await deleteUser(userId);
+      showNotification('User deleted successfully');
+    } catch (error) {
+      showNotification('Failed to delete user', 'error');
+    }
+  };
+
+  if (!user) return <div>Loading...</div>;
+
+  return (
+    <UserProfile
+      name={user.name}
+      email={user.email}
+      avatar={user.avatar}
+      onEdit={handleEdit}
+      onDelete={handleDelete}
+    />
+  );
+}
+```
+
+### ❌ Wrong Implementation
+
+**Mixing Concerns (Bad):**
+```tsx
+// user-profile.tsx - WRONG: Business logic in presentation component
+export function UserProfile({ userId }: { userId: string }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // WRONG: Side effects and business logic
+  useEffect(() => {
+    async function fetchUser() {
+      setLoading(true);
+      try {
+        const userData = await api.getUser(userId);
+        setUser(userData);
+      } catch (error) {
+        console.error('Failed to fetch user');
+      }
+      setLoading(false);
+    }
+    fetchUser();
+  }, [userId]);
+
+  // WRONG: Business logic in presentation component
+  const handleDelete = async () => {
+    try {
+      await api.deleteUser(userId);
+      setUser(null);
+    } catch (error) {
+      alert('Failed to delete user');
+    }
+  };
+
+  return (
+    <div>
+      {loading ? <div>Loading...</div> : (
+        <div>
+          <h3>{user?.name}</h3>
+          <Button onClick={handleDelete}>Delete</Button>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+**Excessive Prop Drilling (Bad):**
+```tsx
+// WRONG: More than 3 layers of prop drilling
+function App() {
+  const user = useUser();
+  return <Layout user={user} />;
+}
+
+function Layout({ user }: { user: User }) {
+  return <Sidebar user={user} />;
+}
+
+function Sidebar({ user }: { user: User }) {
+  return <Navigation user={user} />;
+}
+
+function Navigation({ user }: { user: User }) {
+  return <UserMenu user={user} />;
+}
+
+function UserMenu({ user }: { user: User }) {
+  return <Avatar src={user.avatar} />;
+}
+```
+
+**Better Composition Pattern:**
+```tsx
+// CORRECT: Use composition to avoid prop drilling
+function App() {
+  const user = useUser();
+  return (
+    <Layout>
+      <Sidebar>
+        <Navigation>
+          <UserMenu user={user} />
+        </Navigation>
+      </Sidebar>
+    </Layout>
+  );
+}
+```
+
+## Directory Structure & Component Organization
+
+### Shared UI Components (`packages/ui/`)
+```plaintext
+packages/ui/src/components/
+├── button/
+│   ├── button.tsx              # Presentation component
+│   └── index.ts               # Export barrel
+├── form/
+│   ├── form-field.tsx         # Presentation component  
+│   ├── form-container.tsx     # Container component (if needed)
+│   └── index.ts               # Export barrel
+└── layout/
+    ├── sidebar.tsx            # Presentation component
+    └── index.ts               # Export barrel
+```
+
+### Application Components (`apps/web/`)
+```plaintext
+apps/web/
+├── app/dashboard/
+│   ├── user-profile-container.tsx    # Container component
+│   └── page.tsx                      # Route handler
+├── components/
+│   ├── user-profile/
+│   │   ├── user-profile.tsx          # Presentation component
+│   │   └── index.ts                  # Export barrel
+│   └── shared/
+│       ├── navigation.tsx            # App-specific components
+│       └── index.ts
+```
+
+## Critical Architecture Rules
+
+- **Component Purity**: Presentation components MUST NOT contain:
+  - Direct API calls or data fetching
+  - Business logic or calculations
+  - Side effects (useEffect with external dependencies)
+  - Store subscriptions or mutations
+  - Route navigation logic
+
+- **Container Responsibility**: Container components MUST handle:
+  - All data fetching and API interactions
+  - Business logic and state transformations
+  - Error handling and loading states
+  - Store management and side effects
+  - Route navigation and URL state
+
+- **Prop Flow**: Data flows unidirectionally:
+  - Container → Presentation (data and callbacks)
+  - Presentation → Container (via callback props)
+  - Maximum 3 component layers for prop passing
+
+- **Import Patterns**: 
+  - Use `@workspace/ui` for shared components
+  - Use relative imports for local components
+  - Containers import presentation components directly
+
+- **State Management**:
+  - Local UI state (toggles, form inputs) → useState in presentation
+  - Application state → Zustand stores in containers
+  - Server state → React Query hooks in containers
+
+## Testing Strategy
+
+- **Presentation Components**: Unit tests focused on rendering and user interactions
+- **Container Components**: Integration tests simulating real user workflows
+- **Shared Components**: Storybook stories and visual regression testing (recommended)

@@ -1,0 +1,255 @@
+---
+description: "Defines NextJS and React coding standards for this monorepo, covering function syntax, naming conventions, TypeScript usage, and export patterns. Apply when writing components, hooks, utilities, and application code."
+globs: apps/web/**/*.{ts,tsx}, packages/**/*.{ts,tsx}
+alwaysApply: true
+---
+
+# NextJS Coding Standards
+
+You are a NextJS developer following strict coding standards for this monorepo project.
+
+## Core Principles
+
+- **Function Consistency**: Use arrow functions for all function definitions
+- **Type Safety**: Enforce TypeScript for all code with strict typing
+- **Naming Conventions**: Follow kebab-case for files, camelCase for variables
+- **Export Clarity**: Use named exports over default exports (except for Next.js pages)
+- **Component Props**: Avoid complex object props to maintain clear interfaces
+- **Hook Patterns**: Follow consistent naming and file organization for custom hooks
+
+## Function and Variable Standards
+
+### Function Definitions
+- **ALWAYS use arrow functions** instead of function declarations
+- Apply to components, utilities, and business logic functions
+
+```tsx
+// ✅ Correct - Arrow function
+const UserProfile = ({ name, email }: UserProfileProps) => {
+  return <div>{name}</div>;
+};
+
+const calculateTotal = (items: Item[]) => {
+  return items.reduce((sum, item) => sum + item.price, 0);
+};
+
+// ❌ Wrong - Function declaration
+function UserProfile({ name, email }: UserProfileProps) {
+  return <div>{name}</div>;
+}
+
+function calculateTotal(items: Item[]) {
+  return items.reduce((sum, item) => sum + item.price, 0);
+}
+```
+
+### Variable and Function Naming
+```tsx
+// ✅ Correct - camelCase for variables and functions
+const userName = 'john_doe';
+const isUserActive = true;
+const handleUserClick = () => {};
+
+// ❌ Wrong - Other naming conventions
+const user_name = 'john_doe';
+const IsUserActive = true;
+const handle_user_click = () => {};
+```
+
+## File Naming Conventions
+
+### Component Files
+```plaintext
+✅ Correct - kebab-case
+user-profile.tsx
+shopping-cart-item.tsx
+payment-form-container.tsx
+
+❌ Wrong - Other cases
+UserProfile.tsx
+shoppingCartItem.tsx
+PaymentFormContainer.tsx
+```
+
+### Hook Files
+```plaintext
+✅ Correct - use- prefix with kebab-case
+use-user-data.ts
+use-shopping-cart.ts
+use-api-client.ts
+
+❌ Wrong - Missing prefix or wrong case
+userHook.ts
+useUserData.ts
+api-client-hook.ts
+```
+
+### React Query Hook Files
+```plaintext
+✅ Correct - Specific suffixes
+use-user-query.ts          # For queries
+use-user-mutation.ts       # For mutations
+use-products-query.ts      # For product queries
+
+❌ Wrong - Generic or missing suffixes
+use-user-api.ts
+user-query.ts
+use-user.ts
+```
+
+## TypeScript Standards
+
+### Component Props
+```tsx
+// ✅ Correct - Explicit interface with simple props
+interface UserProfileProps {
+  name: string;
+  email: string;
+  isActive: boolean;
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
+const UserProfile = ({ name, email, isActive, onEdit, onDelete }: UserProfileProps) => {
+  // Implementation
+};
+
+// ❌ Wrong - Complex object props
+interface UserProfileProps {
+  user: {
+    name: string;
+    email: string;
+    profile: {
+      avatar: string;
+      bio: string;
+      preferences: {
+        theme: string;
+        notifications: boolean;
+      };
+    };
+  };
+  actions: {
+    onEdit: () => void;
+    onDelete: () => void;
+    onUpdateProfile: (data: any) => void;
+  };
+}
+```
+
+### Type Safety Requirements
+```tsx
+// ✅ Correct - All functions and variables typed
+const fetchUserData = async (userId: string): Promise<User> => {
+  const response = await api.get<User>(`/users/${userId}`);
+  return response.data;
+};
+
+const users: User[] = [];
+const isLoading: boolean = false;
+
+// ❌ Wrong - Missing types
+const fetchUserData = async (userId) => {
+  const response = await api.get(`/users/${userId}`);
+  return response.data;
+};
+
+const users = [];
+const isLoading = false;
+```
+
+## Export and Import Standards
+
+### Named Exports (Preferred)
+```tsx
+// ✅ Correct - Named exports for components, hooks, utilities
+export const UserProfile = ({ name }: Props) => <div>{name}</div>;
+export const useUserData = (id: string) => { /* hook logic */ };
+export const formatCurrency = (amount: number) => `$${amount}`;
+
+// Import with destructuring
+import { UserProfile, useUserData, formatCurrency } from './user-utils';
+```
+
+### Default Exports (Next.js Pages Only)
+```tsx
+// ✅ Correct - Default export only for Next.js page components
+// app/dashboard/page.tsx
+const DashboardPage = () => {
+  return <div>Dashboard</div>;
+};
+
+export default DashboardPage;
+
+// ❌ Wrong - Default export for regular components
+// components/user-profile.tsx
+const UserProfile = ({ name }: Props) => <div>{name}</div>;
+export default UserProfile; // Should be named export
+```
+
+## Hook Organization Standards
+
+### Custom Hooks Structure
+```tsx
+// ✅ Correct - use-user-data.ts
+export const useUserData = (userId: string) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchUser = useCallback(async () => {
+    try {
+      setLoading(true);
+      const userData = await api.getUser(userId);
+      setUser(userData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+  return { user, loading, error, refetch: fetchUser };
+};
+```
+
+### React Query Hooks
+```tsx
+// ✅ Correct - use-user-query.ts
+import { useQuery } from '@tanstack/react-query';
+
+export const useUserQuery = (userId: string) => {
+  return useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => api.getUser(userId),
+    enabled: !!userId,
+  });
+};
+
+// ✅ Correct - use-user-mutation.ts
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+export const useUserMutation = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (userData: CreateUserData) => api.createUser(userData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+  });
+};
+```
+
+## Critical Rules Summary
+
+- **Arrow Functions**: Use `const functionName = () => {}` for all function definitions
+- **File Naming**: Use kebab-case for all file names
+- **Hook Naming**: Use `use-` prefix and appropriate suffixes (`-query.ts`, `-mutation.ts`)
+- **TypeScript**: Explicit typing required for all functions, variables, and component props
+- **Component Props**: Avoid nested object props; flatten prop interfaces
+- **Exports**: Named exports for everything except Next.js page components
+- **Import Paths**: Use `@workspace/ui` for shared components, relative paths for local files

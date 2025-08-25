@@ -1,0 +1,593 @@
+---
+description: "Defines standards for TanStack Query (React Query) data fetching and server state management in Next.js applications. Apply when implementing data fetching, caching, mutations, or server state management. Based on TkDodo's React Query best practices."
+globs: "**/{hooks,api,queries,mutations}/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# TanStack Query (React Query) Standards
+
+## Core Philosophy (TkDodo's Principles)
+
+- **Async State Manager** - Treat React Query as a server state manager, not just a data fetching library
+- **Declarative Data Fetching** - Let query keys drive cache behavior and data dependencies
+- **Server vs Client State** - Maintain strict separation between server and client state
+- **Performance First** - Use staleTime, select, and structural sharing to optimize performance
+- **Query Keys as Dependencies** - Treat query keys like useEffect dependency arrays
+
+### Server State vs Client State Separation
+```typescript
+// ✅ GOOD: Server state with React Query
+const { data: todos } = useQuery({
+  queryKey: todoKeys.lists(),
+  queryFn: fetchTodos,
+  staleTime: 5 * 60 * 1000, // 5 minutes
+})
+
+// ✅ GOOD: Client state with useState/Zustand
+const [selectedTodoId, setSelectedTodoId] = useState<string | null>(null)
+const [isModalOpen, setIsModalOpen] = useState(false)
+
+// ❌ BAD: Using React Query for client state
+const { data: selectedId } = useQuery({
+  queryKey: ['selectedTodo'],
+  queryFn: () => Promise.resolve(selectedTodoId), // Don't do this
+})
+
+// ❌ BAD: Using useState for server state
+const [todos, setTodos] = useState([])
+useEffect(() => {
+  fetchTodos().then(setTodos) // Use React Query instead
+}, [])
+```
+
+## Query Configuration Best Practices
+
+### 1. Query Key Factories
+- **Centralized key management** - Create query key factories for scalable organization
+- **Hierarchical structure** - Build keys from general to specific
+- **Type safety** - Use TypeScript for query key validation
+
+```typescript
+//  GOOD: Query key factory pattern
+export const todoKeys = {
+  all: ['todos'] as const,
+  lists: () => [...todoKeys.all, 'list'] as const,
+  list: (filters: TodoFilters) => [...todoKeys.lists(), filters] as const,
+  details: () => [...todoKeys.all, 'detail'] as const,
+  detail: (id: string) => [...todoKeys.details(), id] as const,
+}
+
+// Usage in queries
+const { data } = useQuery({
+  queryKey: todoKeys.detail(todoId),
+  queryFn: () => fetchTodo(todoId)
+})
+```
+
+### 2. Timing Configuration
+- **staleTime vs gcTime** - Understand the difference and use appropriately
+- **staleTime** - How long data is considered fresh (prevents refetch)
+- **gcTime** - How long unused data stays in cache
+
+```typescript
+//  GOOD: Optimized timing configuration
+const { data } = useQuery({
+  queryKey: todoKeys.detail(id),
+  queryFn: () => fetchTodo(id),
+  staleTime: 5 * 60 * 1000, // 5 minutes - data stays fresh
+  gcTime: 10 * 60 * 1000,   // 10 minutes - cache retention
+})
+
+//  GOOD: Static data with long stale time
+const { data } = useQuery({
+  queryKey: ['countries'],
+  queryFn: fetchCountries,
+  staleTime: Infinity, // Data rarely changes
+})
+```
+
+### 3. Conditional Queries
+- **enabled option** - Control when queries execute
+- **Dependent queries** - Chain queries with proper dependencies
+
+```typescript
+//  GOOD: Conditional query execution
+const { data: user } = useQuery({
+  queryKey: ['user'],
+  queryFn: fetchUser,
+})
+
+const { data: projects } = useQuery({
+  queryKey: ['projects', user?.id],
+  queryFn: () => fetchUserProjects(user!.id),
+  enabled: !!user?.id, // Only run when user ID exists
+})
+
+//  GOOD: Skip query based on conditions
+const { data } = useQuery({
+  queryKey: todoKeys.list(filters),
+  queryFn: () => fetchTodos(filters),
+  enabled: filters.status !== 'draft', // Skip for drafts
+})
+```
+
+## TkDodo's Advanced Patterns
+
+### 1. Query Keys as Dependencies (Practical Pattern)
+```typescript
+// ✅ GOOD: Treat query keys like dependency arrays
+const useTodosQuery = (state: State) =>
+  useQuery({
+    queryKey: ['todos', state], // Include all dependencies
+    queryFn: () => fetchTodos(state),
+  })
+
+// ✅ GOOD: Pre-filtering with initialData
+export const useTodosQuery = (state: State) =>
+  useQuery({
+    queryKey: ['todos', state],
+    queryFn: () => fetchTodos(state),
+    initialData: () => {
+      const allTodos = queryClient.getQueryData<Todos>(['todos', 'all'])
+      const filteredData = allTodos?.filter((todo) => todo.state === state) ?? []
+      return filteredData.length > 0 ? filteredData : undefined
+    },
+  })
+```
+
+### 2. Status Checks Optimization (TkDodo Pattern)
+```typescript
+// ✅ BEST: Check data availability first, then error, then loading
+const TodoList = () => {
+  const todos = useTodos()
+
+  // Check data first - most common case
+  if (todos.data) {
+    return <div>{todos.data.map(renderTodo)}</div>
+  }
+  
+  // Then check error state
+  if (todos.error) {
+    return 'An error has occurred: ' + todos.error.message
+  }
+
+  // Finally loading state
+  return 'Loading...'
+}
+
+// ❌ AVOID: Checking loading first causes flicker
+if (todos.isLoading) return 'Loading...'
+if (todos.error) return 'Error'
+return <div>{todos.data.map(renderTodo)}</div>
+```
+
+## Performance Optimization
+
+### 1. Data Selection and Subscription
+- **select option** - Subscribe only to needed data parts
+- **Structural sharing** - React Query automatically optimizes object references
+
+```typescript
+//  GOOD: Select specific data to minimize re-renders
+const todoCount = useQuery({
+  queryKey: todoKeys.lists(),
+  queryFn: fetchTodos,
+  select: (data) => data.length, // Only re-render when count changes
+})
+
+const activeTodos = useQuery({
+  queryKey: todoKeys.lists(),
+  queryFn: fetchTodos,
+  select: (data) => data.filter(todo => !todo.completed),
+})
+
+//  GOOD: Select with transformation
+const { data: todoTitles } = useQuery({
+  queryKey: todoKeys.lists(),
+  queryFn: fetchTodos,
+  select: (data) => data.map(todo => ({ id: todo.id, title: todo.title })),
+})
+```
+
+## Data Transformation Strategies
+
+### 1. Transformation Locations
+- **In queryFn** - Transform at the data source
+- **Using select** - Transform for specific components
+- **In render** - Last resort for simple transformations
+
+```typescript
+//  GOOD: Transform in queryFn for global use
+const { data } = useQuery({
+  queryKey: todoKeys.lists(),
+  queryFn: async () => {
+    const response = await fetchTodos()
+    return response.data.map(todo => ({
+      ...todo,
+      createdAt: new Date(todo.createdAt), // Global transformation
+    }))
+  },
+})
+
+//  GOOD: Transform with select for component-specific needs
+const { data: sortedTodos } = useQuery({
+  queryKey: todoKeys.lists(),
+  queryFn: fetchTodos,
+  select: (data) => [...data].sort((a, b) => a.priority - b.priority),
+})
+```
+
+### 2. Type Safety with Transformations
+```typescript
+//  GOOD: Type-safe transformations
+interface TodoResponse {
+  id: string
+  title: string
+  createdAt: string // API returns string
+}
+
+interface Todo {
+  id: string
+  title: string
+  createdAt: Date // Client expects Date
+}
+
+const { data } = useQuery<TodoResponse[], Error, Todo[]>({
+  queryKey: todoKeys.lists(),
+  queryFn: fetchTodos,
+  select: (data) => data.map(todo => ({
+    ...todo,
+    createdAt: new Date(todo.createdAt),
+  })),
+})
+```
+
+## Mutation Patterns
+
+### 1. Basic Mutations
+- **mutate vs mutateAsync** - Choose based on use case
+- **Optimistic updates** - Update UI before server confirmation
+
+```typescript
+//  GOOD: Basic mutation with cache invalidation
+const addTodoMutation = useMutation({
+  mutationFn: createTodo,
+  onSuccess: () => {
+    // Invalidate and refetch todos
+    queryClient.invalidateQueries({ queryKey: todoKeys.lists() })
+  },
+  onError: (error) => {
+    toast.error('Failed to create todo')
+  },
+})
+
+//  GOOD: Optimistic updates
+const updateTodoMutation = useMutation({
+  mutationFn: updateTodo,
+  onMutate: async (updatedTodo) => {
+    // Cancel outgoing refetches
+    await queryClient.cancelQueries({ queryKey: todoKeys.detail(updatedTodo.id) })
+    
+    // Snapshot previous value
+    const previousTodo = queryClient.getQueryData(todoKeys.detail(updatedTodo.id))
+    
+    // Optimistically update
+    queryClient.setQueryData(todoKeys.detail(updatedTodo.id), updatedTodo)
+    
+    return { previousTodo }
+  },
+  onError: (err, updatedTodo, context) => {
+    // Rollback on error
+    if (context?.previousTodo) {
+      queryClient.setQueryData(todoKeys.detail(updatedTodo.id), context.previousTodo)
+    }
+  },
+  onSettled: (data, error, variables) => {
+    // Always refetch after error or success
+    queryClient.invalidateQueries({ queryKey: todoKeys.detail(variables.id) })
+  },
+})
+```
+
+### 2. Global Mutation State
+```typescript
+//  GOOD: Global mutation configuration
+const queryClient = new QueryClient({
+  defaultOptions: {
+    mutations: {
+      onError: (error) => {
+        // Global error handling
+        toast.error('Something went wrong')
+      },
+    },
+  },
+})
+```
+
+## Error Handling Strategies
+
+### 1. Multiple Error Handling Approaches
+```typescript
+//  GOOD: Component-level error handling
+const TodoList = () => {
+  const { data, isError, error } = useQuery({
+    queryKey: todoKeys.lists(),
+    queryFn: fetchTodos,
+    retry: (failureCount, error) => {
+      // Custom retry logic
+      if (error.status === 404) return false
+      return failureCount < 3
+    },
+  })
+
+  if (isError) {
+    return <ErrorMessage error={error} />
+  }
+
+  return <div>{/* render todos */}</div>
+}
+
+//  GOOD: Global error handling with Error Boundary
+class QueryErrorBoundary extends Component {
+  componentDidCatch(error: Error) {
+    if (error.message.includes('fetch')) {
+      // Handle fetch errors globally
+      this.props.onError(error)
+    }
+  }
+}
+```
+
+### 2. TypeScript Error Handling
+```typescript
+//  GOOD: Type-safe error handling
+interface ApiError {
+  message: string
+  status: number
+  code: string
+}
+
+const { data, error } = useQuery<Todo[], ApiError>({
+  queryKey: todoKeys.detail(id),
+  queryFn: fetchTodo,
+})
+
+if (error) {
+  // TypeScript knows error is ApiError
+  console.error(`API Error ${error.status}: ${error.message}`)
+}
+```
+
+## Cache Management
+
+### 1. Prefetching Strategies
+```typescript
+//  GOOD: Router-based prefetching
+const TodoList = () => {
+  const queryClient = useQueryClient()
+  
+  const handleTodoHover = (todoId: string) => {
+    queryClient.prefetchQuery({
+      queryKey: todoKeys.detail(todoId),
+      queryFn: () => fetchTodo(todoId),
+      staleTime: 10 * 1000, // Consider fresh for 10s
+    })
+  }
+
+  return (
+    <div>
+      {todos.map(todo => (
+        <div 
+          key={todo.id}
+          onMouseEnter={() => handleTodoHover(todo.id)}
+        >
+          {todo.title}
+        </div>
+      ))}
+    </div>
+  )
+}
+```
+
+### 2. Cache Seeding
+```typescript
+//  GOOD: Seed cache from list data
+const { data: todos } = useQuery({
+  queryKey: todoKeys.lists(),
+  queryFn: fetchTodos,
+  onSuccess: (data) => {
+    // Seed individual todo cache entries
+    data.forEach(todo => {
+      queryClient.setQueryData(todoKeys.detail(todo.id), todo)
+    })
+  },
+})
+```
+
+## Integration Patterns
+
+### 1. Next.js Integration
+```typescript
+//  GOOD: SSR/SSG with hydration
+// pages/todos.tsx
+export async function getServerSideProps() {
+  const queryClient = new QueryClient()
+  
+  await queryClient.prefetchQuery({
+    queryKey: todoKeys.lists(),
+    queryFn: fetchTodos,
+  })
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  }
+}
+
+const TodosPage = () => {
+  // This query will use the prefetched data
+  const { data } = useQuery({
+    queryKey: todoKeys.lists(),
+    queryFn: fetchTodos,
+  })
+
+  return <TodoList todos={data} />
+}
+```
+
+### 2. Custom Hooks Pattern
+```typescript
+//  GOOD: Encapsulate query logic in custom hooks
+export const useTodo = (id: string) => {
+  return useQuery({
+    queryKey: todoKeys.detail(id),
+    queryFn: () => fetchTodo(id),
+    enabled: !!id,
+  })
+}
+
+export const useTodos = (filters: TodoFilters = {}) => {
+  return useQuery({
+    queryKey: todoKeys.list(filters),
+    queryFn: () => fetchTodos(filters),
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+export const useCreateTodo = () => {
+  const queryClient = useQueryClient()
+  
+  return useMutation({
+    mutationFn: createTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: todoKeys.lists() })
+    },
+  })
+}
+```
+
+## Common Anti-Patterns to Avoid
+
+### 1. Don't Overuse React Query
+```typescript
+// L BAD: Using React Query for client state
+const [count, setCount] = useState(0)
+const { data } = useQuery({
+  queryKey: ['count'],
+  queryFn: () => Promise.resolve(count), // Don't do this
+})
+
+//  GOOD: Use useState for client state
+const [count, setCount] = useState(0)
+```
+
+### 2. Don't Ignore Dependency Arrays
+```typescript
+// L BAD: Missing dependencies
+const { data } = useQuery({
+  queryKey: ['todos'], // Missing userId dependency
+  queryFn: () => fetchTodos(userId),
+})
+
+//  GOOD: Include all dependencies
+const { data } = useQuery({
+  queryKey: ['todos', userId],
+  queryFn: () => fetchTodos(userId),
+  enabled: !!userId,
+})
+```
+
+### 3. Don't Fetch in Effects
+```typescript
+// L BAD: Manual fetching in useEffect
+useEffect(() => {
+  fetchTodos().then(setTodos)
+}, [])
+
+//  GOOD: Let React Query handle it
+const { data: todos } = useQuery({
+  queryKey: todoKeys.lists(),
+  queryFn: fetchTodos,
+})
+```
+
+## Testing Patterns
+
+### 1. Mock Query Client
+```typescript
+//  GOOD: Testing with mock query client
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  })
+  return ({ children }) => (
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  )
+}
+
+test('displays todos', async () => {
+  render(<TodoList />, { wrapper: createWrapper() })
+  await waitFor(() => {
+    expect(screen.getByText('Buy milk')).toBeInTheDocument()
+  })
+})
+```
+
+### 2. Test Mutations
+```typescript
+//  GOOD: Testing mutations with mock server
+test('creates todo', async () => {
+  const user = userEvent.setup()
+  render(<CreateTodoForm />, { wrapper: createWrapper() })
+  
+  await user.type(screen.getByLabelText('Title'), 'New todo')
+  await user.click(screen.getByRole('button', { name: 'Create' }))
+  
+  await waitFor(() => {
+    expect(screen.getByText('Todo created successfully')).toBeInTheDocument()
+  })
+})
+```
+
+## Performance Monitoring
+
+### 1. DevTools Integration
+```typescript
+//  GOOD: Enable React Query DevTools in development
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <MyApp />
+      {process.env.NODE_ENV === 'development' && (
+        <ReactQueryDevtools initialIsOpen={false} />
+      )}
+    </QueryClientProvider>
+  )
+}
+```
+
+### 2. Query Metrics
+```typescript
+//  GOOD: Monitor query performance
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      onSuccess: (data, query) => {
+        // Log successful queries for analytics
+        analytics.track('query_success', {
+          queryKey: query.queryKey,
+          dataSize: JSON.stringify(data).length,
+        })
+      },
+    },
+  },
+})
+```
