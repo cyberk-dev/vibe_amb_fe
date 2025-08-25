@@ -33,8 +33,7 @@ yarn-error.log*
 # dotenv environment variable files
 **/.env
 **/.env.*
-**/.env.sample
-**/.env.*.sample
+!.env.example
 
 # Private individual user cursor rules
 .cursor/rules/_*.mdc
