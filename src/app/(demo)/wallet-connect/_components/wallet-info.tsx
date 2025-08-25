@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
+import { stringUtils } from "@/libs/helpers";
 
 interface WalletInfoProps {
   address: string;
@@ -15,9 +16,6 @@ export const WalletInfo = ({
   balance, 
   onDisconnect 
 }: WalletInfoProps) => {
-  const formatAddress = (addr: string) => {
-    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
-  };
 
   return (
     <div className="p-6 border rounded-lg bg-card">
@@ -27,7 +25,7 @@ export const WalletInfo = ({
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-sm font-medium text-muted-foreground">Address</label>
-            <p className="font-mono text-sm">{formatAddress(address)}</p>
+            <p className="font-mono text-sm">{stringUtils.truncateMiddle(address, 6, 4)}</p>
           </div>
           
           <div>

@@ -1,15 +1,16 @@
-'use client';
+"use client";
 
-import { useAppKit } from '@reown/appkit/react';
-import { useAccount, useBalance, useDisconnect } from 'wagmi';
-import { ConnectButton } from './connect-button';
-import { WalletInfo } from './wallet-info';
+import { useAppKit } from "@reown/appkit/react";
+import { useAccount, useBalance, useDisconnect } from "wagmi";
+import { ConnectButton } from "./connect-button";
+import { WalletInfo } from "./wallet-info";
+import { numberUtils } from "@/libs/helpers";
 
 export const WalletConnectContainer = () => {
   const { open } = useAppKit();
   const { address, isConnected, chain } = useAccount();
   const { disconnect } = useDisconnect();
-  
+
   const { data: balance } = useBalance({
     address: address,
     query: {
@@ -29,17 +30,16 @@ export const WalletConnectContainer = () => {
     return (
       <WalletInfo
         address={address}
-        chainName={chain?.name || 'Unknown'}
-        balance={balance ? Number(balance.formatted).toFixed(4) : '0.0000'}
+        chainName={chain?.name || "Unknown"}
+        balance={
+          balance
+            ? numberUtils.formatNumber(Number(balance.formatted), 0, 4)
+            : "0.0000"
+        }
         onDisconnect={handleDisconnect}
       />
     );
   }
 
-  return (
-    <ConnectButton 
-      onConnect={handleConnect} 
-      isConnecting={false}
-    />
-  );
+  return <ConnectButton onConnect={handleConnect} isConnecting={false} />;
 };
