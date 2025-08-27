@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Trash2, Edit, User, Calendar } from "lucide-react";
-import { type Post } from "@/lib/api/posts";
+import { type Post } from "@/api/posts";
 
 interface PostCardProps {
   post: Post;

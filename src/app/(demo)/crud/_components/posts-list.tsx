@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { type Post } from "@/lib/api/posts";
+import { type Post } from "@/api/posts";
 
 interface PostsListProps {
   posts?: Post[];

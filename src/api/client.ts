@@ -1,7 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "sonner";
 import { useAuthStore } from "../stores/auth-store";
-import { ErrorReporter, addBreadcrumb } from "../error-reporting";
 
 // Create axios instance
 export const apiClient = axios.create({
@@ -29,31 +28,14 @@ const mockRefreshToken = async (refreshToken: string) => {
 apiClient.interceptors.request.use(
   (config) => {
     const { tokens } = useAuthStore.getState();
-
     if (tokens?.accessToken) {
       config.headers.Authorization = `Bearer ${tokens.accessToken}`;
     }
-
-    // Add breadcrumb for API request
-    addBreadcrumb(
-      `API Request: ${config.method?.toUpperCase()} ${config.url}`,
-      "http",
-      "info",
-      {
-        url: config.url,
-        method: config.method,
-        hasAuth: !!tokens?.accessToken,
-      },
-    );
-
     return config;
   },
   (error) => {
-    ErrorReporter.reportError(error, {
-      tags: { section: "api_request_interceptor" },
-    });
     return Promise.reject(error);
-  },
+  }
 );
 
 // Response interceptor - Handle token refresh
@@ -120,52 +102,18 @@ apiClient.interceptors.response.use(
     // Handle other errors and log them
     if (error.response?.status === 403) {
       toast.error("You do not have permission to perform this action");
-    } else if (error.response?.status >= 500) {
+    } else if (error.response?.status! >= 500) {
       toast.error("Server error. Please try again later.");
-      // Log server errors
-      ErrorReporter.reportError(error, {
-        tags: {
-          section: "api_server_error",
-          status_code: error.response.status.toString(),
-        },
-        extra: {
-          url: error.config?.url,
-          method: error.config?.method,
-          responseData: error.response.data,
-        },
-      });
     } else if (!error.response) {
       toast.error("Network error. Please check your connection.");
-      // Log network errors
-      ErrorReporter.reportError(error, {
-        tags: { section: "api_network_error" },
-        extra: {
-          url: error.config?.url,
-          method: error.config?.method,
-        },
-      });
     } else if (error.response?.status >= 400 && error.response?.status < 500) {
       // Log client errors (except 401 which is handled above)
       if (error.response.status !== 401) {
-        ErrorReporter.reportWarning(
-          `API Client Error: ${error.response.status}`,
-          {
-            tags: {
-              section: "api_client_error",
-              status_code: error.response.status.toString(),
-            },
-            extra: {
-              url: error.config?.url,
-              method: error.config?.method,
-              responseData: error.response.data,
-            },
-          },
-        );
       }
     }
 
     return Promise.reject(error);
-  },
+  }
 );
 
 export default apiClient;

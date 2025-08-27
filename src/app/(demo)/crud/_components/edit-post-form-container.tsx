@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useUpdatePost } from "@/hooks/use-posts";
-import { type Post } from "@/lib/api/posts";
+import { type Post } from "@/api/posts";
 import { toast } from "sonner";
 import { EditPostForm } from "./edit-post-form";
 

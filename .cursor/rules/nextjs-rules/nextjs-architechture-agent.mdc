@@ -123,9 +123,9 @@ src/
 - **Type Imports**: Use `import type` for type-only imports
 
 ### API Organization
-- **Client Configuration**: Centralize Axios configuration in `lib/api/client.ts`
-- **Endpoint Definitions**: Organize API endpoints in `lib/api/endpoints/`
-- **Type Safety**: Define API types in `lib/api/types.ts`
+- **Client Configuration**: Centralize Axios configuration in `api/client.ts`
+- **Endpoint Definitions**: Organize API endpoints in `api/endpoints/`
+- **Type Safety**: Define API types in `api/types.ts`
 - **Error Handling**: Implement consistent error handling across API calls
 
 ### Environment & Configuration
