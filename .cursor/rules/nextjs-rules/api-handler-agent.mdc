@@ -1,0 +1,594 @@
+---
+description: "Defines standards for API integration patterns in Next.js applications. Container components must not directly interact with APIs - they should communicate via React Query hook wrappers. Apply when implementing data fetching, API calls, or server state management."
+globs: "**/{hooks,api,components}/**/*.{ts,tsx}"
+alwaysApply: true
+---
+
+# API Handler Integration Standards
+
+## Core Principles
+
+- **Hook-Based API Integration**: All API calls must be wrapped in React Query hooks
+- **Container Isolation**: Container components never directly call APIs - they use hooks only
+- **Centralized API Logic**: Business logic and error handling encapsulated in custom hooks
+- **Type Safety**: Full TypeScript integration for API requests and responses
+- **React Query First**: Follow React Query best practices for all server state management
+
+## Architecture Pattern
+
+### ✅ Correct Implementation Flow
+
+```
+API Endpoint → React Query Hook → Container Component → Presentation Component
+```
+
+### Component Responsibility Chain
+
+1. **API Layer** (`src/api/`) - Raw API functions and types
+2. **Hook Layer** (`src/hooks/`) - React Query wrappers with business logic
+3. **Container Layer** - Orchestrates hooks and manages component state
+4. **Presentation Layer** - Pure UI components receiving data via props
+
+## Implementation Rules
+
+### 1. API Layer Structure
+
+```typescript
+// ✅ GOOD: src/api/users.ts - Pure API functions
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export interface CreateUserData {
+  name: string;
+  email: string;
+}
+
+export const fetchUsers = async (): Promise<User[]> => {
+  const response = await apiClient.get<User[]>('/users');
+  return response.data;
+};
+
+export const fetchUser = async (id: string): Promise<User> => {
+  const response = await apiClient.get<User>(`/users/${id}`);
+  return response.data;
+};
+
+export const createUser = async (data: CreateUserData): Promise<User> => {
+  const response = await apiClient.post<User>('/users', data);
+  return response.data;
+};
+
+export const updateUser = async (id: string, data: Partial<User>): Promise<User> => {
+  const response = await apiClient.put<User>(`/users/${id}`, data);
+  return response.data;
+};
+
+export const deleteUser = async (id: string): Promise<void> => {
+  await apiClient.delete(`/users/${id}`);
+};
+```
+
+### 2. React Query Hook Wrappers
+
+```typescript
+// ✅ GOOD: src/hooks/use-users-query.ts
+import { useQuery } from '@tanstack/react-query';
+import { fetchUsers, fetchUser } from '@/api/users';
+
+// Query key factory
+export const userKeys = {
+  all: ['users'] as const,
+  lists: () => [...userKeys.all, 'list'] as const,
+  list: (filters: UserFilters) => [...userKeys.lists(), filters] as const,
+  details: () => [...userKeys.all, 'detail'] as const,
+  detail: (id: string) => [...userKeys.details(), id] as const,
+};
+
+// Users list query hook
+export const useUsersQuery = (filters: UserFilters = {}) => {
+  return useQuery({
+    queryKey: userKeys.list(filters),
+    queryFn: () => fetchUsers(filters),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    select: (data) => {
+      // Transform data if needed
+      return data.filter(user => user.name.length > 0);
+    },
+  });
+};
+
+// Single user query hook
+export const useUserQuery = (id: string) => {
+  return useQuery({
+    queryKey: userKeys.detail(id),
+    queryFn: () => fetchUser(id),
+    enabled: !!id,
+    staleTime: 10 * 60 * 1000, // 10 minutes for individual users
+  });
+};
+```
+
+```typescript
+// ✅ GOOD: src/hooks/use-users-mutation.ts
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { createUser, updateUser, deleteUser } from '@/api/users';
+import { userKeys } from './use-users-query';
+
+// Create user mutation
+export const useCreateUserMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createUser,
+    onSuccess: (newUser) => {
+      // Update cache with new user
+      queryClient.setQueryData(userKeys.detail(newUser.id), newUser);
+      
+      // Invalidate lists to include new user
+      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
+      
+      toast.success('User created successfully');
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to create user: ${error.message}`);
+    },
+  });
+};
+
+// Update user mutation with optimistic updates
+export const useUpdateUserMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<User> }) => 
+      updateUser(id, data),
+    onMutate: async ({ id, data }) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: userKeys.detail(id) });
+
+      // Snapshot previous value
+      const previousUser = queryClient.getQueryData(userKeys.detail(id));
+
+      // Optimistically update
+      queryClient.setQueryData(userKeys.detail(id), (old: User) => ({
+        ...old,
+        ...data,
+      }));
+
+      return { previousUser, id };
+    },
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousUser) {
+        queryClient.setQueryData(
+          userKeys.detail(context.id), 
+          context.previousUser
+        );
+      }
+      toast.error(`Failed to update user: ${error.message}`);
+    },
+    onSuccess: (updatedUser) => {
+      toast.success('User updated successfully');
+    },
+    onSettled: (data, error, variables) => {
+      // Always refetch after error or success
+      queryClient.invalidateQueries({ 
+        queryKey: userKeys.detail(variables.id) 
+      });
+    },
+  });
+};
+
+// Delete user mutation
+export const useDeleteUserMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteUser,
+    onSuccess: (_, deletedId) => {
+      // Remove user from cache
+      queryClient.removeQueries({ queryKey: userKeys.detail(deletedId) });
+      
+      // Update lists to remove deleted user
+      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
+      
+      toast.success('User deleted successfully');
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to delete user: ${error.message}`);
+    },
+  });
+};
+```
+
+### 3. Container Component Integration
+
+```typescript
+// ✅ GOOD: Container component using hooks only
+import { useUsersQuery, useCreateUserMutation, useDeleteUserMutation } from '@/hooks/use-users-query';
+import { UserList } from './user-list';
+
+interface UserListContainerProps {
+  filters: UserFilters;
+}
+
+export const UserListContainer = ({ filters }: UserListContainerProps) => {
+  // Use React Query hooks - NO direct API calls
+  const { 
+    data: users, 
+    isLoading, 
+    error, 
+    refetch 
+  } = useUsersQuery(filters);
+
+  const createUserMutation = useCreateUserMutation();
+  const deleteUserMutation = useDeleteUserMutation();
+
+  const handleCreateUser = async (userData: CreateUserData) => {
+    try {
+      await createUserMutation.mutateAsync(userData);
+      // Success handled in mutation hook
+    } catch (error) {
+      // Error handled in mutation hook
+    }
+  };
+
+  const handleDeleteUser = (id: string) => {
+    if (window.confirm('Are you sure you want to delete this user?')) {
+      deleteUserMutation.mutate(id);
+    }
+  };
+
+  const handleRefresh = () => {
+    refetch();
+  };
+
+  // Handle loading state
+  if (isLoading && !users) {
+    return <div>Loading users...</div>;
+  }
+
+  // Handle error state
+  if (error) {
+    return (
+      <div>
+        <p>Error loading users: {error.message}</p>
+        <button onClick={handleRefresh}>Retry</button>
+      </div>
+    );
+  }
+
+  return (
+    <UserList
+      users={users || []}
+      isCreating={createUserMutation.isPending}
+      isDeleting={deleteUserMutation.isPending}
+      onCreateUser={handleCreateUser}
+      onDeleteUser={handleDeleteUser}
+      onRefresh={handleRefresh}
+    />
+  );
+};
+```
+
+### ❌ Wrong Implementation - Direct API Calls
+
+```typescript
+// ❌ BAD: Container component making direct API calls
+import { useState, useEffect } from 'react';
+import { fetchUsers, createUser } from '@/api/users'; // Direct import - WRONG
+
+export const UserListContainer = () => {
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // ❌ WRONG: Direct API call in useEffect
+  useEffect(() => {
+    const loadUsers = async () => {
+      setIsLoading(true);
+      try {
+        const userData = await fetchUsers(); // Direct API call - WRONG
+        setUsers(userData);
+      } catch (err) {
+        setError(err);
+      }
+      setIsLoading(false);
+    };
+
+    loadUsers();
+  }, []);
+
+  // ❌ WRONG: Direct API call in event handler
+  const handleCreateUser = async (userData) => {
+    try {
+      const newUser = await createUser(userData); // Direct API call - WRONG
+      setUsers(prev => [...prev, newUser]);
+    } catch (err) {
+      setError(err);
+    }
+  };
+
+  return (
+    <UserList 
+      users={users} 
+      onCreateUser={handleCreateUser}
+    />
+  );
+};
+```
+
+## Advanced Patterns
+
+### 1. Conditional and Dependent Queries
+
+```typescript
+// ✅ GOOD: Dependent queries with proper enablement
+export const useUserProjectsQuery = (userId: string | undefined) => {
+  return useQuery({
+    queryKey: ['projects', userId],
+    queryFn: () => fetchUserProjects(userId!),
+    enabled: !!userId, // Only run when userId exists
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+// Container using dependent queries
+export const UserDashboardContainer = ({ userId }: { userId: string }) => {
+  const userQuery = useUserQuery(userId);
+  const projectsQuery = useUserProjectsQuery(userQuery.data?.id);
+
+  // Handle loading states appropriately
+  if (userQuery.isLoading) return <div>Loading user...</div>;
+  if (userQuery.error) return <div>Error loading user</div>;
+  
+  return (
+    <UserDashboard
+      user={userQuery.data}
+      projects={projectsQuery.data}
+      isLoadingProjects={projectsQuery.isLoading}
+      projectsError={projectsQuery.error}
+    />
+  );
+};
+```
+
+### 2. Error Boundary Integration
+
+```typescript
+// ✅ GOOD: Error boundaries with React Query
+import { QueryErrorResetBoundary } from '@tanstack/react-query';
+import { ErrorBoundary } from 'react-error-boundary';
+
+export const UserListWithErrorHandling = () => {
+  return (
+    <QueryErrorResetBoundary>
+      {({ reset }) => (
+        <ErrorBoundary
+          onReset={reset}
+          fallbackRender={({ error, resetErrorBoundary }) => (
+            <div>
+              <p>Something went wrong: {error.message}</p>
+              <button onClick={resetErrorBoundary}>Try again</button>
+            </div>
+          )}
+        >
+          <UserListContainer />
+        </ErrorBoundary>
+      )}
+    </QueryErrorResetBoundary>
+  );
+};
+```
+
+### 3. Prefetching Strategies
+
+```typescript
+// ✅ GOOD: Prefetching in container components
+export const UserListContainer = () => {
+  const queryClient = useQueryClient();
+  const { data: users } = useUsersQuery();
+
+  const handleUserHover = (userId: string) => {
+    // Prefetch user details on hover
+    queryClient.prefetchQuery({
+      queryKey: userKeys.detail(userId),
+      queryFn: () => fetchUser(userId),
+      staleTime: 10 * 1000, // Consider fresh for 10s
+    });
+  };
+
+  return (
+    <UserList
+      users={users || []}
+      onUserHover={handleUserHover}
+    />
+  );
+};
+```
+
+## File Organization
+
+### Hook File Naming Conventions
+
+```plaintext
+src/hooks/
+├── use-users-query.ts         # User queries
+├── use-users-mutation.ts      # User mutations  
+├── use-posts-query.ts         # Post queries
+├── use-posts-mutation.ts      # Post mutations
+└── index.ts                   # Export barrel
+```
+
+### Query vs Mutation Separation
+
+- **Queries** (`use-{entity}-query.ts`): Read operations, data fetching
+- **Mutations** (`use-{entity}-mutation.ts`): Write operations, data modifications
+
+## Integration with Next.js
+
+### SSR/SSG Pattern
+
+```typescript
+// ✅ GOOD: Server-side rendering with React Query
+// app/users/page.tsx
+import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query';
+import { fetchUsers } from '@/api/users';
+import { userKeys } from '@/hooks/use-users-query';
+import { UserListContainer } from '@/components/users/user-list-container';
+
+export default async function UsersPage() {
+  const queryClient = new QueryClient();
+
+  // Prefetch on server
+  await queryClient.prefetchQuery({
+    queryKey: userKeys.lists(),
+    queryFn: fetchUsers,
+  });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <UserListContainer />
+    </HydrationBoundary>
+  );
+}
+```
+
+## Testing Strategy
+
+### 1. Hook Testing
+
+```typescript
+// ✅ GOOD: Testing React Query hooks
+import { renderHook, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useUsersQuery } from './use-users-query';
+
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
+
+  return ({ children }) => (
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  );
+};
+
+test('should fetch users', async () => {
+  const { result } = renderHook(() => useUsersQuery(), {
+    wrapper: createWrapper(),
+  });
+
+  await waitFor(() => {
+    expect(result.current.data).toEqual([
+      { id: '1', name: 'John Doe', email: 'john@example.com' },
+    ]);
+  });
+});
+```
+
+### 2. Container Component Testing
+
+```typescript
+// ✅ GOOD: Testing container components with mocked hooks
+import { render, screen } from '@testing-library/react';
+import { vi } from 'vitest';
+import { UserListContainer } from './user-list-container';
+
+// Mock the hooks
+vi.mock('@/hooks/use-users-query', () => ({
+  useUsersQuery: vi.fn(),
+  useCreateUserMutation: vi.fn(),
+  useDeleteUserMutation: vi.fn(),
+}));
+
+test('displays users from hook', () => {
+  const mockUsers = [
+    { id: '1', name: 'John Doe', email: 'john@example.com' },
+  ];
+
+  useUsersQuery.mockReturnValue({
+    data: mockUsers,
+    isLoading: false,
+    error: null,
+  });
+
+  render(<UserListContainer />);
+  
+  expect(screen.getByText('John Doe')).toBeInTheDocument();
+});
+```
+
+## Critical Anti-Patterns
+
+### ❌ Do Not Make Direct API Calls in Components
+
+```typescript
+// ❌ WRONG: Direct API calls in components
+const UserProfile = ({ userId }) => {
+  const [user, setUser] = useState(null);
+  
+  useEffect(() => {
+    fetchUser(userId).then(setUser); // Don't do this
+  }, [userId]);
+  
+  return <div>{user?.name}</div>;
+};
+```
+
+### ❌ Do Not Mix API Logic with Component Logic
+
+```typescript
+// ❌ WRONG: API error handling in components
+const UserList = () => {
+  const [users, setUsers] = useState([]);
+  const [error, setError] = useState(null);
+  
+  const loadUsers = async () => {
+    try {
+      const data = await fetchUsers(); // Don't do this
+      setUsers(data);
+    } catch (err) {
+      setError(err); // Handle errors in hooks instead
+    }
+  };
+};
+```
+
+### ❌ Do Not Skip React Query for Server State
+
+```typescript
+// ❌ WRONG: Managing server state with useState
+const [users, setUsers] = useState([]);
+const [isLoading, setIsLoading] = useState(false);
+
+// Use React Query hooks instead
+const { data: users, isLoading } = useUsersQuery();
+```
+
+## Performance Considerations
+
+1. **Stale Time Configuration**: Set appropriate `staleTime` based on data freshness requirements
+2. **Query Key Dependencies**: Include all relevant parameters in query keys
+3. **Selective Data Subscription**: Use `select` option to minimize re-renders
+4. **Optimistic Updates**: Implement optimistic updates for better UX
+5. **Prefetching**: Use strategic prefetching for anticipated user actions
+
+## Summary
+
+- ✅ **Always** wrap API calls in React Query hooks
+- ✅ **Always** use hooks in container components, never direct API calls
+- ✅ **Always** handle loading and error states in hooks
+- ✅ **Always** use proper TypeScript types for API data
+- ❌ **Never** make direct API calls from components
+- ❌ **Never** manage server state with `useState`
+- ❌ **Never** skip proper error handling in hooks
