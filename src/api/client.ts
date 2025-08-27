@@ -1,6 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "sonner";
-import { useAuthStore } from "../stores/auth-store";
 
 // Create axios instance
 export const apiClient = axios.create({
@@ -11,25 +10,24 @@ export const apiClient = axios.create({
   },
 });
 
-// Mock refresh token function
-const mockRefreshToken = async (refreshToken: string) => {
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  // Mock successful refresh
-  return {
-    accessToken: `new-access-token-${Date.now()}`,
-    refreshToken: `new-refresh-token-${Date.now()}`,
-    expiresAt: Date.now() + 60 * 60 * 1000, // 1 hour from now
-  };
+// Simplified approach - we'll handle auth in the components instead
+let currentTokens: { accessToken: string; refreshToken: string; expiresAt: number } | null = null;
+let authLogoutCallback: (() => void) | null = null;
+
+export const setAuthTokens = (tokens: typeof currentTokens) => {
+  currentTokens = tokens;
+};
+
+export const setLogoutCallback = (callback: () => void) => {
+  authLogoutCallback = callback;
 };
 
 // Request interceptor - Add auth token to requests
 apiClient.interceptors.request.use(
   (config) => {
-    const { tokens } = useAuthStore.getState();
-    if (tokens?.accessToken) {
-      config.headers.Authorization = `Bearer ${tokens.accessToken}`;
+    if (currentTokens?.accessToken) {
+      config.headers.Authorization = `Bearer ${currentTokens.accessToken}`;
     }
     return config;
   },
@@ -38,78 +36,21 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Response interceptor - Handle token refresh
-let isRefreshing = false;
-let refreshSubscribers: Array<(token: string) => void> = [];
-
-const onTokenRefreshed = (newToken: string) => {
-  refreshSubscribers.forEach((callback) => callback(newToken));
-  refreshSubscribers = [];
-};
-
-const addRefreshSubscriber = (callback: (token: string) => void) => {
-  refreshSubscribers.push(callback);
-};
-
+// Response interceptor - Handle errors
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config as any;
-
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      const { tokens, setTokens, logout, isTokenExpired } =
-        useAuthStore.getState();
-
-      if (!tokens || !tokens.refreshToken) {
-        logout();
-        toast.error("Please login again");
-        return Promise.reject(error);
+    if (error.response?.status === 401) {
+      if (authLogoutCallback) {
+        authLogoutCallback();
       }
-
-      if (isTokenExpired()) {
-        originalRequest._retry = true;
-
-        if (isRefreshing) {
-          // If already refreshing, wait for the new token
-          return new Promise((resolve) => {
-            addRefreshSubscriber((newToken: string) => {
-              originalRequest.headers.Authorization = `Bearer ${newToken}`;
-              resolve(apiClient(originalRequest));
-            });
-          });
-        }
-
-        isRefreshing = true;
-
-        try {
-          const newTokens = await mockRefreshToken(tokens.refreshToken);
-          setTokens(newTokens);
-          onTokenRefreshed(newTokens.accessToken);
-
-          // Retry the original request with new token
-          originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`;
-          return apiClient(originalRequest);
-        } catch (refreshError) {
-          logout();
-          toast.error("Session expired. Please login again.");
-          return Promise.reject(refreshError);
-        } finally {
-          isRefreshing = false;
-        }
-      }
-    }
-
-    // Handle other errors and log them
-    if (error.response?.status === 403) {
+      toast.error("Please login again");
+    } else if (error.response?.status === 403) {
       toast.error("You do not have permission to perform this action");
-    } else if (error.response?.status! >= 500) {
+    } else if (error.response && error.response.status >= 500) {
       toast.error("Server error. Please try again later.");
     } else if (!error.response) {
       toast.error("Network error. Please check your connection.");
-    } else if (error.response?.status >= 400 && error.response?.status < 500) {
-      // Log client errors (except 401 which is handled above)
-      if (error.response.status !== 401) {
-      }
     }
 
     return Promise.reject(error);

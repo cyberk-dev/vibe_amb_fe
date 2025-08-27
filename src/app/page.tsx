@@ -28,6 +28,11 @@ export default function Home() {
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <Button asChild>
+            <a href="/auth">
+              🔐 Auth Demo
+            </a>
+          </Button>
+          <Button asChild>
             <a href="/wallet-connect">
               🔗 Wallet Demo
             </a>
