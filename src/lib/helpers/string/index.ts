@@ -12,7 +12,7 @@ export function capitalize(str: string): string {
 export function truncate(
   str: string,
   length: number,
-  ellipsis = "..."
+  ellipsis = "...",
 ): string {
   if (!str) return str;
   if (str.length <= length) return str;
@@ -26,7 +26,7 @@ export function truncateMiddle(
   str: string,
   startChars = 4,
   endChars = 4,
-  ellipsis = "..."
+  ellipsis = "...",
 ): string {
   if (!str) return str;
   if (str.length <= startChars + endChars) return str;
@@ -112,7 +112,7 @@ export function getInitials(name: string, maxInitials = 2): string {
 export function maskString(
   str: string,
   visibleChars = 4,
-  maskChar = "*"
+  maskChar = "*",
 ): string {
   if (!str) return str;
   if (str.length <= visibleChars) return str;
@@ -180,4 +180,12 @@ export const normalizeTxnError = (error: any) => {
     return "User denied transaction signature";
   }
   return error.message;
+};
+
+export const truncateWalletAddress = (
+  walletAddress: string,
+  start = 6,
+  end = 5,
+) => {
+  return truncateMiddle(walletAddress, start, end, "...");
 };

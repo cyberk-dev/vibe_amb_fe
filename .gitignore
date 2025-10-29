@@ -39,3 +39,6 @@ yarn-error.log*
 .cursor/rules/_*.mdc
 CLAUDE.md
 .serena/*
+
+*storybook.log
+storybook-static
