@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { WalletProvider } from "@/lib/providers/wallet-provider";
 import { QueryProvider } from "@/lib/providers/query-provider";
+import { ThemeProvider } from "@/lib/providers/theme-provider";
 import { GlobalConfirmDialogContainer } from "@/components/global-confirm-dialog-container";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -27,17 +28,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <QueryProvider>
-          <WalletProvider>
-            {children}
-            <GlobalConfirmDialogContainer />
-            <Toaster />
-          </WalletProvider>
-        </QueryProvider>
+        <ThemeProvider>
+          <QueryProvider>
+            <WalletProvider>
+              {children}
+              <GlobalConfirmDialogContainer />
+              <Toaster />
+            </WalletProvider>
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
