@@ -1,0 +1,35 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build outputs
+.next
+out
+dist
+build
+.turbo
+storybook-static
+
+# Cache
+.cache
+*.tsbuildinfo
+
+# Env files
+.env*
+
+# Misc
+.DS_Store
+*.log
+*.log.*
+coverage
+.vscode
+.idea
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Public assets
+public
