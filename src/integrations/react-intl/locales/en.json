@@ -1,0 +1,31 @@
+{
+  "connect_wallet": "Connect Wallet",
+  "language": {
+    "selector": {
+      "label": "Language",
+      "english": "English",
+      "vietnamese": "Vietnamese"
+    }
+  },
+  "wallet_connect": {
+    "page": {
+      "badge": "Demo",
+      "title": "Wallet Connection",
+      "description": "Seamlessly connect your Web3 wallet using AppKit and Wagmi",
+      "features_title": "Features Included",
+      "features_description": "Everything you need for wallet integration",
+      "feature_1": "AppKit modal for wallet selection",
+      "feature_2": "Support for multiple chains (Ethereum, Arbitrum, Polygon)",
+      "feature_3": "Real-time balance display",
+      "feature_4": "Account and chain information",
+      "feature_5": "Disconnect functionality"
+    },
+    "wallet_info": {
+      "connected": "Wallet Connected",
+      "address_label": "Address",
+      "network_label": "Network",
+      "balance_label": "Balance",
+      "disconnect_button": "Disconnect Wallet"
+    }
+  }
+}

@@ -8,7 +8,9 @@ import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Image from "next/image";
 import { ThemeToggleButton } from "@/components/theme-toggle-button";
+import { LanguageToggleButton } from "@/components/language-toggle-button";
 import { useTheme } from "next-themes";
+import { ConnectWalletButton } from "@/components/connect-wallet-button";
 
 interface MenuItem {
   text: string;
@@ -47,11 +49,7 @@ export const MenuItem: React.FC<MenuItem> = ({ text, icon, href }) => {
   );
 };
 
-export const Header: React.FC<HeaderProps> = ({
-  logo,
-  menuItems = MENU_ITEMS,
-  className,
-}) => {
+export const Header: React.FC<HeaderProps> = ({ logo, menuItems = MENU_ITEMS, className }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const isMobile = useIsMobile();
   const { theme } = useTheme();
@@ -102,10 +100,7 @@ export const Header: React.FC<HeaderProps> = ({
                     height={48}
                     src="/icons/cyberk-logo.svg"
                     alt="cyberk-logo"
-                    className={cn(
-                      "transition-all duration-200",
-                      theme === "dark" && "brightness-0 invert",
-                    )}
+                    className={cn("transition-all duration-200", theme === "dark" && "brightness-0 invert")}
                   />
                 </Link>
               )}
@@ -114,23 +109,19 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Desktop Navigation */}
             <nav className="hidden md:flex md:items-center md:gap-6">
               {menuItems.map((item) => (
-                <MenuItem
-                  key={item.href}
-                  text={item.text}
-                  icon={item?.icon}
-                  href={item.href}
-                />
+                <MenuItem key={item.href} text={item.text} icon={item?.icon} href={item.href} />
               ))}
             </nav>
 
-            {/* Theme Toggle - Desktop */}
-            <div className="hidden md:flex md:ml-auto">
+            {/* Desktop Right Side: Theme, Language, Connect Wallet */}
+            <div className="hidden md:flex md:ml-auto md:items-center md:gap-2">
+              <LanguageToggleButton />
               <ThemeToggleButton />
+              <ConnectWalletButton />
             </div>
 
             {/* Mobile Menu Toggle */}
-            <div className="flex md:hidden gap-2 ml-auto">
-              <ThemeToggleButton />
+            <div className="flex md:hidden ml-auto">
               <Button
                 variant="ghost"
                 size="icon"
@@ -138,11 +129,7 @@ export const Header: React.FC<HeaderProps> = ({
                 aria-label="Toggle menu"
                 aria-expanded={isMenuOpen}
               >
-                {isMenuOpen ? (
-                  <X className="size-6" />
-                ) : (
-                  <Menu className="size-6" />
-                )}
+                {isMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
               </Button>
             </div>
           </div>
@@ -156,9 +143,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div
             className={cn(
               "fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300 md:hidden",
-              isMenuOpen
-                ? "opacity-100 pointer-events-auto"
-                : "opacity-0 pointer-events-none",
+              isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
             )}
             onClick={() => setIsMenuOpen(false)}
             aria-hidden="true"
@@ -172,16 +157,30 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           >
             <div className="container mx-auto px-4 py-6">
-              <div className="flex flex-col space-y-1">
-                {menuItems.map((item) => (
-                  <div key={item.href} onClick={handleMenuItemClick}>
-                    <MenuItem
-                      text={item.text}
-                      icon={item.icon}
-                      href={item.href}
-                    />
+              <div className="flex flex-col space-y-4">
+                {/* Menu Items */}
+                <div className="flex flex-col space-y-1">
+                  {menuItems.map((item) => (
+                    <div key={item.href} onClick={handleMenuItemClick}>
+                      <MenuItem text={item.text} icon={item.icon} href={item.href} />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Divider */}
+                <div className="border-t" />
+
+                {/* Connect Wallet, Theme & Language Toggle */}
+                <div className="flex flex-col space-y-3">
+                  <ConnectWalletButton isFullWidth />
+                  <div className="flex items-center justify-between px-3 py-2">
+                    <span className="text-sm font-medium">Settings</span>
+                    <div className="flex gap-2">
+                      <LanguageToggleButton />
+                      <ThemeToggleButton />
+                    </div>
                   </div>
-                ))}
+                </div>
               </div>
             </div>
           </nav>

@@ -1,0 +1,31 @@
+{
+  "connect_wallet": "Kết nối Ví",
+  "language": {
+    "selector": {
+      "label": "Ngôn ngữ",
+      "english": "Tiếng Anh",
+      "vietnamese": "Tiếng Việt"
+    }
+  },
+  "wallet_connect": {
+    "page": {
+      "badge": "Demo",
+      "title": "Kết nối Ví",
+      "description": "Kết nối ví Web3 của bạn một cách liền mạch với AppKit và Wagmi",
+      "features_title": "Tính năng bao gồm",
+      "features_description": "Mọi thứ bạn cần để tích hợp ví",
+      "feature_1": "Giao diện AppKit để chọn ví",
+      "feature_2": "Hỗ trợ nhiều chuỗi (Ethereum, Arbitrum, Polygon)",
+      "feature_3": "Hiển thị số dư thời gian thực",
+      "feature_4": "Thông tin tài khoản và chuỗi",
+      "feature_5": "Chức năng ngắt kết nối"
+    },
+    "wallet_info": {
+      "connected": "Ví đã kết nối",
+      "address_label": "Địa chỉ",
+      "network_label": "Mạng",
+      "balance_label": "Số dư",
+      "disconnect_button": "Ngắt kết nối Ví"
+    }
+  }
+}
