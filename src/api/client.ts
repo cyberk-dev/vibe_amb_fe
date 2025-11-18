@@ -1,60 +1,72 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
-import { toast } from "sonner";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import { tokenRefreshService } from "@/api/token-refresh";
+import { getAccessToken } from "@/stores/auth-store";
 
 // Create axios instance
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.example.com",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "https://api.example.com",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-
-// Simplified approach - we'll handle auth in the components instead
-let currentTokens: { accessToken: string; refreshToken: string; expiresAt: number } | null = null;
-let authLogoutCallback: (() => void) | null = null;
-
-export const setAuthTokens = (tokens: typeof currentTokens) => {
-  currentTokens = tokens;
-};
-
-export const setLogoutCallback = (callback: () => void) => {
-  authLogoutCallback = callback;
-};
-
-// Request interceptor - Add auth token to requests
 apiClient.interceptors.request.use(
-  (config) => {
-    if (currentTokens?.accessToken) {
-      config.headers.Authorization = `Bearer ${currentTokens.accessToken}`;
+  async (config) => {
+    // Check if token is expiring soon and refresh proactively
+    try {
+      const refreshResult = await tokenRefreshService.refreshTokenIfExpiringSoon(5);
+      if (refreshResult) {
+        console.log("Token refreshed proactively before request");
+      }
+    } catch (error) {
+      console.warn("Proactive token refresh failed:", error);
+    }
+
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Response interceptor - Handle errors
 apiClient.interceptors.response.use(
-  (response: AxiosResponse) => response,
-  async (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      if (authLogoutCallback) {
-        authLogoutCallback();
+  function (response) {
+    return response;
+  },
+  async function (error: AxiosError) {
+    const originalRequest = error.config as AxiosRequestConfig & {
+      _retry?: boolean;
+    };
+    const res = error.response;
+
+    if (res?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const tokenResponse = await tokenRefreshService.refreshToken();
+
+        if (tokenResponse.jwt && originalRequest.headers) {
+          originalRequest.headers.Authorization = `Bearer ${tokenResponse.jwt}`;
+        }
+
+        return apiClient(originalRequest);
+      } catch (refreshError) {
+        console.error("Token refresh failed:", refreshError);
+        return Promise.reject(error);
       }
-      toast.error("Please login again");
-    } else if (error.response?.status === 403) {
-      toast.error("You do not have permission to perform this action");
-    } else if (error.response && error.response.status >= 500) {
-      toast.error("Server error. Please try again later.");
-    } else if (!error.response) {
-      toast.error("Network error. Please check your connection.");
     }
 
+    if (res?.status) {
+      console.error("Looks like there was a problem. Status Code: " + res.status);
+    }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default apiClient;

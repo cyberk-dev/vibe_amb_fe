@@ -1,5 +1,6 @@
 const requiredEnvVars = {
   NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
+  NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
 } as const;
 
 const validateEnvVars = () => {
@@ -9,8 +10,7 @@ const validateEnvVars = () => {
 
   if (missing.length > 0) {
     throw new Error(
-      `Missing required environment variables: ${missing.join(', ')}\n` +
-      'Please check your .env.local file.'
+      `Missing required environment variables: ${missing.join(", ")}\n` + "Please check your .env.local file.",
     );
   }
 };

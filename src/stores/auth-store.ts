@@ -1,106 +1,90 @@
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist } from "zustand/middleware";
+import { createControlledStore } from "@/stores/controlled-store";
+import { setIsAuthStoreHydrated } from "@/stores/hydration.store";
 
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  address?: string;
-  ensName?: string;
-  isConnected?: boolean;
+const AUTH_STORE_KEY = "auth-storage";
+
+interface AuthProps {
+  accessToken?: string;
+  refreshToken?: string;
+  user?: {
+    profileId?: number | null;
+  };
 }
 
-export interface AuthTokens {
-  accessToken: string;
-  refreshToken: string;
-  expiresAt: number;
-}
+interface AuthState extends AuthProps {}
+// define the initial state
+const initialState: AuthProps = {
+  accessToken: undefined,
+  refreshToken: undefined,
+  user: undefined,
+};
 
-interface AuthActions {
-  login: (user: User, tokens: AuthTokens) => void;
-  logout: () => void;
-  updateProfile: (profile: Partial<User>) => void;
-  checkTokenExpiry: () => void;
-  setLoading: (loading: boolean) => void;
-}
-
-interface AuthState {
-  user: User | null;
-  tokens: AuthTokens | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  actions: AuthActions;
-}
-
-// Private store - NOT exported
-const useAuthStore = create<AuthState>()(
+// create store
+const useAuthStore = createControlledStore<AuthState>()(
   persist(
-    (set, get) => ({
-      user: null,
-      tokens: null,
-      isLoading: false,
-      isAuthenticated: false,
-      actions: {
-        login: (user, tokens) => {
-          set({
-            user,
-            tokens,
-            isAuthenticated: true,
-            isLoading: false,
-          });
-        },
-        logout: () => {
-          set({
-            user: null,
-            tokens: null,
-            isAuthenticated: false,
-            isLoading: false,
-          });
-        },
-        updateProfile: (profile) => {
-          const currentUser = get().user;
-          if (currentUser) {
-            set({ user: { ...currentUser, ...profile } });
-          }
-        },
-        checkTokenExpiry: () => {
-          const { tokens } = get();
-          if (!tokens || Date.now() >= tokens.expiresAt) {
-            set({
-              user: null,
-              tokens: null,
-              isAuthenticated: false,
-            });
-          }
-        },
-        setLoading: (loading) => {
-          set({ isLoading: loading });
-        },
-      },
+    () => ({
+      ...initialState,
     }),
     {
-      name: "auth-storage",
-      storage: createJSONStorage(() => localStorage),
+      name: AUTH_STORE_KEY, // unique name for localStorage key
       partialize: (state) => ({
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
         user: state.user,
-        tokens: state.tokens,
-        isAuthenticated: state.isAuthenticated,
-        // actions excluded from persistence
-      }),
-      version: 1,
-      migrate: (persistedState: unknown, version: number) => {
-        if (version === 0) {
-          // Handle migration from v0 to v1 if needed
-        }
-        return persistedState as AuthState;
+      }), // persist tokens and user profile
+      onRehydrateStorage: () => {
+        // optional
+        return (_, error) => {
+          if (error) {
+            console.error("an error happened during hydration", error);
+          } else {
+            setIsAuthStoreHydrated(true);
+          }
+        };
       },
     },
   ),
 );
 
-// Exported atomic selectors
+export const useAccessToken = () => useAuthStore((state) => state.accessToken);
+export const useRefreshToken = () => useAuthStore((state) => state.refreshToken);
 export const useUser = () => useAuthStore((state) => state.user);
-export const useIsAuthenticated = () => useAuthStore((state) => state.isAuthenticated);
-export const useIsLoading = () => useAuthStore((state) => state.isLoading);
-export const useAuthTokens = () => useAuthStore((state) => state.tokens);
-export const useAuthActions = () => useAuthStore((state) => state.actions);
+
+export const resetAuthStore = () => useAuthStore.setState(initialState);
+
+export const signOut = () => {
+  resetAuthStore();
+};
+
+export const setAccessToken = (accessToken: string) =>
+  useAuthStore.setState({
+    accessToken,
+  });
+
+export const setRefreshToken = (refreshToken: string) =>
+  useAuthStore.setState({
+    refreshToken,
+  });
+
+export const setTokens = (accessToken: string, refreshToken: string) =>
+  useAuthStore.setState({
+    accessToken,
+    refreshToken,
+  });
+
+export const setUser = (user: { profileId?: number | null }) =>
+  useAuthStore.setState({
+    user,
+  });
+
+export const setAuthData = (auth: AuthProps) => useAuthStore.setState(auth);
+export const setTokensAndProfile = (accessToken: string, refreshToken: string) =>
+  useAuthStore.setState({
+    accessToken,
+    refreshToken,
+  });
+
+export const getAccessToken = () => useAuthStore.getState().accessToken;
+export const getRefreshToken = () => useAuthStore.getState().refreshToken;
+export const getUser = () => useAuthStore.getState().user;
