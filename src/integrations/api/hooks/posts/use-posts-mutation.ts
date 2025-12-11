@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postsApi, type Post } from "@/api/posts";
+import { postsApi, type Post } from "@/integrations/api/services/posts";
 import { postKeys } from "./use-posts-query";
 
 // Mutation hooks
@@ -25,10 +25,7 @@ export const useCreatePostMutation = () => {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
-        queryClient.setQueryData(postKeys.lists(), [
-          optimisticPost,
-          ...previousPosts,
-        ]);
+        queryClient.setQueryData(postKeys.lists(), [optimisticPost, ...previousPosts]);
       }
 
       return { previousPosts };
@@ -54,13 +51,8 @@ export const useUpdatePostMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
-      id,
-      data,
-    }: {
-      id: string;
-      data: { title: string; content: string };
-    }) => postsApi.updatePost(id, data),
+    mutationFn: ({ id, data }: { id: string; data: { title: string; content: string } }) =>
+      postsApi.updatePost(id, data),
     onMutate: async ({ id, data: updatedData }) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: postKeys.detail(id) });
@@ -83,9 +75,7 @@ export const useUpdatePostMutation = () => {
       // Optimistically update posts list
       if (previousPosts) {
         const updatedPosts = previousPosts.map((post) =>
-          post.id === id
-            ? { ...post, ...updatedData, updatedAt: new Date().toISOString() }
-            : post
+          post.id === id ? { ...post, ...updatedData, updatedAt: new Date().toISOString() } : post,
         );
         queryClient.setQueryData(postKeys.lists(), updatedPosts);
       }

@@ -1,4 +1,4 @@
-import { apiClient } from "./client";
+import { apiClient } from "@/integrations/api/core/client";
 
 interface TokenResponse {
   jwt?: string | null | undefined;

@@ -1,4 +1,4 @@
-import { login } from "@/api/auth";
+import { login } from "@/integrations/api/services/auth";
 import { setAccessToken, setRefreshToken, setUser } from "@/stores/auth-store";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";

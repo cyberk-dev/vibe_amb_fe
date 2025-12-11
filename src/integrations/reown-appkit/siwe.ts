@@ -6,7 +6,7 @@ import {
   formatMessage,
 } from "@reown/appkit-siwe";
 import { getAccessToken, getUser, setTokens, setUser, signOut } from "@/stores/auth-store";
-import { getNonce, initProfile, signout as signoutApi, verifySiwe } from "@/api/auth";
+import { getNonce, initProfile, signout as signoutApi, verifySiwe } from "@/integrations/api";
 import { mainnet } from "@reown/appkit/networks";
 
 const defaultChainId = mainnet.id;

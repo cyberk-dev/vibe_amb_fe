@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
-import { tokenRefreshService } from "@/api/token-refresh";
+import { tokenRefreshService } from "@/integrations/api/core/token-refresh";
 import { getAccessToken } from "@/stores/auth-store";
 
 // Create axios instance

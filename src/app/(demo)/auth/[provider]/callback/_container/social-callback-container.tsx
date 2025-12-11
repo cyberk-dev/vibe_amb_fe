@@ -5,7 +5,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Typography3XL, TypographyBase } from "@/components/typography";
-import { authCallback, initProfile } from "@/api/auth";
+import { authCallback, initProfile } from "@/integrations/api";
 import { setAuthData, signOut } from "@/stores/auth-store";
 import { Card, CardContent } from "@/components/ui/card";
 

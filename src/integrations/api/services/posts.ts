@@ -50,10 +50,7 @@ export const mockGetPost = async (id: string): Promise<Post> => {
   return post;
 };
 
-export const mockCreatePost = async (data: {
-  title: string;
-  content: string;
-}): Promise<Post> => {
+export const mockCreatePost = async (data: { title: string; content: string }): Promise<Post> => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const newPost: Post = {
@@ -69,10 +66,7 @@ export const mockCreatePost = async (data: {
   return newPost;
 };
 
-export const mockUpdatePost = async (
-  id: string,
-  data: { title: string; content: string },
-): Promise<Post> => {
+export const mockUpdatePost = async (id: string, data: { title: string; content: string }): Promise<Post> => {
   await new Promise((resolve) => setTimeout(resolve, 800));
 
   const postIndex = mockPosts.findIndex((p) => p.id === id);

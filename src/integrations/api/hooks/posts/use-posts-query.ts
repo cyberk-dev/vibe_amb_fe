@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { postsApi } from "@/api/posts";
+import { postsApi } from "@/integrations/api/services/posts";
 
 // Query key factories following TkDodo's pattern
 export const postKeys = {
