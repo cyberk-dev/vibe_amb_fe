@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -8,6 +8,8 @@ import { Typography2XL, TypographyBase } from "@/components/typography";
 import { LoginContainer } from "./login-container";
 import { RegisterContainer } from "./register-container";
 import { useRouter } from "next/navigation";
+import { ConnectWalletButton } from "@/components/connect-wallet-button";
+import { setSiweLoginCallback } from "@/integrations/reown-appkit/siwe";
 
 type AuthMode = "login" | "register";
 
@@ -26,6 +28,16 @@ export const AuthFormContainer = () => {
   const loginCallback = () => {
     router.push("/auth/protected-page");
   };
+
+  // Set SIWE login callback when component mounts
+  useEffect(() => {
+    setSiweLoginCallback(loginCallback);
+
+    // Cleanup: remove callback when component unmounts
+    return () => {
+      setSiweLoginCallback(null);
+    };
+  }, [router]);
 
   return (
     <div className="w-full max-w-md mx-auto">
@@ -46,11 +58,7 @@ export const AuthFormContainer = () => {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {authMode === "login" ? (
-            <LoginContainer onSuccess={loginCallback} />
-          ) : (
-            <RegisterContainer onSuccess={registerCallback} />
-          )}
+          <ConnectWalletButton isFullWidth />
 
           <div className="relative">
             <Separator />
@@ -60,6 +68,12 @@ export const AuthFormContainer = () => {
               </span>
             </div>
           </div>
+
+          {authMode === "login" ? (
+            <LoginContainer onSuccess={loginCallback} />
+          ) : (
+            <RegisterContainer onSuccess={registerCallback} />
+          )}
 
           <div className="text-center space-y-2">
             <TypographyBase className="text-muted-foreground">

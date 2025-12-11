@@ -5,6 +5,7 @@ interface TokenResponse {
   jwtRefresh?: string | null | undefined;
   user?: {
     profileId?: null | number;
+    walletAddress?: string | null;
   };
 }
 
@@ -30,6 +31,11 @@ interface NonceResponse {
 export interface RegisterRequest {
   username: string;
   password: string;
+}
+
+export interface VerifySiweRequest {
+  message: string;
+  signature: string;
 }
 
 export const login = async (credentials: LoginRequest): Promise<LoginResponse> => {
@@ -62,7 +68,20 @@ export const initProfile = async (accessToken?: string) => {
   return response.data;
 };
 
-export const getNonce = async () => {
-  const response = await apiClient.get<NonceResponse>("/profile/me/nonce");
-  return response.data;
+export const getNonce = async (address?: string): Promise<NonceResponse> => {
+  const res = await apiClient.get("/auth/siwe/nonce", {
+    params: {
+      address,
+    },
+  });
+  return res.data;
+};
+
+export const verifySiwe = async (data: VerifySiweRequest): Promise<TokenResponse> => {
+  const res = await apiClient.post("/auth/siwe", data);
+  return res.data;
+};
+
+export const signout = async (): Promise<void> => {
+  await apiClient.post("/auth/signout");
 };

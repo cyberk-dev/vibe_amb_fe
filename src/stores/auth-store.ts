@@ -9,32 +9,31 @@ interface AuthProps {
   refreshToken?: string;
   user?: {
     profileId?: number | null;
+    walletAddress?: string | null;
   };
 }
 
 interface AuthState extends AuthProps {}
-// define the initial state
+
 const initialState: AuthProps = {
   accessToken: undefined,
   refreshToken: undefined,
   user: undefined,
 };
 
-// create store
 const useAuthStore = createControlledStore<AuthState>()(
   persist(
     () => ({
       ...initialState,
     }),
     {
-      name: AUTH_STORE_KEY, // unique name for localStorage key
+      name: AUTH_STORE_KEY,
       partialize: (state) => ({
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
         user: state.user,
-      }), // persist tokens and user profile
+      }),
       onRehydrateStorage: () => {
-        // optional
         return (_, error) => {
           if (error) {
             console.error("an error happened during hydration", error);
@@ -73,12 +72,13 @@ export const setTokens = (accessToken: string, refreshToken: string) =>
     refreshToken,
   });
 
-export const setUser = (user: { profileId?: number | null }) =>
+export const setUser = (user: { profileId?: number | null; walletAddress?: string | null }) =>
   useAuthStore.setState({
     user,
   });
 
 export const setAuthData = (auth: AuthProps) => useAuthStore.setState(auth);
+
 export const setTokensAndProfile = (accessToken: string, refreshToken: string) =>
   useAuthStore.setState({
     accessToken,

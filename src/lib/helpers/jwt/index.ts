@@ -42,7 +42,7 @@ export function getTokenExpirationTime(token: string): number | null {
 export function isTokenExpiringSoon(token: string, thresholdMinutes: number = 5): boolean {
   const payload = decodeJWT(token);
   if (!payload || !payload.exp) {
-    return true;
+    return false; // If we can't decode the token, don't try to refresh it
   }
 
   const now = Math.floor(Date.now() / 1000);

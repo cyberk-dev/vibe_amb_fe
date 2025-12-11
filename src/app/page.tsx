@@ -11,6 +11,10 @@ export default function Home() {
           <Button asChild>
             <a href="/wallet-connect">🔗 Wallet Demo</a>
           </Button>
+
+          <Button asChild>
+            <a href="/auth">🔗 Auth</a>
+          </Button>
         </div>
       </main>
       <Footer />
