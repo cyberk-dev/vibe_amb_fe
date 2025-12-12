@@ -1,9 +1,13 @@
 import { apiClient } from "@/integrations/api/core/client";
+import { UserRole } from "@/lib/types/auth.types";
 
 interface TokenResponse {
   jwt?: string | null | undefined;
   jwtRefresh?: string | null | undefined;
   user?: {
+    id?: number;
+    username?: string;
+    role?: UserRole;
     profileId?: null | number;
     walletAddress?: string | null;
   };
@@ -20,7 +24,7 @@ export interface LoginResponse {
   user: {
     id: number;
     username: string;
-    role: string;
+    role: UserRole;
     profileId: number;
   };
 }

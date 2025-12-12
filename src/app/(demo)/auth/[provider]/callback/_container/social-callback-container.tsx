@@ -94,7 +94,7 @@ const SocialCallbackContainer = () => {
         await new Promise((resolve) => setTimeout(resolve, 500));
 
         // Redirect to protected page
-        router.push("/auth/protected-page");
+        router.push("/protected");
       } catch (error) {
         console.error(`${provider} OAuth callback error:`, error);
         signOut();

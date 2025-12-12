@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Menu, MonitorPlay, Newspaper, X } from "lucide-react";
+import { Menu, MonitorPlay, Newspaper, X, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -11,6 +11,8 @@ import { ThemeToggleButton } from "@/components/theme-toggle-button";
 import { LanguageToggleButton } from "@/components/language-toggle-button";
 import { useTheme } from "next-themes";
 import { ConnectWalletButton } from "@/components/connect-wallet-button";
+import { useMinimumRole } from "@/hooks/use-minimum-role";
+import { UserRole } from "@/lib/types/auth.types";
 
 interface MenuItem {
   text: string;
@@ -53,6 +55,22 @@ export const Header: React.FC<HeaderProps> = ({ logo, menuItems = MENU_ITEMS, cl
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const isMobile = useIsMobile();
   const { theme } = useTheme();
+  const isAdmin = useMinimumRole(UserRole.ADMIN);
+
+  // Add admin panel link if user is admin or superadmin
+  const allMenuItems = React.useMemo(() => {
+    if (isAdmin) {
+      return [
+        ...menuItems,
+        {
+          text: "Admin Panel",
+          icon: <Shield />,
+          href: "/admin",
+        },
+      ];
+    }
+    return menuItems;
+  }, [menuItems, isAdmin]);
 
   // Close menu when switching from mobile to desktop
   React.useEffect(() => {
@@ -108,7 +126,7 @@ export const Header: React.FC<HeaderProps> = ({ logo, menuItems = MENU_ITEMS, cl
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex md:items-center md:gap-6">
-              {menuItems.map((item) => (
+              {allMenuItems.map((item) => (
                 <MenuItem key={item.href} text={item.text} icon={item?.icon} href={item.href} />
               ))}
             </nav>
@@ -160,7 +178,7 @@ export const Header: React.FC<HeaderProps> = ({ logo, menuItems = MENU_ITEMS, cl
               <div className="flex flex-col space-y-4">
                 {/* Menu Items */}
                 <div className="flex flex-col space-y-1">
-                  {menuItems.map((item) => (
+                  {allMenuItems.map((item) => (
                     <div key={item.href} onClick={handleMenuItemClick}>
                       <MenuItem text={item.text} icon={item.icon} href={item.href} />
                     </div>

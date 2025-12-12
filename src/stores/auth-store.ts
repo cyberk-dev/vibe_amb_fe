@@ -1,16 +1,14 @@
 import { persist } from "zustand/middleware";
 import { createControlledStore } from "@/stores/controlled-store";
 import { setIsAuthStoreHydrated } from "@/stores/hydration.store";
+import { AuthUser } from "@/lib/types/auth.types";
 
 const AUTH_STORE_KEY = "auth-storage";
 
 interface AuthProps {
   accessToken?: string;
   refreshToken?: string;
-  user?: {
-    profileId?: number | null;
-    walletAddress?: string | null;
-  };
+  user?: AuthUser;
 }
 
 interface AuthState extends AuthProps {}
@@ -49,6 +47,7 @@ const useAuthStore = createControlledStore<AuthState>()(
 export const useAccessToken = () => useAuthStore((state) => state.accessToken);
 export const useRefreshToken = () => useAuthStore((state) => state.refreshToken);
 export const useUser = () => useAuthStore((state) => state.user);
+export const useUserRole = () => useAuthStore((state) => state.user?.role);
 
 export const resetAuthStore = () => useAuthStore.setState(initialState);
 
@@ -72,7 +71,7 @@ export const setTokens = (accessToken: string, refreshToken: string) =>
     refreshToken,
   });
 
-export const setUser = (user: { profileId?: number | null; walletAddress?: string | null }) =>
+export const setUser = (user: AuthUser) =>
   useAuthStore.setState({
     user,
   });

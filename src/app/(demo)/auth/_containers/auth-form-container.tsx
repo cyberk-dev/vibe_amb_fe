@@ -26,7 +26,7 @@ export const AuthFormContainer = () => {
   };
 
   const loginCallback = () => {
-    router.push("/auth/protected-page");
+    router.push("/protected");
   };
 
   // Set SIWE login callback when component mounts

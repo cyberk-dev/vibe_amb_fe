@@ -15,6 +15,18 @@ export default function Home() {
           <Button asChild>
             <a href="/auth">🔗 Auth</a>
           </Button>
+
+          <Button asChild>
+            <a href="/protected">🔐 Protected Dashboard</a>
+          </Button>
+
+          <Button asChild variant="outline">
+            <a href="/protected/admin">🛡️ Admin Panel</a>
+          </Button>
+
+          <Button asChild variant="outline">
+            <a href="/protected/rbac-demo">📋 RBAC Demo</a>
+          </Button>
         </div>
       </main>
       <Footer />
