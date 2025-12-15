@@ -9,6 +9,10 @@ export default function Home() {
       <main className="flex-1 flex flex-col gap-6 md:gap-8 container mx-auto items-start py-8 md:py-12 px-4 sm:px-6 lg:px-8">
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <Button asChild>
+            <a href="/todos">✅ Todo Management Demo</a>
+          </Button>
+
+          <Button asChild>
             <a href="/wallet-connect">🔗 Wallet Demo</a>
           </Button>
 

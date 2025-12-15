@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Web3AppProvider } from "@/providers/web3-app-provider";
 import { fonts } from "@/integrations/fonts";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 export const metadata: Metadata = {
   title: "Cyberk Nextjs Boilerplate",
@@ -40,7 +41,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${fonts.audiowide.variable} ${fonts.aeonik.variable} antialiased`}>
-        <Web3AppProvider>{children}</Web3AppProvider>
+        <Web3AppProvider>
+          <NuqsAdapter>{children}</NuqsAdapter>
+        </Web3AppProvider>
       </body>
     </html>
   );
