@@ -1,6 +1,6 @@
 import { SolanaAdapter } from "@reown/appkit-adapter-solana";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
-import { arbitrum, mainnet, polygon, solana, solanaDevnet, solanaTestnet } from "@reown/appkit/networks";
+import { arbitrum, mainnet, polygon, sepolia, solana, solanaDevnet, solanaTestnet } from "@reown/appkit/networks";
 import type { AppKitNetwork } from "@reown/appkit/networks";
 import { SolflareWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { siweConfig } from "./siwe";
@@ -24,13 +24,14 @@ export const wagmiAdapter = new WagmiAdapter({
     storage: cookieStorage,
   }),
   ssr: true,
-  networks: [mainnet, arbitrum, polygon],
+  networks: [mainnet, arbitrum, polygon, sepolia],
   projectId,
 });
 
 export const networks: [AppKitNetwork, ...Array<AppKitNetwork>] = [
   mainnet,
   arbitrum,
+  sepolia,
   solana,
   solanaTestnet,
   solanaDevnet,
@@ -40,7 +41,7 @@ export const appKitConfig = {
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
   projectId,
   networks: networks,
-  defaultNetwork: mainnet,
+  defaultNetwork: sepolia,
   metadata,
   features: {
     analytics: true,

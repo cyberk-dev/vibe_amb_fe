@@ -17,6 +17,10 @@ export default function Home() {
           </Button>
 
           <Button asChild>
+            <a href="/smart-contract">⚡ Smart Contract Demo</a>
+          </Button>
+
+          <Button asChild>
             <a href="/auth">🔗 Auth</a>
           </Button>
 
