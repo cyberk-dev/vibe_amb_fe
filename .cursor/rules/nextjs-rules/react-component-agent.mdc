@@ -10,9 +10,11 @@ You are a React component architect. Follow these strict patterns for component 
 
 ## Core Principles
 
-- **Separation of Concerns**: Presentation components handle UI display, container components handle business logic
-- **Pure Presentation**: Presentation components must be pure with no side effects or business logic
-- **Composition Over Props**: Use component composition to avoid prop drilling beyond 3 layers
+- **Container-Based Architecture**: Containers manage business logic via hooks and may include UI
+- **Flexible Separation**: Separate presentation components only when complexity justifies it
+- **React Hook Form**: Container components using forms should integrate React Hook Form directly
+- **Hook Integration**: All data fetching and mutations happen through React Query hooks
+- **Composition Over Props**: Use component composition to avoid excessive prop drilling
 - **Explicit Contracts**: Define clear TypeScript interfaces for all component props
 - **Single Responsibility**: Each component serves a single, well-defined purpose
 
@@ -29,16 +31,17 @@ You are a React component architect. Follow these strict patterns for component 
   - Use composition pattern for complex component trees
   - No direct API calls or business logic
 
-### Container Components  
-- **Purpose**: Business logic orchestration and data management
+### Container Components
+- **Purpose**: Business logic orchestration and UI composition
 - **File naming**: `{component-name}-container.tsx`
 - **Characteristics**:
-  - Handle all business logic and data fetching
-  - Manage application state via Zustand stores
-  - Inject custom hooks and external dependencies
-  - Orchestrate presentation components
+  - Handle all business logic and data fetching via hooks
+  - Manage application state via Zustand stores and React Query
+  - Use custom hooks for data and side effects
+  - **May include UI components** (forms, layouts) while managing their logic
   - Handle error states and loading states
-  - Manage side effects (API calls, localStorage, etc.)
+  - Manage side effects through React Query hooks and custom hooks
+  - Can be full-featured components that combine logic + UI, not just orchestrators
 
 ## Implementation Rules
 
@@ -78,53 +81,137 @@ export function UserProfile({
 }
 ```
 
-**Container Component Example:**
+**Container Component Example (with integrated UI):**
+```tsx
+// login-container.tsx
+"use client";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useLoginMutation } from "@/integrations/api";
+
+const loginSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
+
+interface LoginContainerProps {
+  onSuccess?: () => void;
+}
+
+export const LoginContainer = ({ onSuccess }: LoginContainerProps) => {
+  // Business logic: hooks for data fetching and mutations
+  const loginMutation = useLoginMutation();
+
+  // Form state management
+  const loginForm = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  // Business logic: form submission handler
+  const onLoginSubmit = async (data: LoginFormValues) => {
+    try {
+      await loginMutation.mutateAsync({ username: data.email, password: data.password });
+      loginForm.reset();
+      onSuccess?.();
+    } catch (error) {
+      console.error("Login error:", error);
+    }
+  };
+
+  // UI rendering integrated with business logic
+  return (
+    <div className="space-y-4">
+      <Form {...loginForm}>
+        <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
+          <FormField
+            control={loginForm.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your email" {...field} disabled={loginMutation.isPending} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={loginForm.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Enter your password"
+                    {...field}
+                    disabled={loginMutation.isPending}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button type="submit" className="w-full" disabled={loginMutation.isPending}>
+            {loginMutation.isPending ? "Logging in..." : "Log In"}
+          </Button>
+        </form>
+      </Form>
+    </div>
+  );
+};
+```
+
+**Alternative: Container with Separate Presentation (when UI is complex):**
 ```tsx
 // user-profile-container.tsx
-import { useUser } from '@/hooks/use-user';
-import { useNotifications } from '@/hooks/use-notifications';
-import { UserProfile } from './user-profile';
+import { useUserQuery, useUpdateUserMutation } from '@/integrations/api';
+import { toast } from 'sonner';
+import { UserProfileForm } from './_components/user-profile-form';
 
 interface UserProfileContainerProps {
   userId: string;
 }
 
-export function UserProfileContainer({ userId }: UserProfileContainerProps) {
-  const { user, updateUser, deleteUser } = useUser(userId);
-  const { showNotification } = useNotifications();
+export const UserProfileContainer = ({ userId }: UserProfileContainerProps) => {
+  const { data: user, isLoading } = useUserQuery(userId);
+  const updateUserMutation = useUpdateUserMutation();
 
-  const handleEdit = async () => {
-    // Business logic here
+  const handleSubmit = async (data: UserFormData) => {
     try {
-      await updateUser(userId, userData);
-      showNotification('User updated successfully');
+      await updateUserMutation.mutateAsync({ id: userId, ...data });
+      toast.success('Profile updated successfully');
     } catch (error) {
-      showNotification('Failed to update user', 'error');
+      toast.error('Failed to update profile');
     }
   };
 
-  const handleDelete = async () => {
-    // Business logic here
-    try {
-      await deleteUser(userId);
-      showNotification('User deleted successfully');
-    } catch (error) {
-      showNotification('Failed to delete user', 'error');
-    }
-  };
-
-  if (!user) return <div>Loading...</div>;
+  if (isLoading) return <div>Loading...</div>;
+  if (!user) return <div>User not found</div>;
 
   return (
-    <UserProfile
-      name={user.name}
-      email={user.email}
-      avatar={user.avatar}
-      onEdit={handleEdit}
-      onDelete={handleDelete}
+    <UserProfileForm
+      defaultValues={user}
+      onSubmit={handleSubmit}
+      isLoading={updateUserMutation.isPending}
     />
   );
-}
+};
 ```
 
 ### ❌ Wrong Implementation
@@ -233,51 +320,70 @@ packages/ui/src/components/
     └── index.ts               # Export barrel
 ```
 
-### Application Components (`apps/web/`)
+### Application Components
 ```plaintext
-apps/web/
-├── app/dashboard/
-│   ├── user-profile-container.tsx    # Container component
-│   └── page.tsx                      # Route handler
-├── components/
-│   ├── user-profile/
-│   │   ├── user-profile.tsx          # Presentation component
-│   │   └── index.ts                  # Export barrel
-│   └── shared/
-│       ├── navigation.tsx            # App-specific components
-│       └── index.ts
+src/
+├── app/(demo)/auth/
+│   ├── page.tsx                      # Page component
+│   ├── _components/                  # Optional presentation components
+│   │   ├── login-form.tsx            # Pure presentation form
+│   │   └── social-buttons.tsx        # Social login buttons
+│   └── _containers/                  # Container components
+│       ├── login-container.tsx       # Login with integrated UI
+│       ├── register-container.tsx    # Register with integrated UI
+│       └── auth-form-container.tsx   # Main auth form orchestrator
+├── components/                       # Global shared components
+│   ├── layout/
+│   │   ├── header.tsx                # Global header
+│   │   ├── footer.tsx                # Global footer
+│   │   └── protected-sidebar.tsx     # Protected area sidebar
+│   ├── auth/
+│   │   ├── require-role.tsx          # RBAC wrapper component
+│   │   └── show-for-role.tsx         # Conditional render by role
+│   └── ui/                           # shadcn/ui components
+│       ├── button.tsx
+│       ├── input.tsx
+│       └── form.tsx
 ```
 
 ## Critical Architecture Rules
 
-- **Component Purity**: Presentation components MUST NOT contain:
-  - Direct API calls or data fetching
-  - Business logic or calculations
-  - Side effects (useEffect with external dependencies)
-  - Store subscriptions or mutations
-  - Route navigation logic
+- **Container Patterns**: Container components can follow two patterns:
+  1. **Integrated**: Combine hooks + UI + logic in one component (common for forms, simple pages)
+  2. **Separated**: Use presentation components when UI complexity justifies separation
 
-- **Container Responsibility**: Container components MUST handle:
-  - All data fetching and API interactions
-  - Business logic and state transformations
-  - Error handling and loading states
-  - Store management and side effects
-  - Route navigation and URL state
+- **Component Purity** (when using separated presentation):
+  - Presentation components MUST NOT contain:
+    - Direct API calls or data fetching
+    - Business logic or calculations
+    - React Query hooks or mutations
+    - Store subscriptions or mutations
+    - Route navigation logic
 
-- **Prop Flow**: Data flows unidirectionally:
+- **Container Responsibility**: Container components MUST:
+  - Use React Query hooks for all data fetching and mutations
+  - Use React Hook Form for form state management
+  - Handle loading and error states
+  - Use Zustand stores for application state
+  - Manage route navigation
+  - Include UI when appropriate (forms, layouts)
+
+- **Prop Flow** (when using separated presentation):
   - Container → Presentation (data and callbacks)
   - Presentation → Container (via callback props)
-  - Maximum 3 component layers for prop passing
+  - Avoid excessive prop drilling (max 2-3 levels)
 
-- **Import Patterns**: 
-  - Use `@workspace/ui` for shared components
-  - Use relative imports for local components
-  - Containers import presentation components directly
+- **Import Patterns**:
+  - Use `@/` for all absolute imports
+  - Use relative imports for co-located components (`_components/`, `_containers/`)
+  - Import from `@/integrations/api` for React Query hooks
+  - Import from `@/components/ui` for shadcn/ui components
 
 - **State Management**:
-  - Local UI state (toggles, form inputs) → useState in presentation
-  - Application state → Zustand stores in containers
-  - Server state → React Query hooks in containers
+  - Form state → React Hook Form (in containers)
+  - Local UI state → useState (in containers or presentations)
+  - Application state → Zustand stores
+  - Server state → React Query hooks (only in containers)
 
 ## Testing Strategy
 

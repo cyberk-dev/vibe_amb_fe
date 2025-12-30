@@ -20,26 +20,30 @@ You are a NextJS developer following strict coding standards for this monorepo p
 ## Function and Variable Standards
 
 ### Function Definitions
-- **ALWAYS use arrow functions** instead of function declarations
-- Apply to components, utilities, and business logic functions
+- **PREFER arrow functions** for component definitions and most utilities
+- **Function declarations are acceptable** for utility functions in `lib/utils.ts` and similar utility modules
+- **Always use arrow functions** for React components
+- **Export named functions** directly when using arrow functions
 
 ```tsx
-// ✅ Correct - Arrow function
-const UserProfile = ({ name, email }: UserProfileProps) => {
+// ✅ Correct - Arrow function for React components (REQUIRED)
+export const UserProfile = ({ name, email }: UserProfileProps) => {
   return <div>{name}</div>;
 };
 
-const calculateTotal = (items: Item[]) => {
+// ✅ Correct - Arrow function for utilities (PREFERRED)
+export const calculateTotal = (items: Item[]) => {
   return items.reduce((sum, item) => sum + item.price, 0);
 };
 
-// ❌ Wrong - Function declaration
-function UserProfile({ name, email }: UserProfileProps) {
-  return <div>{name}</div>;
+// ✅ Also Correct - Function declaration for utility functions (ACCEPTABLE)
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
 
-function calculateTotal(items: Item[]) {
-  return items.reduce((sum, item) => sum + item.price, 0);
+// ❌ Wrong - Function declaration for React components
+export function UserProfile({ name, email }: UserProfileProps) {
+  return <div>{name}</div>;
 }
 ```
 

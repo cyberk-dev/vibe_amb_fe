@@ -1,6 +1,6 @@
 ---
-description: "Defines the high-level architectural patterns and best practices for this NextJS monorepo project, focusing on modularity, shared packages, and maintainability. Apply when designing new features, structuring applications, or refactoring existing code."
-globs: apps/web/**/*.*, packages/**/*.*
+description: "Defines the high-level architectural patterns and best practices for this NextJS project, focusing on modularity, integrations, and maintainability. Apply when designing new features, structuring applications, or refactoring existing code."
+globs: src/**/*.*
 alwaysApply: false
 ---
 
@@ -8,12 +8,12 @@ alwaysApply: false
 
 ## Core Principles
 
-- **Monorepo Architecture**: The application is built using Turbo monorepo with clear separation between apps and packages
-- **Shared Packages**: UI components and configurations are shared via global components to ensure consistency
-- **Type Safety**: Strict TypeScript enforcement across all applications and packages
-- **Component Architecture**: Clear separation between presentation and container components
+- **Single Application Architecture**: The application is a standalone Next.js project with clear separation of concerns
+- **Shared Components**: UI components are shared via the global `components/` directory to ensure consistency
+- **Type Safety**: Strict TypeScript enforcement across all files
+- **Component Architecture**: Container components handle business logic, presentation components handle UI
 - **State Management**: Layered state management with Zustand for application state and React Query for server state
-- **Co-location**: Page-specific resources (components, hooks, stores) are co-located with their pages
+- **Co-location**: Page-specific resources (components) are co-located with their pages in `_components/`, `_containers/` directories
 
 ## Technology Stack
 
@@ -53,61 +53,108 @@ alwaysApply: false
 ```plaintext
 src/
 ├── app/                        # Next.js App Router directory
-│   ├── (dashboard)/            # Route groups for layout organization
-│   │   ├── dashboard/          # Defines app pages in this directory
-│   │   │   ├── page.tsx        # Dashboard page component
-│   │   │   ├── layout.tsx      # Dashboard-specific layout
-│   │   │   ├── _components/    # Private components for dashboard page
-│   │   └── settings/
-│   │       ├── page.tsx        # Settings page component
-│   │       └── _components/    # Private components for settings page
-│   ├── api/                    # API routes (if using Next.js API)
+│   ├── (demo)/                 # Route groups for layout organization
+│   │   ├── auth/               # Auth pages
+│   │   │   ├── page.tsx        # Auth page component
+│   │   │   ├── _components/    # Private presentation components
+│   │   │   └── _containers/    # Private container components
+│   │   ├── protected/          # Protected pages
+│   │   │   ├── page.tsx        # Protected page component
+│   │   │   ├── layout.tsx      # Protected-specific layout
+│   │   │   ├── _components/    # Private presentation components
+│   │   │   └── _containers/    # Private container components
+│   │   └── todos/
+│   │       ├── page.tsx        # Todos page component
+│   │       ├── _components/    # Private presentation components
+│   │       └── _containers/    # Private container components
 │   ├── globals.css             # Global styles and Tailwind imports
 │   ├── layout.tsx              # Root layout component
-│   └── page.tsx                # Home page component
-├── components/                 # Global components for the app
-│   ├── layout/                 # Layout-related components
-│   ├── forms/                  # Reusable form components
-│   └── ui/                     # Shadcn UI components
+│   ├── page.tsx                # Home page component
+│   └── not-found.tsx           # 404 page
+├── components/                 # Global reusable components
+│   ├── layout/                 # Layout-related components (header, footer, sidebar)
+│   ├── auth/                   # Auth-related components (require-role, show-for-role)
+│   ├── typography/             # Typography components
+│   └── ui/                     # shadcn/ui components
 ├── hooks/                      # Global custom hooks
-│   ├── use-auth.ts             # Authentication hook
-│   ├── use-api-client.ts       # API client hook
-│   └── use-wallet.ts           # Wallet connection hook
+│   ├── auth/                   # Auth-related hooks
+│   │   └── use-google-login.ts
+│   ├── onchain/                # Blockchain-related hooks
+│   │   ├── evm/                # EVM blockchain hooks
+│   │   └── solana/             # Solana blockchain hooks
+│   ├── use-auth-protected.ts   # Authentication protection hook
+│   ├── use-confirm-dialog.ts   # Confirm dialog hook
+│   ├── use-has-role.ts         # Role checking hook
+│   └── use-wallet-info.ts      # Wallet information hook
+├── integrations/               # Third-party integrations
+│   ├── api/                    # API integration
+│   │   ├── core/               # API core functionality
+│   │   │   ├── client.ts       # Axios configuration
+│   │   │   └── token-refresh.ts# Token refresh logic
+│   │   ├── services/           # API service functions
+│   │   │   ├── auth.ts         # Auth API functions
+│   │   │   ├── user.ts         # User API functions
+│   │   │   └── todo.ts         # Todo API functions
+│   │   ├── hooks/              # React Query hooks
+│   │   │   ├── auth/           # Auth query/mutation hooks
+│   │   │   ├── user/           # User query/mutation hooks
+│   │   │   └── todo/           # Todo query/mutation hooks
+│   │   └── index.ts            # API exports
+│   ├── fonts/                  # Font configurations
+│   ├── react-intl/             # Internationalization
+│   │   ├── localization-provider.tsx
+│   │   └── messages.ts
+│   ├── reown-appkit/           # Wallet connection (Reown AppKit)
+│   │   ├── appkit-provider.tsx
+│   │   ├── index.ts
+│   │   └── siwe.ts
+│   ├── smartcontracts/         # Smart contract integrations
+│   │   ├── config.ts
+│   │   └── token-factory/
+│   └── tanstack-query/         # React Query configuration
+│       └── persist-query-provider.tsx
 ├── stores/                     # Global Zustand stores
 │   ├── auth-store.ts           # Authentication state
-│   ├── app-store.ts            # Application-wide state
-│   └── index.ts                # Store exports
+│   ├── controlled-store.ts     # Controlled store helper
+│   ├── global-dialog-store.ts  # Global dialog state
+│   ├── hydration.store.ts      # Hydration state
+│   └── locale-store.ts         # Locale state
+├── providers/                  # React context providers
+│   ├── theme-provider.tsx      # Theme provider
+│   └── web3-app-provider.tsx   # Web3 app provider
 ├── lib/                        # Application utilities and configurations
-│   ├── api/                    # API client and endpoint definitions
-│   │   ├── client.ts           # Axios configuration
-│   │   ├── endpoints/          # API endpoint definitions
-│   │   └── types.ts            # API type definitions
-│   ├── providers/              # React context providers
-│   │   ├── query-provider.tsx  # React Query provider
-│   │   ├── wallet-provider.tsx # Wallet provider
-│   │   └── theme-provider.tsx  # Theme provider
 │   ├── configs/                # Application configurations
-│   │   ├── env.ts              # Environment variables
-│   │   └── constants.ts        # Application constants
-│   ├── utils.ts                # Utility functions
-│   ├── wagmi.ts                # Wagmi configuration
+│   │   └── env.ts              # Environment variables validation
+│   ├── constants/              # Application constants
+│   │   └── roles.ts            # Role constants
+│   ├── helpers/                # Helper functions
+│   │   ├── datetime/           # Date/time helpers
+│   │   ├── jwt/                # JWT helpers
+│   │   ├── number/             # Number helpers
+│   │   ├── string/             # String helpers
+│   │   ├── validation/         # Validation helpers
+│   │   └── rbac.ts             # RBAC helpers
+│   ├── mocks/                  # Mock data for testing
+│   ├── types/                  # TypeScript type definitions
+│   │   ├── auth.types.ts       # Auth types
+│   │   └── todo.types.ts       # Todo types
+│   ├── utils.ts                # General utility functions (cn, etc.)
 │   └── form-schemas.ts         # Zod validation schemas
-└── types/                      # Global TypeScript type definitions
 ```
 
 ## Critical Architecture Rules
 
 ### Page Organization
 - **Server Components**: Use server components by default for pages (`app/{route}/page.tsx`)
-- **Client Components**: Mark with `"use client"` only when necessary for interactivity
-- **Co-location**: Keep page-specific resources in `_components/`, `_hooks/`, and `_stores/` directories
-- **Layouts**: Use `layout.tsx` files for shared layouts within route groups
+- **Client Components**: Mark with `"use client"` when using hooks, state, or browser APIs
+- **Co-location**: Keep page-specific resources in `_components/` and `_containers/` directories within the same route
+- **Layouts**: Use `layout.tsx` files for shared layouts within route groups (e.g., `(demo)/protected/layout.tsx`)
 
 ### Component Architecture
-- **Presentation Components**: Pure UI components in `components/` directories
-- **Container Components**: Business logic components that use hooks and stores
-- **Shared Components**: Reusable components in `@workspace/ui` package
-- **Page Components**: Minimal logic, primarily composition of other components
+- **Presentation Components**: Pure UI components in `_components/` directories (page-specific) or `components/` (global)
+- **Container Components**: Business logic components in `_containers/` directories that use hooks, stores, and orchestrate presentation components
+- **Shared Components**: Reusable components in global `components/` directory
+- **Page Components**: Next.js pages in `app/**/page.tsx` - compose containers and handle routing
 
 ### State Management Rules
 - **Local State**: Use `useState` for component-internal state
@@ -117,16 +164,16 @@ src/
 - **Form State**: Use React Hook Form with Zod schemas for form management
 
 ### Import Patterns
-- **Workspace Imports**: Use `@workspace/ui` for shared components
-- **Relative Imports**: Use relative imports for local components and utilities
-- **Absolute Imports**: Use `@/` alias for app-level imports
-- **Type Imports**: Use `import type` for type-only imports
+- **Absolute Imports**: Use `@/` alias for all app-level imports
+- **Relative Imports**: Use relative imports only within the same directory or subdirectories
+- **Type Imports**: Use `import type` for type-only imports to optimize bundle size
 
 ### API Organization
-- **Client Configuration**: Centralize Axios configuration in `api/client.ts`
-- **Endpoint Definitions**: Organize API endpoints in `api/endpoints/`
-- **Type Safety**: Define API types in `api/types.ts`
-- **Error Handling**: Implement consistent error handling across API calls
+- **Client Configuration**: Centralize Axios configuration in `integrations/api/core/client.ts`
+- **Service Functions**: Organize API functions in `integrations/api/services/` by domain (auth, user, todo, etc.)
+- **React Query Hooks**: Wrap all API calls in React Query hooks in `integrations/api/hooks/` organized by domain
+- **Type Safety**: Define API types co-located with service functions or in `lib/types/`
+- **Error Handling**: Handle errors in React Query hooks with `onError` callbacks using toast notifications
 
 ### Environment & Configuration
 - **Environment Variables**: Define in `.env.local` and validate in `lib/configs/env.ts`
@@ -141,21 +188,51 @@ src/
 
 ## Dependency Flow Rules
 
-- **Apps** depend on **Packages**: `apps/web` imports from `@workspace/ui`, etc.
-- **Packages** are independent: Shared packages should not depend on each other unnecessarily
-- **Page-specific** resources stay local: `_components/` don't import from global directories
-- **Global** resources are shared: `components/`, `hooks/`, `stores/` can be imported by pages
-- **No circular dependencies**: Enforce strict dependency direction
+- **Integrations** are independent: Each integration in `integrations/` is self-contained
+- **Page-specific** resources stay local: `_components/` and `_containers/` within a route don't import from other routes' private directories
+- **Global** resources are shared: `components/`, `hooks/`, `stores/`, `lib/` can be imported by any page or component
+- **Containers** depend on hooks: Container components import and use custom hooks and stores
+- **Presentations** receive props: Presentation components receive all data and callbacks via props
+- **No circular dependencies**: Enforce strict unidirectional dependency flow
 
 ## Example Feature Structure
 
 ### User Profile Feature
 ```plaintext
-apps/web/app/profile/
-├── page.tsx                    # Server component page entry
+src/app/(demo)/profile/
+├── page.tsx                    # Server or client component page entry
 ├── layout.tsx                  # Profile-specific layout (optional)
 ├── _components/
-│   ├── profile-form.tsx        # Presentation component
-│   ├── profile-container.tsx   # Container component with business logic
-│   └── avatar-upload.tsx       # Feature-specific component
+│   ├── profile-form.tsx        # Presentation component (form UI)
+│   ├── avatar-upload.tsx       # Presentation component (avatar UI)
+│   └── profile-stats.tsx       # Presentation component (stats display)
+└── _containers/
+    ├── profile-form-container.tsx      # Container with form logic
+    └── profile-dashboard-container.tsx # Container with dashboard logic
+```
+
+### Integration Structure Example
+```plaintext
+src/integrations/api/
+├── core/
+│   ├── client.ts               # Axios instance configuration
+│   └── token-refresh.ts        # Token refresh interceptor
+├── services/
+│   ├── auth.ts                 # Auth API functions (login, register, etc.)
+│   ├── user.ts                 # User API functions (getUsers, updateUser, etc.)
+│   └── todo.ts                 # Todo API functions (getTodos, createTodo, etc.)
+├── hooks/
+│   ├── auth/
+│   │   ├── use-login.mutation.ts       # Login mutation hook
+│   │   └── use-register.mutation.ts    # Register mutation hook
+│   ├── user/
+│   │   ├── use-users-query.ts          # Users query hook
+│   │   ├── use-promote-admin.mutation.ts
+│   │   └── use-demote-admin.mutation.ts
+│   └── todo/
+│       ├── use-todos-query.ts          # Todos query hook
+│       ├── use-create-todo-mutation.ts
+│       ├── use-update-todo-mutation.ts
+│       └── use-delete-todo-mutation.ts
+└── index.ts                    # Export all hooks for easy imports
 ```
