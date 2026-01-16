@@ -30,6 +30,7 @@ export const useCreateTodo = () => {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           profileId: "temp",
+          profile: null as any,
         };
         return {
           ...old,

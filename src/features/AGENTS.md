@@ -18,7 +18,7 @@
 ## When to Create a Feature
 
 ✅ **YES**: Action reused on 2+ pages, mutation with complex UI
-❌ **NO**: Action only on ONE page → `pages/{page}/api/`, read operation → `entities/`
+❌ **NO**: Action only on ONE page → `screens/{page}/api/`, read operation → `entities/`
 
 ## Import Rules
 
@@ -26,7 +26,7 @@
 features/ → entities, shared
 ```
 
-**Never import from:** `app/`, `pages/`, `widgets/`, other features
+**Never import from:** `app/`, `screens/`, `widgets/`, other features
 
 ## Structure Pattern
 
@@ -113,7 +113,7 @@ queryClient.invalidateQueries({ queryKey: postQueries.all() }); // Everything
 | Scenario                    | Location              | Reason               |
 | --------------------------- | --------------------- | -------------------- |
 | Create/Update/Delete action | `features/`           | Mutations → features |
-| Action used on 1 page only  | `pages/{page}/api/`   | No separate feature  |
+| Action used on 1 page only  | `screens/{page}/api/` | No separate feature  |
 | GET/Search operation        | `entities/{name}/api` | Read → entities      |
 
 ## Anti-Patterns

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateTodo } from "@/integrations/api/services/todo";
-import type { UpdateTodoInput, TodoListResponse } from "@/lib/types/todo.types";
+import type { UpdateTodoInput, TodoListResponse } from "@/entities/todo";
 import { toast } from "sonner";
 
 export const useUpdateTodoMutation = () => {

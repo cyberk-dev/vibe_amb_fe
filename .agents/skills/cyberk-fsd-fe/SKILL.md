@@ -1,6 +1,6 @@
 ---
 name: cyberk-fsd-fe
-description: Build Next.js applications using Feature Sliced Design (FSD) methodology. Organizes code into layers (app, pages, widgets, features, entities, shared) with clear separation - entities for data fetching/search, features for mutations. Uses React Query for data fetching, Zustand for state management. Use when creating Next.js apps with FSD architecture, organizing React code by business domain, or implementing scalable frontend structure.
+description: Build Next.js applications using Feature Sliced Design (FSD) methodology. Organizes code into layers (app, screens, widgets, features, entities, shared) with clear separation - entities for data fetching/search, features for mutations. Uses React Query for data fetching, Zustand for state management. Use when creating Next.js apps with FSD architecture, organizing React code by business domain, or implementing scalable frontend structure.
 ---
 
 # CyberK FSD Frontend
@@ -12,7 +12,7 @@ Next.js + Feature Sliced Design with React Query patterns.
 - Building Next.js applications with scalable architecture
 - Organizing React code by business domain
 - Implementing data fetching with React Query (queries + mutations)
-- Setting up FSD layer structure (app, pages, widgets, features, entities, shared)
+- Setting up FSD layer structure (app, screens, widgets, features, entities, shared)
 - Creating reusable entity components with query factories
 - Implementing mutation features with proper cache invalidation
 
@@ -22,13 +22,14 @@ Next.js + Feature Sliced Design with React Query patterns.
 - **Features**: MUTATIONS only + Mutation Hooks
 - **Import Rule**: Only import from layers below via their `index.ts` exports
 - **Types**: DTOs/entities generated from swagger → `ApiTypes` in `@/shared/api`
+- **Note**: We use `screens/` instead of `pages/` to avoid conflict with Next.js `pages/` directory
 
 ## Project Structure
 
 ```
 src/
 ├── app/                    # Next.js routing shell
-├── pages/                  # FSD page composition
+├── screens/                # FSD page composition (named screens to avoid Next.js conflict)
 ├── widgets/                # Large UI blocks
 ├── features/               # MUTATIONS (useMutation hooks)
 │   └── create-post/
@@ -57,8 +58,8 @@ src/
 ## Layer Import Rules
 
 ```
-app/      → pages, widgets, features, entities, shared (via index.ts)
-pages/    → widgets, features, entities, shared (via index.ts)
+app/      → screens, widgets, features, entities, shared (via index.ts)
+screens/  → widgets, features, entities, shared (via index.ts)
 widgets/  → features, entities, shared (via index.ts)
 features/ → entities, shared (via index.ts)
 entities/ → shared (via index.ts)
@@ -298,7 +299,7 @@ export function PostCard({ post, authorSlot, actionsSlot }: PostCardProps) {
   );
 }
 
-// Usage in pages/
+// Usage in screens/
 <PostCard
   post={post}
   authorSlot={<UserAvatar userId={post.authorId} />}
@@ -319,10 +320,10 @@ export function PostCard({ post, authorSlot, actionsSlot }: PostCardProps) {
 | User, Post, Product data        | `entities/{name}/`            | Business domain entity              |
 | GET/Search data + Query factory | `entities/{name}/api/`        | Read operations belong to entities  |
 | Create/Update/Delete action     | `features/{action}-{entity}/` | Mutations are features              |
-| Action used on ONE page only    | `pages/{page}/`               | No need for feature if not reused   |
+| Action used on ONE page only    | `screens/{page}/`             | No need for feature if not reused   |
 | Large reused UI block           | `widgets/{name}/`             | Reused across pages                 |
-| UI block for ONE page only      | `pages/{page}/ui/`            | Keep in page, not widget            |
-| Page composition                | `pages/{name}/`               | Combine widgets, features, entities |
+| UI block for ONE page only      | `screens/{page}/ui/`          | Keep in page, not widget            |
+| Page composition                | `screens/{name}/`             | Combine widgets, features, entities |
 | Route definition                | `app/`                        | Next.js routing shell               |
 
 **"Should I create a feature?"**

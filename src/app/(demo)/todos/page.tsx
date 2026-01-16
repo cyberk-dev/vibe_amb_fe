@@ -1,4 +1,4 @@
-import TodoManagementPage from "@/pages/todo-management";
+import { TodoManagementPage } from "@/screens/todo-management";
 
 const TodosPage = () => {
   return <TodoManagementPage />;

@@ -1,45 +1,26 @@
-export enum TodoStatus {
-  TODO = "TODO",
-  IN_PROGRESS = "IN_PROGRESS",
-  DONE = "DONE",
-}
+import type { ApiTypes } from "@/shared/api";
 
-export interface Todo {
-  id: string;
-  title: string;
-  description?: string;
-  status: TodoStatus;
-  createdAt: string;
-  updatedAt: string;
-  profileId: string;
-}
+// Re-export swagger types
+export type Todo = ApiTypes.TodoEntity;
+export type CreateTodoInput = ApiTypes.CreateTodoDto;
+export type UpdateTodoInput = ApiTypes.UpdateTodoDto;
+export type TodoPagination = ApiTypes.BasePaginationEntity;
 
-export interface CreateTodoInput {
-  title: string;
-  description?: string;
-}
+// Derive TodoStatus from swagger type
+export type TodoStatus = NonNullable<ApiTypes.UpdateTodoDto["status"]>;
+export const TodoStatus = {
+  TODO: "TODO",
+  IN_PROGRESS: "IN_PROGRESS",
+  DONE: "DONE",
+} as const;
 
-export interface UpdateTodoInput {
-  title?: string;
-  description?: string;
-  status?: TodoStatus;
-}
-
+// Frontend-only types
 export interface TodoQueryParams {
   page?: number;
   pageSize?: number;
   sort?: string;
   search?: string;
   status?: TodoStatus | "all";
-}
-
-export interface TodoPagination {
-  page: number;
-  perPage: number;
-  total: number;
-  totalPages: number;
-  hasNext: boolean;
-  hasPrev: boolean;
 }
 
 export interface TodoListResponse {

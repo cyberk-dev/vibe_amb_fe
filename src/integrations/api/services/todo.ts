@@ -1,5 +1,5 @@
 import apiClient from "@/integrations/api/core/client";
-import type { Todo, CreateTodoInput, UpdateTodoInput, TodoQueryParams, TodoListResponse } from "@/lib/types/todo.types";
+import type { Todo, CreateTodoInput, UpdateTodoInput, TodoQueryParams, TodoListResponse } from "@/entities/todo";
 
 // Transform client query params to backend format
 function buildQueryString(params: TodoQueryParams): string {

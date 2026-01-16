@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createTodo } from "@/integrations/api/services/todo";
-import { CreateTodoInput, TodoListResponse, Todo, TodoStatus } from "@/lib/types/todo.types";
+import { type CreateTodoInput, type TodoListResponse, type Todo, TodoStatus } from "@/entities/todo";
 import { toast } from "sonner";
 
 export const useCreateTodoMutation = () => {
@@ -27,6 +27,7 @@ export const useCreateTodoMutation = () => {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           profileId: "temp",
+          profile: null as any,
         };
 
         return {

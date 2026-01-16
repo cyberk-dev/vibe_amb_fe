@@ -5,8 +5,8 @@
 **Import only from layers strictly below. Never import from same layer.**
 
 ```
-app/      → pages, widgets, features, entities, shared
-pages/    → widgets, features, entities, shared
+app/      → screens, widgets, features, entities, shared
+screens/  → widgets, features, entities, shared
 widgets/  → features, entities, shared
 features/ → entities, shared
 entities/ → shared
@@ -30,9 +30,9 @@ import { UserCard } from "@/entities/user"; // ❌ Higher layer!
 
 ```tsx
 // app/dashboard/page.tsx
-import { DashboardPage } from "@/pages/dashboard"; // ✅
+import { DashboardPage } from "@/screens/dashboard"; // ✅
 
-// pages/dashboard/ui/dashboard-page.tsx
+// screens/dashboard/ui/dashboard-page.tsx
 import { Header } from "@/widgets/header"; // ✅
 import { CreatePostButton } from "@/features/post"; // ✅
 import { PostList } from "@/entities/post"; // ✅
@@ -122,13 +122,13 @@ export function PostCard({ post, author }: PostCardProps) {
 
 ## Quick Reference
 
-| From      | Can Import                                 |
-| --------- | ------------------------------------------ |
-| app/      | pages, widgets, features, entities, shared |
-| pages/    | widgets, features, entities, shared        |
-| widgets/  | features, entities, shared                 |
-| features/ | entities, shared                           |
-| entities/ | shared                                     |
-| shared/   | (nothing)                                  |
+| From      | Can Import                                   |
+| --------- | -------------------------------------------- |
+| app/      | screens, widgets, features, entities, shared |
+| screens/  | widgets, features, entities, shared          |
+| widgets/  | features, entities, shared                   |
+| features/ | entities, shared                             |
+| entities/ | shared                                       |
+| shared/   | (nothing)                                    |
 
 **Type imports allowed across boundaries.**

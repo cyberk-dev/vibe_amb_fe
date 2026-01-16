@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTodo } from "@/integrations/api/services/todo";
-import type { TodoListResponse } from "@/lib/types/todo.types";
+import type { TodoListResponse } from "@/entities/todo";
 import { toast } from "sonner";
 
 export const useDeleteTodoMutation = () => {

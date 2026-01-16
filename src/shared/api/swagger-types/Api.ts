@@ -21,7 +21,7 @@ export interface LoginDto {
 
 export interface UserEntity {
   /** @format int64 */
-  id: number;
+  id: string;
   role: "USER" | "ADMIN" | "SUPERADMIN";
   name: string;
   blocked: boolean;
@@ -31,7 +31,7 @@ export interface UserEntity {
   networkId: number;
   provider: "USERNAME" | "LOCAL" | "google" | "apple" | "facebook" | "wallet";
   /** @format int64 */
-  profileId: number;
+  profileId: string;
   /** @format date-time */
   createdAt: string;
   /** @format date-time */
@@ -128,6 +128,17 @@ export interface ProfileUpdateDto {
   dob?: string;
 }
 
+export type Map = object;
+
+export interface QueryTodoDto {
+  where?: object;
+  sort?: Map;
+  select?: string[];
+  include?: string[];
+  skip?: number;
+  take?: number;
+}
+
 export interface BasePaginationEntity {
   /**
    * Current page number
@@ -170,7 +181,7 @@ export interface TodoPaginatedResponseEntity {
 
 export interface TodoEntity {
   /** @format int64 */
-  id: number;
+  id: string;
   /** @format date-time */
   createdAt: string;
   /** @format date-time */
@@ -179,7 +190,7 @@ export interface TodoEntity {
   description: string;
   status: string;
   /** @format int64 */
-  profileId: number;
+  profileId: string;
   profile: ProfileEntity;
 }
 

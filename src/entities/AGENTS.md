@@ -26,7 +26,7 @@
 entities/ → shared (via index.ts only)
 ```
 
-**Never import from:** `app/`, `pages/`, `widgets/`, `features/`, other entities (use `@x`)
+**Never import from:** `app/`, `screens/`, `widgets/`, `features/`, other entities (use `@x`)
 **Always import from:** `@/shared/api` for types (`ApiTypes`)
 
 ## Structure Pattern

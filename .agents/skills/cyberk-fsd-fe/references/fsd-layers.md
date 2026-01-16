@@ -6,7 +6,7 @@
 ┌─────────────────────────────────────────────────┐
 │  app/       Next.js routing shell, providers    │ ← No slices!
 ├─────────────────────────────────────────────────┤
-│  pages/     FSD page composition                │
+│  screens/   FSD page composition                │ ← Named screens/ to avoid Next.js conflict
 ├─────────────────────────────────────────────────┤
 │  widgets/   Large reusable UI blocks            │
 ├─────────────────────────────────────────────────┤
@@ -22,18 +22,19 @@
 
 1. **App & Shared have NO slices** - directly contain segments
 2. **Not everything needs to be a feature** - only create feature if reused on multiple pages
-3. **Entity relationships** - business logic of entity interactions goes in higher layers (Features, Pages)
+3. **Entity relationships** - business logic of entity interactions goes in higher layers (Features, Screens)
 4. **Widgets are optional** - only create if UI block is reused OR page has multiple large independent blocks
+5. **screens/ instead of pages/** - to avoid conflict with Next.js `pages/` directory
 
 ---
 
 ## app/ Layer
 
-**Purpose:** Next.js routing shell, delegates to FSD pages.
+**Purpose:** Next.js routing shell, delegates to FSD screens.
 
 ```tsx
 // app/dashboard/page.tsx
-import { DashboardPage } from "@/pages/dashboard";
+import { DashboardPage } from "@/screens/dashboard";
 
 export const metadata = { title: "Dashboard" };
 
@@ -42,7 +43,7 @@ export default function Page() {
 }
 
 // app/posts/[id]/page.tsx
-import { PostDetailPage } from "@/pages/post-detail";
+import { PostDetailPage } from "@/screens/post-detail";
 
 export default function Page({ params }: { params: { id: string } }) {
   return <PostDetailPage postId={params.id} />;
@@ -51,21 +52,21 @@ export default function Page({ params }: { params: { id: string } }) {
 
 ---
 
-## pages/ Layer
+## screens/ Layer
 
 **Purpose:** Page composition - combines widgets, features, entities.
 
 ### Structure
 
 ```
-pages/dashboard/
+screens/dashboard/
 ├── ui/
 │   └── dashboard-page.tsx
 └── index.ts
 ```
 
 ```tsx
-// pages/dashboard/ui/dashboard-page.tsx
+// screens/dashboard/ui/dashboard-page.tsx
 "use client";
 import { Header } from "@/widgets/header";
 import { PostList } from "@/entities/post";
@@ -81,7 +82,7 @@ export function DashboardPage() {
   );
 }
 
-// pages/dashboard/index.ts
+// screens/dashboard/index.ts
 export { DashboardPage } from "./ui/dashboard-page";
 ```
 
@@ -344,7 +345,7 @@ export const queryClient = new QueryClient({
 
 ```tsx
 // app/dashboard/page.tsx
-import { DashboardPage } from "@/pages/dashboard";
+import { DashboardPage } from "@/screens/dashboard";
 
 export const metadata = { title: "Dashboard" };
 

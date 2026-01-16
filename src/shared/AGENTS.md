@@ -22,7 +22,7 @@
 shared/ → (nothing external, only internal + npm packages)
 ```
 
-**Imported by:** `app/`, `pages/`, `widgets/`, `features/`, `entities/`
+**Imported by:** `app/`, `screens/`, `widgets/`, `features/`, `entities/`
 
 ## Structure Pattern
 

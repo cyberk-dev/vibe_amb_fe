@@ -40,7 +40,7 @@ export function UpdateTodoDialog({ todo, open, onOpenChange }: UpdateTodoDialogP
       form.reset({
         title: todo.title,
         description: todo.description || "",
-        status: todo.status,
+        status: todo.status as TodoStatus,
       });
     }
   }, [open, todo, form]);
