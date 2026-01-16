@@ -1,11 +1,7 @@
 import English from "./locales/en.json";
 import Vietnamese from "./locales/vi.json";
 
-// Utility function to flatten nested objects for react-intl
-function flattenMessages(
-  nestedMessages: Record<string, any>,
-  prefix = ""
-): Record<string, string> {
+function flattenMessages(nestedMessages: Record<string, any>, prefix = ""): Record<string, string> {
   return Object.keys(nestedMessages).reduce((messages: Record<string, string>, key) => {
     const value = nestedMessages[key];
     const prefixedKey = prefix ? `${prefix}.${key}` : key;

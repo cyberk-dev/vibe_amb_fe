@@ -12,7 +12,6 @@ class TokenRefreshService {
   private refreshPromise: Promise<TokenResponse> | null = null;
 
   async refreshToken(): Promise<TokenResponse> {
-    // If already refreshing, return the same promise
     if (this.refreshPromise) {
       return this.refreshPromise;
     }
@@ -29,7 +28,6 @@ class TokenRefreshService {
       throw new Error("No refresh token API URL available");
     }
 
-    // Create refresh promise
     this.refreshPromise = axios
       .get<TokenResponse>(process.env.REFRESH_TOKEN_API_URL, {
         headers: {
@@ -57,7 +55,6 @@ class TokenRefreshService {
   }
 
   shouldRefreshProactively(thresholdMinutes: number = 5): boolean {
-    // Don't refresh if already refreshing
     if (this.refreshPromise) {
       return false;
     }

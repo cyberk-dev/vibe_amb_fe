@@ -8,7 +8,7 @@ import { Input } from "@/shared/ui/input";
 import { Button } from "@/shared/ui/button";
 import { Separator } from "@/shared/ui/separator";
 import { TypographyBase, TypographyMD } from "@/shared/ui/typography";
-import { useLoginMutation } from "@/integrations/api";
+import { useLoginMutation } from "@/features/login";
 import { useGoogleLogin } from "@/hooks/auth/use-google-login";
 
 // Login validation schema

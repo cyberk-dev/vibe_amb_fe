@@ -5,8 +5,17 @@ import {
   createSIWEConfig,
   formatMessage,
 } from "@reown/appkit-siwe";
-import { getAccessToken, getUser, setTokens, setUser, signOut } from "@/entities/auth";
-import { getNonce, initProfile, signout as signoutApi, verifySiwe } from "@/integrations/api";
+import {
+  getAccessToken,
+  getUser,
+  setTokens,
+  setUser,
+  signOut,
+  getNonce,
+  initProfile,
+  signout as signoutApi,
+  verifySiwe,
+} from "@/entities/auth";
 import { mainnet } from "@reown/appkit/networks";
 
 const defaultChainId = mainnet.id;

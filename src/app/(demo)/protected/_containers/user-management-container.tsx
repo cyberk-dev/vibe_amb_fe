@@ -4,10 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/sha
 import { Button } from "@/shared/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui/table";
 import { RoleBadge } from "@/shared/ui/role-badge";
-import { useUsersQuery } from "@/integrations/api/hooks/user/use-users-query";
-import { usePromoteAdminMutation } from "@/integrations/api/hooks/user/use-promote-admin.mutation";
-import { useDemoteAdminMutation } from "@/integrations/api/hooks/user/use-demote-admin.mutation";
-import { UserRole } from "@/entities/user";
+import { UserRole, userQueries } from "@/entities/user";
+import { usePromoteAdminMutation } from "@/features/promote-admin";
+import { useDemoteAdminMutation } from "@/features/demote-admin";
+import { useQuery } from "@tanstack/react-query";
 import { Loader2, ArrowUp, ArrowDown } from "lucide-react";
 import { useRequireRole } from "@/hooks/use-require-role";
 import { Typography2XL, TypographyBase } from "@/shared/ui/typography";
@@ -15,7 +15,7 @@ import { useGlobalDialogActions } from "@/shared/lib/stores";
 
 export const UserManagementContainer = () => {
   const { isLoading: isCheckingPermissions } = useRequireRole(UserRole.SUPERADMIN);
-  const { data: users, isLoading: isLoadingUsers } = useUsersQuery();
+  const { data: users, isLoading: isLoadingUsers } = useQuery(userQueries.list());
   const promoteMutation = usePromoteAdminMutation();
   const demoteMutation = useDemoteAdminMutation();
   const { showConfirm } = useGlobalDialogActions();

@@ -1,7 +1,7 @@
 import { GlobalConfirmDialogContainer } from "@/shared/ui/global-confirm-dialog-container";
-import { LocalizationProvider } from "@/integrations/react-intl/localization-provider";
+import { LocalizationProvider } from "@/shared/i18n";
 import { WalletProvider } from "@/integrations/reown-appkit/appkit-provider";
-import { PersistQueryProvider } from "@/integrations/tanstack-query/persist-query-provider";
+import { PersistQueryProvider } from "@/shared/api";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { headers } from "next/headers";
 import { Toaster } from "sonner";

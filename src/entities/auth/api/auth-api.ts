@@ -1,4 +1,4 @@
-import { apiClient } from "@/integrations/api/core/client";
+import { apiClient } from "@/shared/api";
 import { UserRole } from "@/entities/user";
 
 interface TokenResponse {
@@ -28,6 +28,7 @@ export interface LoginResponse {
     profileId: number;
   };
 }
+
 interface NonceResponse {
   nonce: string;
 }
@@ -88,4 +89,14 @@ export const verifySiwe = async (data: VerifySiweRequest): Promise<TokenResponse
 
 export const signout = async (): Promise<void> => {
   await apiClient.post("/auth/signout");
+};
+
+export const authApi = {
+  login,
+  register,
+  authCallback,
+  initProfile,
+  getNonce,
+  verifySiwe,
+  signout,
 };

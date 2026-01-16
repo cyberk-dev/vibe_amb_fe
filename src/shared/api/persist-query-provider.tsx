@@ -38,6 +38,7 @@ const createIndexedDBPersister = (idbValidKey: IDBValidKey = "atlas") => {
     },
   } as Persister;
 };
+
 const persister = createIndexedDBPersister("atlas");
 
 export const PersistQueryProvider = ({ children }: QueryProviderProps) => {

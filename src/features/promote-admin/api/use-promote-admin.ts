@@ -1,14 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { promoteToAdmin } from "@/integrations/api/services/user";
+import { userApi, userQueries } from "@/entities/user";
 import { toast } from "sonner";
 
 export const usePromoteAdminMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: promoteToAdmin,
+    mutationFn: userApi.promoteToAdmin,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: userQueries.all() });
       toast.success("User promoted to Admin successfully");
     },
     onError: (error: Error) => {

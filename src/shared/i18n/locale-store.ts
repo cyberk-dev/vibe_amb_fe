@@ -1,6 +1,8 @@
+"use client";
+
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { Locale } from "@/integrations/react-intl/messages";
+import type { Locale } from "./messages";
 import { useEffect } from "react";
 
 interface LocaleState {

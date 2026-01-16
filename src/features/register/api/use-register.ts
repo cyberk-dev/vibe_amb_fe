@@ -1,4 +1,4 @@
-import { initProfile, register } from "@/integrations/api/services/auth";
+import { initProfile, register } from "@/entities/auth";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 

@@ -15,3 +15,17 @@ export {
   getRefreshToken,
   getUser,
 } from "./model/store";
+export {
+  login,
+  register,
+  authCallback,
+  initProfile,
+  getNonce,
+  verifySiwe,
+  signout,
+  authApi,
+  type LoginRequest,
+  type LoginResponse,
+  type RegisterRequest,
+  type VerifySiweRequest,
+} from "./api/auth-api";

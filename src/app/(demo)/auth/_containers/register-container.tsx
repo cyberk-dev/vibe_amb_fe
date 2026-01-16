@@ -7,7 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/shared/ui/input";
 import { Button } from "@/shared/ui/button";
 import { TypographyBase, TypographyMD } from "@/shared/ui/typography";
-import { useRegisterMutation } from "@/integrations/api";
+import { useRegisterMutation } from "@/features/register";
 
 // Register validation schema
 const registerSchema = z
