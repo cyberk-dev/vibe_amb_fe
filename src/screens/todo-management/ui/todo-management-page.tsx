@@ -19,7 +19,7 @@ import { UpdateTodoDialog } from "@/features/update-todo";
 import { DeleteTodoDialog } from "@/features/delete-todo";
 import { TodoFilters, TodoTable, TodoPagination } from "@/widgets/todo-list";
 
-export default function TodoManagementPage() {
+export function TodoManagementPage() {
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
   const [pageSize, setPageSize] = useQueryState("pageSize", parseAsInteger.withDefault(20));
   const [search, setSearch] = useQueryState("search", parseAsString.withDefault(""));
