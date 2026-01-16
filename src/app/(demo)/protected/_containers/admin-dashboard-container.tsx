@@ -1,8 +1,8 @@
 "use client";
 
-import { useUser } from "@/stores/auth-store";
+import { useUser } from "@/entities/auth";
 import { Users, Shield, Settings, FileText } from "lucide-react";
-import { UserRole } from "@/lib/types/auth.types";
+import { UserRole } from "@/entities/user";
 import { RoleBadge } from "@/shared/ui/role-badge";
 import { Button } from "@/shared/ui/button";
 import { PageHeader } from "../_components/page-header";

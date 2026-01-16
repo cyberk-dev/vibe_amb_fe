@@ -5,7 +5,7 @@ import {
   createSIWEConfig,
   formatMessage,
 } from "@reown/appkit-siwe";
-import { getAccessToken, getUser, setTokens, setUser, signOut } from "@/stores/auth-store";
+import { getAccessToken, getUser, setTokens, setUser, signOut } from "@/entities/auth";
 import { getNonce, initProfile, signout as signoutApi, verifySiwe } from "@/integrations/api";
 import { mainnet } from "@reown/appkit/networks";
 

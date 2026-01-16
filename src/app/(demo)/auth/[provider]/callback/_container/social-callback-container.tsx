@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Typography3XL, TypographyBase } from "@/shared/ui/typography";
 import { authCallback, initProfile } from "@/integrations/api";
-import { setAuthData, signOut } from "@/stores/auth-store";
+import { setAuthData, signOut } from "@/entities/auth";
 import { Card, CardContent } from "@/shared/ui/card";
 
 const SocialCallbackContainer = () => {

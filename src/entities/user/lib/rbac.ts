@@ -1,4 +1,4 @@
-import { UserRole, ROLE_HIERARCHY } from "@/lib/types/auth.types";
+import { UserRole, ROLE_HIERARCHY } from "../model/types";
 
 export const hasRole = (userRole: UserRole | undefined, requiredRole: UserRole): boolean => {
   return userRole === requiredRole;

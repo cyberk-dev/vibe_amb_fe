@@ -7,11 +7,11 @@ import { RoleBadge } from "@/shared/ui/role-badge";
 import { useUsersQuery } from "@/integrations/api/hooks/user/use-users-query";
 import { usePromoteAdminMutation } from "@/integrations/api/hooks/user/use-promote-admin.mutation";
 import { useDemoteAdminMutation } from "@/integrations/api/hooks/user/use-demote-admin.mutation";
-import { UserRole } from "@/lib/types/auth.types";
+import { UserRole } from "@/entities/user";
 import { Loader2, ArrowUp, ArrowDown } from "lucide-react";
 import { useRequireRole } from "@/hooks/use-require-role";
 import { Typography2XL, TypographyBase } from "@/shared/ui/typography";
-import { useGlobalDialogActions } from "@/stores/global-dialog-store";
+import { useGlobalDialogActions } from "@/shared/lib/stores";
 
 export const UserManagementContainer = () => {
   const { isLoading: isCheckingPermissions } = useRequireRole(UserRole.SUPERADMIN);

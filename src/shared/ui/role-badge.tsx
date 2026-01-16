@@ -1,5 +1,4 @@
-import { UserRole } from "@/lib/types/auth.types";
-import { ROLE_LABELS, ROLE_COLORS } from "@/lib/constants/roles";
+import { UserRole, ROLE_LABELS, ROLE_COLORS } from "@/entities/user";
 import { Badge } from "@/shared/ui/badge";
 import { cn } from "@/shared/lib/utils";
 

@@ -2,7 +2,7 @@
 
 import { ReactNode } from "react";
 import { useRequireRole } from "@/hooks/use-require-role";
-import { UserRole } from "@/lib/types/auth.types";
+import { UserRole } from "@/entities/user";
 import { Loader2 } from "lucide-react";
 
 interface RequireRoleProps {

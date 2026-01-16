@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUserRole } from "@/stores/auth-store";
-import { useIsAuthStoreHydrated } from "@/stores/hydration.store";
-import { UserRole } from "@/lib/types/auth.types";
-import { hasAnyRole } from "@/lib/helpers/rbac";
+import { useUserRole } from "@/entities/auth";
+import { useIsAuthStoreHydrated } from "@/shared/lib/stores";
+import { UserRole, hasAnyRole } from "@/entities/user";
 
 interface UseRequireRoleOptions {
   redirectTo?: string;

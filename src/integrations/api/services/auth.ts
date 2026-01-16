@@ -1,5 +1,5 @@
 import { apiClient } from "@/integrations/api/core/client";
-import { UserRole } from "@/lib/types/auth.types";
+import { UserRole } from "@/entities/user";
 
 interface TokenResponse {
   jwt?: string | null | undefined;

@@ -1,9 +1,8 @@
 "use client";
 
 import { ReactNode } from "react";
-import { useUserRole } from "@/stores/auth-store";
-import { UserRole } from "@/lib/types/auth.types";
-import { hasAnyRole } from "@/lib/helpers/rbac";
+import { useUserRole } from "@/entities/auth";
+import { UserRole, hasAnyRole } from "@/entities/user";
 
 interface ShowForRoleProps {
   role: UserRole | UserRole[];

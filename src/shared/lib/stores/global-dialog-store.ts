@@ -93,12 +93,10 @@ export const useGlobalDialogStore = create<GlobalDialogStore>((set, get) => ({
   },
 }));
 
-// State selector
 export const useGlobalDialogState = () => {
   return useGlobalDialogStore((store) => store.state);
 };
 
-// Actions selector
 export const useGlobalDialogActions = () => {
   return useGlobalDialogStore((store) => store.actions);
 };

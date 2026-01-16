@@ -10,11 +10,10 @@ interface LocaleState {
   };
 }
 
-// Private store - NOT exported
 const useLocaleStore = create<LocaleState>()(
   persist(
     (set) => ({
-      locale: "en-US", // default locale
+      locale: "en-US",
       actions: {
         setLocale: (locale) => set({ locale }),
       },
@@ -25,17 +24,15 @@ const useLocaleStore = create<LocaleState>()(
       partialize: (state) => ({
         locale: state.locale,
       }),
-      skipHydration: true, // Prevent automatic hydration to avoid SSR issues
+      skipHydration: true,
       version: 1,
     },
   ),
 );
 
-// Exported atomic selectors
 export const useLocale = () => useLocaleStore((state) => state.locale);
 export const useLocaleActions = () => useLocaleStore((state) => state.actions);
 
-// Hydration helper - use this in the LocalizationProvider to manually hydrate
 export const useHydrateLocaleStore = () => {
   useEffect(() => {
     useLocaleStore.persist.rehydrate();

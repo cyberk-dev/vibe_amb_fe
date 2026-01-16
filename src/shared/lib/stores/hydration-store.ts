@@ -1,12 +1,10 @@
 import { create } from "zustand";
 
-interface HydrationProps {
+interface HydrationState {
   isAuthStoreHydrated: boolean;
 }
 
-interface HydrationState extends HydrationProps {}
-
-const initialState: HydrationProps = {
+const initialState: HydrationState = {
   isAuthStoreHydrated: false,
 };
 

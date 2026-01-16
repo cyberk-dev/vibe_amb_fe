@@ -1,7 +1,4 @@
-import {
-  useGlobalDialogActions,
-  ConfirmDialogOptions,
-} from "@/stores/global-dialog-store";
+import { useGlobalDialogActions, type ConfirmDialogOptions } from "@/shared/lib/stores";
 
 export const useConfirmDialog = () => {
   const { showConfirm } = useGlobalDialogActions();

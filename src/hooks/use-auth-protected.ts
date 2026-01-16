@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAccessToken } from "@/stores/auth-store";
-import { useIsAuthStoreHydrated } from "@/stores/hydration.store";
+import { useAccessToken } from "@/entities/auth";
+import { useIsAuthStoreHydrated } from "@/shared/lib/stores";
 
 interface UseProtectedOptions {
   /**

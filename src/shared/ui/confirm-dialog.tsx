@@ -3,7 +3,7 @@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/shared/ui/dialog";
 import { Button } from "@/shared/ui/button";
 import { AlertTriangle, HelpCircle, Loader2 } from "lucide-react";
-import { ConfirmDialogOptions } from "@/stores/global-dialog-store";
+import { type ConfirmDialogOptions } from "@/shared/lib/stores";
 
 interface ConfirmDialogProps {
   isOpen: boolean;

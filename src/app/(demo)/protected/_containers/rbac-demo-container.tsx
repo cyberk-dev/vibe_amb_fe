@@ -2,8 +2,8 @@
 
 import { RoleBadge } from "@/shared/ui/role-badge";
 import { ShowForRole } from "@/shared/ui/show-for-role";
-import { useUser } from "@/stores/auth-store";
-import { UserRole } from "@/lib/types/auth.types";
+import { useUser } from "@/entities/auth";
+import { UserRole } from "@/entities/user";
 import { useHasRole } from "@/hooks/use-has-role";
 import { useMinimumRole } from "@/hooks/use-minimum-role";
 import { Shield, Users, Lock, CheckCircle } from "lucide-react";

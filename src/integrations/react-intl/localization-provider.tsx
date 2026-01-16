@@ -3,7 +3,7 @@
 import React from "react";
 import { IntlProvider } from "react-intl";
 import { messages, initialLocale } from "./messages";
-import { useLocale, useHydrateLocaleStore } from "@/stores/locale-store";
+import { useLocale, useHydrateLocaleStore } from "@/shared/i18n";
 
 export const LocalizationProvider = ({ children }: { children: React.ReactNode }) => {
   // Manually hydrate the store from localStorage

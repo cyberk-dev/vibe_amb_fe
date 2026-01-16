@@ -3,7 +3,7 @@
 import * as React from "react";
 import { FormattedMessage } from "react-intl";
 import { Button } from "@/shared/ui/button";
-import { useLocale, useLocaleActions } from "@/stores/locale-store";
+import { useLocale, useLocaleActions } from "@/shared/i18n";
 import { ChevronDown, Check } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 

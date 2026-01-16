@@ -1,4 +1,4 @@
-import { UserRole } from "@/lib/types/auth.types";
+import { UserRole } from "../model/types";
 
 export const ROLE_LABELS: Record<UserRole, string> = {
   [UserRole.USER]: "User",

@@ -1,6 +1,5 @@
-import { useUserRole } from "@/stores/auth-store";
-import { UserRole } from "@/lib/types/auth.types";
-import { hasMinimumRole } from "@/lib/helpers/rbac";
+import { useUserRole } from "@/entities/auth";
+import { UserRole, hasMinimumRole } from "@/entities/user";
 
 export const useMinimumRole = (minimumRole: UserRole): boolean => {
   const userRole = useUserRole();

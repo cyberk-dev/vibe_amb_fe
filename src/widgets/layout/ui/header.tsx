@@ -12,7 +12,7 @@ import { LanguageToggleButton } from "@/shared/ui/language-toggle-button";
 import { useTheme } from "next-themes";
 import { ConnectWalletButton } from "@/features/wallet";
 import { useMinimumRole } from "@/hooks/use-minimum-role";
-import { UserRole } from "@/lib/types/auth.types";
+import { UserRole } from "@/entities/user";
 
 interface MenuItem {
   text: string;

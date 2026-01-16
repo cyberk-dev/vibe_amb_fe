@@ -14,9 +14,9 @@ import { Button } from "@/shared/ui/button";
 import { Plus, Edit, Trash2 } from "lucide-react";
 
 import { type Todo, TodoStatus, todoQueries, TodoStatusBadge, useTodoStore } from "@/entities/todo";
-import { CreateTodoDialog } from "@/features/create-todo";
-import { UpdateTodoDialog } from "@/features/update-todo";
-import { DeleteTodoDialog } from "@/features/delete-todo";
+import { CreateTodoDialog } from "@/features/todo/create-todo";
+import { UpdateTodoDialog } from "@/features/todo/update-todo";
+import { DeleteTodoDialog } from "@/features/todo/delete-todo";
 import { TodoFilters, TodoTable, TodoPagination } from "@/widgets/todo-list";
 
 export function TodoManagementPage() {

@@ -2,10 +2,10 @@
 
 import { Button } from "@/shared/ui/button";
 import { TypographyBase } from "@/shared/ui/typography";
-import { signOut, useAccessToken, useUser } from "@/stores/auth-store";
+import { signOut, useAccessToken, useUser } from "@/entities/auth";
 import { useRouter } from "next/navigation";
 import { Shield, Users, FileText, LogOut } from "lucide-react";
-import { UserRole } from "@/lib/types/auth.types";
+import { UserRole } from "@/entities/user";
 import { PageHeader } from "./_components/page-header";
 import { InfoCard } from "./_components/info-card";
 import { QuickActions } from "./_components/quick-actions";

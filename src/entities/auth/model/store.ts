@@ -1,7 +1,7 @@
 import { persist } from "zustand/middleware";
-import { createControlledStore } from "@/stores/controlled-store";
-import { setIsAuthStoreHydrated } from "@/stores/hydration.store";
-import { AuthUser } from "@/lib/types/auth.types";
+import { createControlledStore } from "@/shared/lib/stores";
+import { setIsAuthStoreHydrated } from "@/shared/lib/stores";
+import { type AuthUser } from "@/entities/user";
 
 const AUTH_STORE_KEY = "auth-storage";
 

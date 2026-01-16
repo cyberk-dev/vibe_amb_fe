@@ -1,6 +1,6 @@
 "use client";
 
-import { useGlobalDialogState, useGlobalDialogActions } from "@/stores/global-dialog-store";
+import { useGlobalDialogState, useGlobalDialogActions } from "@/shared/lib/stores";
 import { ConfirmDialog } from "@/shared/ui/confirm-dialog";
 
 export const GlobalConfirmDialogContainer = () => {
