@@ -1,4 +1,4 @@
-import { Header, Footer } from "@/components/layout";
+import { Header, Footer } from "@/widgets/layout";
 import { AuthFormContainer } from "./_containers/auth-form-container";
 
 const AuthDemoPage = () => {

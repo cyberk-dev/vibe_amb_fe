@@ -1,4 +1,4 @@
-import { GlobalConfirmDialogContainer } from "@/components/global-confirm-dialog-container";
+import { GlobalConfirmDialogContainer } from "@/shared/ui/global-confirm-dialog-container";
 import { LocalizationProvider } from "@/integrations/react-intl/localization-provider";
 import { WalletProvider } from "@/integrations/reown-appkit/appkit-provider";
 import { PersistQueryProvider } from "@/integrations/tanstack-query/persist-query-provider";

@@ -1,5 +1,5 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Badge } from "@/shared/ui/badge";
 import { TOKEN_FACTORY_ADDRESS, CHAIN_ID } from "@/integrations/smartcontracts/token-factory";
 
 interface ContractInfoProps {

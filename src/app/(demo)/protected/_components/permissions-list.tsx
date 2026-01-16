@@ -1,5 +1,5 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { TypographyBase } from "@/components/typography";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { TypographyBase } from "@/shared/ui/typography";
 
 interface Permission {
   label: string;

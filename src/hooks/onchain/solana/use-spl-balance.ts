@@ -1,4 +1,4 @@
-import { formatNumber } from "@/lib/helpers/number";
+import { formatNumber } from "@/shared/lib/number";
 import { useAppKitConnection } from "@reown/appkit-adapter-solana/react";
 import { getAssociatedTokenAddress } from "@solana/spl-token";
 import { Connection, PublicKey } from "@solana/web3.js";

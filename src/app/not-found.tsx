@@ -1,10 +1,10 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/shared/ui/card";
+import { Button } from "@/shared/ui/button";
 import { FileQuestion } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Typography3XL, TypographyBase } from "@/components/typography";
+import { Typography3XL, TypographyBase } from "@/shared/ui/typography";
 
 export default function NotFoundPage() {
   const router = useRouter();

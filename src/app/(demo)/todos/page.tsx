@@ -1,9 +1,7 @@
-import { TodoManagementContainer } from "./_containers/todo-management-container";
+import TodoManagementPage from "@/pages/todo-management";
 
-export default function TodosPage() {
-  return (
-    <div className="container mx-auto py-8">
-      <TodoManagementContainer />
-    </div>
-  );
-}
+const TodosPage = () => {
+  return <TodoManagementPage />;
+};
+
+export default TodosPage;

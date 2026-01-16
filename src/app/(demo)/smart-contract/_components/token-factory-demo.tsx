@@ -5,7 +5,7 @@ import { ReadTokensContainer } from "../_containers/read-tokens-container";
 import { CreateTokenFormContainer } from "../_containers/create-token-form-container";
 import { TokenBalanceContainer } from "../_containers/token-balance-container";
 import { TokenAllowanceContainer } from "../_containers/token-allowance-container";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/shared/ui/separator";
 
 export const TokenFactoryDemo = () => {
   return (

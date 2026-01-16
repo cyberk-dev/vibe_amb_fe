@@ -1,9 +1,9 @@
 "use client";
 
 import { useAuthProtected } from "@/hooks/use-auth-protected";
-import { ProtectedSidebar } from "@/components/layout/protected-sidebar";
-import { Card, CardContent } from "@/components/ui/card";
-import { TypographyBase } from "@/components/typography";
+import { ProtectedSidebar } from "@/widgets/layout";
+import { Card, CardContent } from "@/shared/ui/card";
+import { TypographyBase } from "@/shared/ui/typography";
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const { isLoading } = useAuthProtected();

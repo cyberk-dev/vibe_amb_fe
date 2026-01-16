@@ -1,13 +1,13 @@
 "use client";
 
-import { RoleBadge } from "@/components/ui/role-badge";
-import { ShowForRole } from "@/components/auth/show-for-role";
+import { RoleBadge } from "@/shared/ui/role-badge";
+import { ShowForRole } from "@/shared/ui/show-for-role";
 import { useUser } from "@/stores/auth-store";
 import { UserRole } from "@/lib/types/auth.types";
 import { useHasRole } from "@/hooks/use-has-role";
 import { useMinimumRole } from "@/hooks/use-minimum-role";
 import { Shield, Users, Lock, CheckCircle } from "lucide-react";
-import { TypographyBase } from "@/components/typography";
+import { TypographyBase } from "@/shared/ui/typography";
 import { PageHeader } from "../_components/page-header";
 import { InfoCard } from "../_components/info-card";
 import { RoleCheckItem } from "../_components/role-check-item";

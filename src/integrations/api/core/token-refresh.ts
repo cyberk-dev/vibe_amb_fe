@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { AxiosResponse } from "axios";
 import { signOut as authStoreSignOut, getAccessToken, getRefreshToken, setAccessToken } from "@/stores/auth-store";
-import { isTokenExpiringSoon } from "@/lib/helpers/jwt";
+import { isTokenExpiringSoon } from "@/shared/lib/jwt";
 
 interface TokenResponse {
   jwt: string;

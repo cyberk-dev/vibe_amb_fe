@@ -3,8 +3,8 @@
 import { useUser } from "@/stores/auth-store";
 import { Users, Shield, Settings, FileText } from "lucide-react";
 import { UserRole } from "@/lib/types/auth.types";
-import { RoleBadge } from "@/components/ui/role-badge";
-import { Button } from "@/components/ui/button";
+import { RoleBadge } from "@/shared/ui/role-badge";
+import { Button } from "@/shared/ui/button";
 import { PageHeader } from "../_components/page-header";
 import { StatCard } from "../_components/stat-card";
 import { QuickActions } from "../_components/quick-actions";

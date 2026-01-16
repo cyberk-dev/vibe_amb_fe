@@ -1,8 +1,8 @@
-import { CtaButton } from "@/components/cta-button";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { CtaButton } from "@/shared/ui/cta-button";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Label } from "@/shared/ui/label";
 import { formatUnits } from "viem";
 import type { Address } from "viem";
 import { CHAIN_ID } from "@/integrations/smartcontracts/token-factory";

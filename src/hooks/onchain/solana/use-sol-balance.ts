@@ -1,4 +1,4 @@
-import { formatNumber } from "@/lib/helpers/number";
+import { formatNumber } from "@/shared/lib/number";
 import { Connection, useAppKitConnection } from "@reown/appkit-adapter-solana/react";
 import { useAppKitAccount, useAppKitNetwork } from "@reown/appkit/react";
 import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";

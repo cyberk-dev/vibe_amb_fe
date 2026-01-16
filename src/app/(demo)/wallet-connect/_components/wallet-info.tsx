@@ -1,15 +1,15 @@
 "use client";
 
 import { FormattedMessage } from "react-intl";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { stringUtils } from "@/lib/helpers";
+import { Button } from "@/shared/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Badge } from "@/shared/ui/badge";
+import { Separator } from "@/shared/ui/separator";
+import { stringUtils } from "@/shared/lib";
 import { CheckCircle, Copy, LogOut } from "lucide-react";
 import { useState } from "react";
-import { NetworkSwitcher } from "@/components/network-switcher";
-import { TypographyBase, Typography2XL } from "@/components/typography";
+import { NetworkSwitcher } from "@/features/wallet";
+import { TypographyBase, Typography2XL } from "@/shared/ui/typography";
 
 interface WalletInfoProps {
   address: string;

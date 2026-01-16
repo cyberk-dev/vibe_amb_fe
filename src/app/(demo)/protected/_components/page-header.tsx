@@ -1,4 +1,4 @@
-import { Typography2XL, TypographyBase } from "@/components/typography";
+import { Typography2XL, TypographyBase } from "@/shared/ui/typography";
 import { ReactNode } from "react";
 
 interface PageHeaderProps {

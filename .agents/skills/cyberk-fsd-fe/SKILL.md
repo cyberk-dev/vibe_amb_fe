@@ -18,9 +18,10 @@ Next.js + Feature Sliced Design with React Query patterns.
 
 ## Core Principles
 
-- **Entities**: GET/SEARCH operations + Query Factory + DTOs
+- **Entities**: GET/SEARCH operations + Query Factory (DTOs from swagger)
 - **Features**: MUTATIONS only + Mutation Hooks
-- **Import Rule**: Only import from layers below
+- **Import Rule**: Only import from layers below via their `index.ts` exports
+- **Types**: DTOs/entities generated from swagger → `ApiTypes` in `@/shared/api`
 
 ## Project Structure
 
@@ -39,10 +40,10 @@ src/
 │   └── post/
 │       ├── api/
 │       │   ├── post-api.ts       # All CRUD calls
-│       │   ├── post.queries.ts   # Query factory
-│       │   └── dto/              # Data Transfer Objects
+│       │   └── post.queries.ts   # Query factory
 │       ├── model/
-│       │   └── types.ts          # Domain models
+│       │   ├── types.ts          # Custom domain models (if needed)
+│       │   └── store.ts          # Zustand store (optional)
 │       ├── ui/
 │       └── index.ts
 └── shared/
@@ -56,73 +57,70 @@ src/
 ## Layer Import Rules
 
 ```
-app/      → pages, widgets, features, entities, shared
-pages/    → widgets, features, entities, shared
-widgets/  → features, entities, shared
-features/ → entities, shared
-entities/ → shared
+app/      → pages, widgets, features, entities, shared (via index.ts)
+pages/    → widgets, features, entities, shared (via index.ts)
+widgets/  → features, entities, shared (via index.ts)
+features/ → entities, shared (via index.ts)
+entities/ → shared (via index.ts)
 shared/   → (nothing)
 ```
 
-**Never import from same layer!**
+**Rules:**
+
+- Never import from same layer!
+- Only import what's exported from `index.ts` of lower layers
 
 ---
 
-## Entity Pattern (Query Factory + DTO)
+## Types from Swagger
 
-### 1. DTO Layer (dto/)
+DTOs and entity types are auto-generated from backend swagger API:
 
 ```tsx
-// entities/post/api/dto/post.dto.ts
-export interface PostDto {
-  id: string;
-  title: string;
-  author_id: string; // API snake_case
-  created_at: string;
-}
+// Import types from swagger
+import { ApiTypes } from "@/shared/api";
 
-export interface CreatePostDto {
-  title: string;
-  content: string;
-}
+// Use directly
+type Post = ApiTypes.PostDto;
+type CreatePostRequest = ApiTypes.CreatePostRequest;
 ```
 
-### 2. API Layer (post-api.ts)
+Only create custom types in `entities/{name}/model/` when you need:
+
+- Transformed/enriched domain models
+- Frontend-specific computed properties
+- Different structure than backend DTO
+
+---
+
+## Entity Pattern (Query Factory)
+
+### 1. API Layer (post-api.ts)
 
 ```tsx
 // entities/post/api/post-api.ts
-import { apiClient } from "@/shared/api";
-import type { PostDto, CreatePostDto } from "./dto";
-import type { Post } from "../model/types";
-
-// Mapper: DTO → Domain Model
-const mapPost = (dto: PostDto): Post => ({
-  id: dto.id,
-  title: dto.title,
-  authorId: dto.author_id, // snake_case → camelCase
-  createdAt: dto.created_at,
-});
+import { apiClient, ApiTypes } from "@/shared/api";
 
 export const postApi = {
-  getAll: async (filter?: PostsFilter): Promise<Post[]> => {
-    const { data } = await apiClient.get<PostDto[]>("/posts", { params: filter });
-    return data.map(mapPost);
+  getAll: async (filter?: ApiTypes.PostsFilter): Promise<ApiTypes.PostDto[]> => {
+    const { data } = await apiClient.get<ApiTypes.PostDto[]>("/posts", { params: filter });
+    return data;
   },
 
-  getById: async (id: string): Promise<Post> => {
-    const { data } = await apiClient.get<PostDto>(`/posts/${id}`);
-    return mapPost(data);
+  getById: async (id: string): Promise<ApiTypes.PostDto> => {
+    const { data } = await apiClient.get<ApiTypes.PostDto>(`/posts/${id}`);
+    return data;
   },
 
-  create: (data: CreatePostDto) => apiClient.post<Post>("/posts", data),
+  create: (data: ApiTypes.CreatePostRequest) => apiClient.post<ApiTypes.PostDto>("/posts", data),
 
-  update: (id: string, data: UpdatePostDto) => apiClient.patch<Post>(`/posts/${id}`, data),
+  update: (id: string, data: ApiTypes.UpdatePostRequest) => apiClient.patch<ApiTypes.PostDto>(`/posts/${id}`, data),
 
   delete: (id: string) => apiClient.delete(`/posts/${id}`),
 };
 ```
 
-### 3. Query Factory (post.queries.ts)
+### 2. Query Factory (post.queries.ts)
 
 ```tsx
 // entities/post/api/post.queries.ts
@@ -150,7 +148,36 @@ export const postQueries = {
 };
 ```
 
-### 4. Usage in Components
+### 3. Model Layer (Optional - only if custom types needed)
+
+```tsx
+// entities/post/model/types.ts (only when different from API)
+import { ApiTypes } from "@/shared/api";
+
+export interface PostWithMeta extends ApiTypes.PostDto {
+  isBookmarked: boolean; // Frontend-only property
+  formattedDate: string; // Computed property
+}
+```
+
+### 4. Zustand Store (Optional)
+
+```tsx
+// entities/post/model/store.ts
+import { create } from "zustand";
+
+interface PostStore {
+  selectedPostId: string | null;
+  setSelectedPost: (id: string | null) => void;
+}
+
+export const usePostStore = create<PostStore>((set) => ({
+  selectedPostId: null,
+  setSelectedPost: (id) => set({ selectedPostId: id }),
+}));
+```
+
+### 5. Usage in Components
 
 ```tsx
 import { useQuery } from "@tanstack/react-query";
@@ -167,8 +194,8 @@ const { data: post } = useQuery(postQueries.detail(id));
 export { postApi } from "./api/post-api";
 export { postQueries } from "./api/post.queries";
 export { PostCard } from "./ui/post-card";
-export type { Post } from "./model/types";
-export type { CreatePostDto } from "./api/dto";
+export { usePostStore } from "./model/store"; // if exists
+export type { PostWithMeta } from "./model/types"; // only custom types
 ```
 
 ---
@@ -319,16 +346,16 @@ export function PostCard({ post, authorSlot, actionsSlot }: PostCardProps) {
 
 **New Entity:**
 
-- [ ] Create `api/dto/` with request/response DTOs
-- [ ] Create `api/post-api.ts` with CRUD + mappers
-- [ ] Create `api/post.queries.ts` with query factory
-- [ ] Create `model/types.ts` with domain models
+- [ ] Create `api/{entity}-api.ts` with CRUD (use `ApiTypes` from swagger)
+- [ ] Create `api/{entity}.queries.ts` with query factory
+- [ ] Create `model/types.ts` ONLY if custom domain models needed
+- [ ] Create `model/store.ts` for Zustand store (optional)
 - [ ] Export via `index.ts`
 
 **New Feature:**
 
 - [ ] Create `api/use-{action}-{entity}.ts` mutation hook
-- [ ] Import from entity layer (postApi, postQueries)
+- [ ] Import from entity's `index.ts` only (postApi, postQueries)
 - [ ] Invalidate queries on success
 - [ ] Create UI components
 

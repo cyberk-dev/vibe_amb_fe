@@ -1,9 +1,9 @@
 "use client";
 
 import { useDisconnect } from "@reown/appkit/react";
-import { ConnectWalletButton } from "@/components/connect-wallet-button";
+import { ConnectWalletButton } from "@/features/wallet";
 import { WalletInfo } from "./wallet-info";
-import { numberUtils } from "@/lib/helpers";
+import { numberUtils } from "@/shared/lib";
 import { useWalletInfo } from "@/hooks/use-wallet-info";
 
 export const WalletConnectContainer = () => {

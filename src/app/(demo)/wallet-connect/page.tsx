@@ -2,9 +2,9 @@
 
 import { FormattedMessage } from "react-intl";
 import { WalletConnectContainer } from "./_components/wallet-connect-container";
-import { Badge } from "@/components/ui/badge";
-import { Typography3XL, TypographyLG } from "@/components/typography";
-import { Header, Footer } from "@/components/layout";
+import { Badge } from "@/shared/ui/badge";
+import { Typography3XL, TypographyLG } from "@/shared/ui/typography";
+import { Header, Footer } from "@/widgets/layout";
 
 const WalletConnectPage = () => {
   return (

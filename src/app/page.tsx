@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Footer, Header } from "@/components/layout";
+import { Button } from "@/shared/ui/button";
+import { Footer, Header } from "@/widgets/layout";
 
 export default function Home() {
   return (

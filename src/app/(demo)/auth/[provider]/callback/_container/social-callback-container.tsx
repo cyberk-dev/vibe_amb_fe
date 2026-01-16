@@ -4,10 +4,10 @@ import { useEffect, useRef } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { Typography3XL, TypographyBase } from "@/components/typography";
+import { Typography3XL, TypographyBase } from "@/shared/ui/typography";
 import { authCallback, initProfile } from "@/integrations/api";
 import { setAuthData, signOut } from "@/stores/auth-store";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/shared/ui/card";
 
 const SocialCallbackContainer = () => {
   const params = useParams();
@@ -34,14 +34,14 @@ const SocialCallbackContainer = () => {
 
         // If not in hash, try query params (for authorization code flow)
         if (!oauthAccessToken) {
-          oauthAccessToken = searchParams.get("access_token");
+          oauthAccessToken = searchParams?.get("access_token") ?? null;
         }
 
         // Check for OAuth errors
-        const error = hashParams.get("error") || searchParams.get("error");
+        const error = hashParams.get("error") || searchParams?.get("error");
         if (error) {
           const errorDescription =
-            hashParams.get("error_description") || searchParams.get("error_description") || error;
+            hashParams.get("error_description") || searchParams?.get("error_description") || error;
           throw new Error(errorDescription);
         }
 

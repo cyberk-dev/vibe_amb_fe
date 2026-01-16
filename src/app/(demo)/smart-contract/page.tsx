@@ -1,9 +1,9 @@
 "use client";
 
 import { TokenFactoryDemo } from "./_components/token-factory-demo";
-import { Badge } from "@/components/ui/badge";
-import { Typography3XL, TypographyLG } from "@/components/typography";
-import { Header, Footer } from "@/components/layout";
+import { Badge } from "@/shared/ui/badge";
+import { Typography3XL, TypographyLG } from "@/shared/ui/typography";
+import { Header, Footer } from "@/widgets/layout";
 
 const SmartContractPage = () => {
   return (

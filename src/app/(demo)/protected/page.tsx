@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { TypographyBase } from "@/components/typography";
+import { Button } from "@/shared/ui/button";
+import { TypographyBase } from "@/shared/ui/typography";
 import { signOut, useAccessToken, useUser } from "@/stores/auth-store";
 import { useRouter } from "next/navigation";
 import { Shield, Users, FileText, LogOut } from "lucide-react";

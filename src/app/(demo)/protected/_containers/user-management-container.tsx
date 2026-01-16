@@ -1,16 +1,16 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { RoleBadge } from "@/components/ui/role-badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Button } from "@/shared/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui/table";
+import { RoleBadge } from "@/shared/ui/role-badge";
 import { useUsersQuery } from "@/integrations/api/hooks/user/use-users-query";
 import { usePromoteAdminMutation } from "@/integrations/api/hooks/user/use-promote-admin.mutation";
 import { useDemoteAdminMutation } from "@/integrations/api/hooks/user/use-demote-admin.mutation";
 import { UserRole } from "@/lib/types/auth.types";
 import { Loader2, ArrowUp, ArrowDown } from "lucide-react";
 import { useRequireRole } from "@/hooks/use-require-role";
-import { Typography2XL, TypographyBase } from "@/components/typography";
+import { Typography2XL, TypographyBase } from "@/shared/ui/typography";
 import { useGlobalDialogActions } from "@/stores/global-dialog-store";
 
 export const UserManagementContainer = () => {

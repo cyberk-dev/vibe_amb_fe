@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Typography2XL, TypographyBase } from "@/components/typography";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Button } from "@/shared/ui/button";
+import { Separator } from "@/shared/ui/separator";
+import { Typography2XL, TypographyBase } from "@/shared/ui/typography";
 import { LoginContainer } from "./login-container";
 import { RegisterContainer } from "./register-container";
 import { useRouter } from "next/navigation";
-import { ConnectWalletButton } from "@/components/connect-wallet-button";
+import { ConnectWalletButton } from "@/features/wallet";
 import { setSiweLoginCallback } from "@/integrations/reown-appkit/siwe";
 
 type AuthMode = "login" | "register";
