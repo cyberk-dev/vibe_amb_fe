@@ -40,10 +40,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${fonts.audiowide.variable} ${fonts.aeonik.variable} antialiased`}>
-        <Web3AppProvider>
-          <NuqsAdapter>{children}</NuqsAdapter>
-        </Web3AppProvider>
+      <body
+        className={`${fonts.audiowide.variable} ${fonts.aeonik.variable} ${fonts.bricolageGrotesque.variable} ${fonts.spaceGrotesk.variable} antialiased`}
+      >
+        <div className="mx-auto max-w-[1440px] max-h-[800px] h-screen overflow-hidden">
+          <Web3AppProvider>
+            <NuqsAdapter>{children}</NuqsAdapter>
+          </Web3AppProvider>
+        </div>
       </body>
     </html>
   );
