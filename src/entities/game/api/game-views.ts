@@ -72,6 +72,17 @@ class GameViewService {
     return hasActed;
   }
 
+  async hasJoined(playerAddress: string): Promise<boolean> {
+    const [hasJoined] = await this.aptos.view<[boolean]>({
+      payload: {
+        function: `${GAME_MODULE}::has_joined`,
+        typeArguments: [],
+        functionArguments: [playerAddress],
+      },
+    });
+    return hasJoined;
+  }
+
   async getVotingState(): Promise<VotingStateDto> {
     const result = await this.aptos.view<[string, string, string]>({
       payload: {

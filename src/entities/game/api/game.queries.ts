@@ -22,7 +22,7 @@ export const gameQueries = {
         return { status, round, playersCount, eliminationCount };
       },
       staleTime: 5_000, // 5s stale
-      refetchInterval: 10_000, // Auto-refresh every 10s
+      refetchInterval: 5_000, // Auto-refresh every 10s
     }),
 
   // Player list with action status
@@ -67,6 +67,14 @@ export const gameQueries = {
         return gameViewService.getRoundVictims();
       },
       staleTime: 30_000,
+    }),
+
+  // Check if player has joined current game
+  hasJoined: (address: string) =>
+    queryOptions({
+      queryKey: [...gameQueries.all(), "hasJoined", address],
+      queryFn: () => gameViewService.hasJoined(address),
+      enabled: !!address,
     }),
 
   // Full overview (for dashboard)

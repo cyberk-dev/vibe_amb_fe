@@ -1,11 +1,25 @@
-import type { Metadata } from "next";
+"use client";
+
+import { GameFlowGuard } from "@/widgets/game-flow-guard";
 import { InviteCodeScreen } from "@/screens/invite-code";
 
-export const metadata: Metadata = {
-  title: "Enter Invite Code - Horse of the Year",
-  description: "Enter your invite code to join the Horse of the Year game by VIBE Ambassador",
-};
-
+/**
+ * Invite Code Page Route
+ *
+ * Entry point for new users:
+ * - Connect wallet (Aptos Connect / Google)
+ * - Auto-register in whitelist → code is auto-generated
+ * - Enter display name
+ * - Continue → navigate to /landing
+ *
+ * GameFlowGuard redirects:
+ * - Already registered → /landing
+ * - Already joined game → /waiting-room
+ */
 export default function InviteCodePage() {
-  return <InviteCodeScreen />;
+  return (
+    <GameFlowGuard>
+      <InviteCodeScreen />
+    </GameFlowGuard>
+  );
 }

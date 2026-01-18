@@ -1,6 +1,6 @@
 "use client";
 
-import { RegistrationGuard } from "@/shared";
+import { GameFlowGuard } from "@/widgets/game-flow-guard";
 import { WaitingRoomScreen } from "@/screens/waiting-room";
 
 /**
@@ -13,8 +13,8 @@ import { WaitingRoomScreen } from "@/screens/waiting-room";
  */
 export default function WaitingRoomPage() {
   return (
-    <RegistrationGuard>
+    <GameFlowGuard>
       <WaitingRoomScreen />
-    </RegistrationGuard>
+    </GameFlowGuard>
   );
 }
