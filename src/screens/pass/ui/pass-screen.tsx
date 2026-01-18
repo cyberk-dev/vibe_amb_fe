@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import type { GamePlayer, GameHost } from "@/entities/game";
 import { PassGame } from "@/widgets/pass-game";
 import { usePassSelectionStore, usePassToPlayer } from "@/features/pass-to-player";
+import { gameQueries, GameStatus } from "@/entities/game";
+import { useQuery } from "@tanstack/react-query";
 
 /** Constants for the pass game */
 const INITIAL_COUNTDOWN = 60;
@@ -81,6 +84,8 @@ function generateFakePlayers(): GamePlayer[] {
  * from contract/backend when API is ready.
  */
 export function PassScreen() {
+  const router = useRouter();
+
   // Game state
   const [players] = useState<GamePlayer[]>(generateFakePlayers);
   const [countdown, setCountdown] = useState(INITIAL_COUNTDOWN);
@@ -94,15 +99,29 @@ export function PassScreen() {
   // Pass mutation
   const { mutateAsync: passToPlayer, isPending } = usePassToPlayer();
 
+  // Monitor game status - redirect to game-over when game ends
+  const { data: gameStatus } = useQuery(gameQueries.status());
+
+  useEffect(() => {
+    // When game status becomes ENDED, redirect to game-over screen
+    if (gameStatus?.status === GameStatus.ENDED) {
+      router.push("/game-over");
+    }
+  }, [gameStatus?.status, router]);
+
   // Countdown timer
   useEffect(() => {
     countdownRef.current = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
-          // Timer expired - auto-confirm if player selected, otherwise keep packet
+          // Timer expired - redirect to game-over for testing
           if (countdownRef.current) {
             clearInterval(countdownRef.current);
           }
+          // Redirect to game-over screen after a short delay
+          setTimeout(() => {
+            router.push("/game-over");
+          }, 500);
           return 0;
         }
         return prev - 1;
@@ -114,7 +133,7 @@ export function PassScreen() {
         clearInterval(countdownRef.current);
       }
     };
-  }, []);
+  }, [router]);
 
   // Handle player selection
   const handlePlayerSelect = useCallback(
