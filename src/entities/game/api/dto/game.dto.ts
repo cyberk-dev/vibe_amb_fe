@@ -47,3 +47,11 @@ export interface AllPlayersWithVotesDto {
   3: boolean[]; // vector<bool> - hasVoted
   4: string; // vector<u8> as hex string - votes (0=STOP, 1=CONTINUE)
 }
+
+export interface AllPlayersWithPrizesDto {
+  0: string[]; // vector<address> - addresses (all participants, join order)
+  1: string[]; // vector<String> - names
+  2: string[]; // vector<u64> - seats (initial_bao_id, 0-indexed)
+  3: boolean[]; // vector<bool> - is_eliminated
+  4: string[]; // vector<u64> - prizes (claimable balance)
+}

@@ -5,3 +5,5 @@
  */
 
 export { GameOverScreen } from "./ui/game-over-screen";
+export { useGameOverFlow } from "./lib/use-game-over-flow";
+export type { GameOverPlayer } from "./lib/use-game-over-flow";

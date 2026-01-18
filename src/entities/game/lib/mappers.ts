@@ -7,8 +7,9 @@ import type {
   VictimsWithSeatsDto,
   AllPlayersWithSeatsDto,
   AllPlayersWithVotesDto,
+  AllPlayersWithPrizesDto,
 } from "../api/dto/game.dto";
-import type { Player, PlayerWithVote, VotingState, RoundPrizes, Vote } from "../model/types";
+import type { Player, PlayerWithVote, VotingState, RoundPrizes, Vote, LeaderboardPlayer } from "../model/types";
 
 export interface Victim {
   address: string;
@@ -84,6 +85,16 @@ export function mapVictimsWithSeats(dto: VictimsWithSeatsDto): Victim[] {
     address,
     name: dto[1][index],
     seat: Number(dto[2][index]),
+  }));
+}
+
+export function mapAllPlayersWithPrizes(dto: AllPlayersWithPrizesDto): LeaderboardPlayer[] {
+  return dto[0].map((address, index) => ({
+    address,
+    name: dto[1][index],
+    seat: Number(dto[2][index]),
+    isEliminated: dto[3][index],
+    prize: BigInt(dto[4][index]),
   }));
 }
 

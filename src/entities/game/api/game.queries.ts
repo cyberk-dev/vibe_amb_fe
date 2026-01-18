@@ -7,9 +7,18 @@ import {
   mapVotingState,
   mapRoundPrizes,
   mapVictimsWithSeats,
+  mapAllPlayersWithPrizes,
   type Victim,
 } from "../lib/mappers";
-import type { AdminGameState, Player, PlayerWithVote, VotingState, RoundPrizes, GameOverview } from "../model/types";
+import type {
+  AdminGameState,
+  Player,
+  PlayerWithVote,
+  VotingState,
+  RoundPrizes,
+  GameOverview,
+  LeaderboardPlayer,
+} from "../model/types";
 import { GameStatus, Vote } from "@/integrations/aptos";
 
 // Staggered polling to avoid thundering herd with 20 concurrent users
@@ -232,5 +241,16 @@ export const gameQueries = {
       },
       staleTime: 5_000,
       refetchInterval: 10_000,
+    }),
+
+  // All players with prizes (for game over leaderboard)
+  leaderboard: () =>
+    queryOptions({
+      queryKey: [...gameQueries.all(), "leaderboard"],
+      queryFn: async (): Promise<LeaderboardPlayer[]> => {
+        const dto = await gameViewService.getAllPlayersWithPrizes();
+        return mapAllPlayersWithPrizes(dto);
+      },
+      staleTime: 30_000,
     }),
 };

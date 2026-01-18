@@ -91,20 +91,24 @@ const standingItemVariants = {
 interface PlayerStanding {
   rank: number;
   name: string;
-  playerLabel: string;
-  winnings: number;
-  isOut?: boolean;
+  seatNumber: number;
+  isEliminated: boolean;
+  prize: string;
 }
 
 interface GameOverScreenProps {
-  winner: {
+  winner?: {
     name: string;
-    playerLabel: string;
+    seatNumber: number;
     rank: number;
-    winnings: number;
+    prize: string;
   };
-  totalWinnings: number;
+  totalPool: string;
   standings: PlayerStanding[];
+  claimable: string;
+  hasClaimable: boolean;
+  onClaim: () => Promise<unknown>;
+  isClaiming: boolean;
   onBackToHome?: () => void;
 }
 
@@ -124,11 +128,16 @@ interface GameOverScreenProps {
  * Mobile: Controls under title, scrollable standings list
  * Desktop: Controls on right side, 2-column standings
  */
-export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome }: GameOverScreenProps) {
-  const formatCurrency = (value: number) => {
-    return `$${value.toFixed(2)}`;
-  };
-
+export function GameOverScreen({
+  winner,
+  totalPool,
+  standings,
+  claimable,
+  hasClaimable,
+  onClaim,
+  isClaiming,
+  onBackToHome,
+}: GameOverScreenProps) {
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-[#FFF7ED] via-white to-[#FEF2F2]">
       {/* Main border frame */}
@@ -227,10 +236,10 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
                     <FormattedMessage id="game_over.winner" defaultMessage="WINNER" />
                   </p>
                   <h2 className="font-bricolage font-bold text-2xl md:text-[48px] leading-[1] text-black">
-                    {winner.name}
+                    {winner?.name ?? "Unknown"}
                   </h2>
                   <p className="font-space text-xs md:text-sm leading-[1.43] tracking-[0.7px] uppercase text-black/60">
-                    {winner.playerLabel}
+                    PLAYER {winner?.seatNumber ?? 0}
                   </p>
                 </div>
               </div>
@@ -238,10 +247,10 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
               {/* Right - Total winnings */}
               <div className="w-full md:w-auto px-4 md:px-[50px] pt-4 md:pt-[34px] pb-2 md:pb-[2px] border-2 border-[#FF8C42] bg-[rgba(255,140,66,0.05)] flex flex-col justify-center gap-1 md:gap-2">
                 <p className="font-bricolage font-bold text-3xl md:text-[60px] leading-[1] text-center text-[#FF8C42]">
-                  {formatCurrency(totalWinnings)}
+                  {totalPool}
                 </p>
                 <p className="font-space text-[10px] md:text-xs leading-[1.33] tracking-[0.6px] uppercase text-center text-black/60">
-                  <FormattedMessage id="game_over.total_winnings" defaultMessage="Total Winnings" />
+                  <FormattedMessage id="game_over.total_winnings" defaultMessage="Total Pool" />
                 </p>
               </div>
             </div>
@@ -261,7 +270,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
             <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full" variants={standingsContainerVariants}>
               {standings.map((player) => {
                 const isFirst = player.rank === 1;
-                const isOut = player.isOut;
+                const isOut = player.isEliminated;
 
                 // Determine border color based on player status
                 const borderColor = isFirst ? "#000000" : isOut ? "rgba(220, 38, 38, 0.3)" : "#1B5E71";
@@ -293,29 +302,48 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
                           <h3 className="font-space font-bold text-sm md:text-lg leading-[1.56] text-black">
                             {player.name}
                           </h3>
-                          {player.isOut && (
+                          {player.isEliminated && (
                             <span className="px-1 py-0.5 md:px-[9px] md:py-[5px] text-[8px] md:text-[10px] leading-[1.5] tracking-[0.5px] uppercase text-[#DC2626] border border-[#DC2626]">
                               <FormattedMessage id="game_over.out" defaultMessage="OUT" />
                             </span>
                           )}
                         </div>
                         <p className="font-space text-[10px] md:text-xs leading-[1.33] tracking-[0.6px] uppercase text-black/50">
-                          {player.playerLabel}
+                          PLAYER {player.seatNumber}
                         </p>
                       </div>
                     </div>
 
                     {/* Right - Winnings */}
                     <div className="px-2 md:px-[26px] pt-2 md:pt-[14px] pb-1 md:pb-[2px] border-2 border-black flex items-center shrink-0">
-                      <p className="font-space font-bold text-sm md:text-xl leading-[1.4] text-black">
-                        {formatCurrency(player.winnings)}
-                      </p>
+                      <p className="font-space font-bold text-sm md:text-xl leading-[1.4] text-black">{player.prize}</p>
                     </div>
                   </motion.div>
                 );
               })}
             </motion.div>
           </div>
+
+          {/* Claim Prize Button */}
+          {hasClaimable && (
+            <motion.div className="mt-6 md:mt-8" variants={labelVariants}>
+              <button
+                onClick={() => onClaim()}
+                disabled={isClaiming}
+                className="w-full h-[50px] md:h-[60px] bg-[#FF8C42] text-white font-space font-bold text-xs md:text-sm leading-[1.43] tracking-[2.8px] uppercase hover:bg-[#FF8C42]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isClaiming ? (
+                  <FormattedMessage id="game_over.claiming" defaultMessage="CLAIMING..." />
+                ) : (
+                  <FormattedMessage
+                    id="game_over.claim_prize"
+                    defaultMessage="CLAIM {amount}"
+                    values={{ amount: claimable }}
+                  />
+                )}
+              </button>
+            </motion.div>
+          )}
 
           {/* Footer - Back to Home button */}
           <motion.div className="mt-6 md:mt-10 flex-shrink-0" variants={labelVariants}>

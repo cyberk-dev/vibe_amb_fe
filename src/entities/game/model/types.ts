@@ -130,6 +130,17 @@ export interface GameState {
 export type GamePhase = "waiting" | "passing" | "revealing" | "elimination" | "ended";
 
 /**
+ * Player data for Game Over leaderboard
+ */
+export interface LeaderboardPlayer {
+  address: string;
+  name: string;
+  seat: number;
+  isEliminated: boolean;
+  prize: bigint;
+}
+
+/**
  * Reveal state of a pack in reveal phase
  */
 export type PackRevealState = "pending" | "revealed-safe" | "revealed-exploded";

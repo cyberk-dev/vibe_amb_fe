@@ -6,7 +6,15 @@
 export { gameQueries } from "./api/game.queries";
 
 // Types for admin dashboard
-export type { Player, PlayerWithVote, AdminGameState, VotingState, RoundPrizes, GameOverview } from "./model/types";
+export type {
+  Player,
+  PlayerWithVote,
+  AdminGameState,
+  VotingState,
+  RoundPrizes,
+  GameOverview,
+  LeaderboardPlayer,
+} from "./model/types";
 export { GameStatus, Vote } from "./model/types";
 
 // Constants
@@ -20,7 +28,7 @@ export {
 } from "./model/constants";
 
 // Utils
-export { formatAptAmount, truncateAddress } from "./lib/mappers";
+export { formatAptAmount, truncateAddress, mapAllPlayersWithPrizes } from "./lib/mappers";
 export type { Victim } from "./lib/mappers";
 
 // UI Components for admin
