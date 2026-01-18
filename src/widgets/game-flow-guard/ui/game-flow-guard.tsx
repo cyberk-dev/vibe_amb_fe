@@ -5,9 +5,9 @@ import { useRouter, usePathname } from "next/navigation";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useQuery } from "@tanstack/react-query";
 import { whitelistQueries } from "@/entities/whitelist";
-import { gameQueries } from "@/entities/game";
+import { gameQueries, GameStatus } from "@/entities/game";
 
-type PlayerState = "loading" | "not_connected" | "not_registered" | "registered" | "joined";
+type PlayerState = "loading" | "not_connected" | "not_registered" | "registered" | "joined" | "playing";
 
 /**
  * GameFlowGuard - Routes players based on their game state
@@ -16,7 +16,8 @@ type PlayerState = "loading" | "not_connected" | "not_registered" | "registered"
  * - not_connected → /invite-code (wallet required)
  * - not_registered → /invite-code (need to register)
  * - registered (not joined) → /landing (can join game)
- * - joined → /waiting-room (already in game)
+ * - joined → /waiting-room (waiting for game to start)
+ * - playing → /pass (game has started, selection phase)
  */
 export function GameFlowGuard({ children }: PropsWithChildren) {
   const router = useRouter();
@@ -41,15 +42,30 @@ export function GameFlowGuard({ children }: PropsWithChildren) {
     enabled: !!address && connected,
   });
 
-  console.log(hasJoined);
+  // Query game status to detect when game starts
+  const { data: gameState, isLoading: statusLoading } = useQuery({
+    ...gameQueries.status(),
+    enabled: hasJoined === true, // Only poll when player has joined
+    refetchInterval: 2_000, // Poll every 2s to detect game start
+  });
 
   // Determine player state
-  // Check hasJoined first - if already joined, go to waiting room
+  // Priority: playing > joined > registered > not_registered > not_connected
   const getPlayerState = (): PlayerState => {
     if (walletLoading) return "loading";
     if (!connected) return "not_connected";
     if (joinLoading || codeLoading) return "loading";
-    if (hasJoined === true) return "joined";
+
+    // Check if already joined
+    if (hasJoined === true) {
+      // Check if game has started (status > PENDING)
+      if (statusLoading) return "loading";
+      if (gameState && gameState.status >= GameStatus.SELECTION) {
+        return "playing";
+      }
+      return "joined";
+    }
+
     if (codeError || !inviteCode) return "not_registered";
     return "registered";
   };
@@ -66,6 +82,8 @@ export function GameFlowGuard({ children }: PropsWithChildren) {
         return "/landing";
       case "joined":
         return "/waiting-room";
+      case "playing":
+        return "/pass";
       default:
         return null; // loading
     }
