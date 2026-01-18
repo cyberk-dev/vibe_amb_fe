@@ -169,6 +169,9 @@ const pulseAnimation = {
   },
 };
 
+/** Number of players required to start a game */
+const REQUIRED_PLAYERS = 20;
+
 /**
  * Landing Screen - Game Introduction
  *
@@ -188,7 +191,7 @@ const pulseAnimation = {
  */
 export function LandingScreen() {
   const intl = useIntl();
-  const { playerName, isJoining, handleJoinMatchmaking, playersCount } = useLandingFlow();
+  const { playerName, isJoining, handleJoinMatchmaking } = useLandingFlow();
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
 
   const displayName = playerName?.trim() || intl.formatMessage({ id: "landing.defaults.player_name" });
@@ -303,20 +306,10 @@ export function LandingScreen() {
             <div className="relative z-10 w-full max-w-[340px] space-y-12">
               {/* Player count display */}
               <div className="text-center space-y-4">
-                <motion.h2
-                  className="font-bold text-[180px] md:text-[210px] lg:text-[240px] leading-none text-white/80 font-bricolage"
-                  variants={playerCountVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  {playersCount}
-                </motion.h2>
-                <motion.p
-                  className="text-white text-xl tracking-wider uppercase font-space"
-                  variants={playerLabelVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
+                <h2 className="font-bold text-[180px] md:text-[210px] lg:text-[240px] leading-none text-white/80 font-bricolage">
+                  {REQUIRED_PLAYERS}
+                </h2>
+                <motion.p className="text-white text-xl tracking-wider uppercase font-space">
                   <FormattedMessage id="landing.players_required" />
                 </motion.p>
               </div>

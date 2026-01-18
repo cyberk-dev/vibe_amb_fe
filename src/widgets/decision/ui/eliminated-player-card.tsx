@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
 import type { EliminatedPlayer } from "./decision-widget";
 
@@ -39,7 +40,7 @@ export function EliminatedPlayerCard({ player, className }: EliminatedPlayerCard
         <div className="flex flex-col">
           <span className="font-space text-lg font-bold text-black">{player.name}</span>
           <span className="font-space text-xs font-normal uppercase tracking-[0.6px] text-destructive">
-            Eliminated This Round
+            <FormattedMessage id="decision.eliminated.eliminated_this_round" />
           </span>
         </div>
       </div>

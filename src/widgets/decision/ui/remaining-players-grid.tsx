@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
 import type { DecisionPlayer } from "./decision-widget";
 
@@ -55,7 +56,9 @@ export function RemainingPlayersGrid({ players, className }: RemainingPlayersGri
   return (
     <div className={cn("flex flex-col gap-4", className)}>
       {/* Section label */}
-      <p className="font-space text-xs font-normal uppercase tracking-[3.6px] text-black/40">Remaining Players</p>
+      <p className="font-space text-xs font-normal uppercase tracking-[3.6px] text-black/40">
+        <FormattedMessage id="decision.remaining_players.label" />
+      </p>
 
       {/* Players grid - wrapping flex */}
       <div className="flex flex-wrap gap-3">

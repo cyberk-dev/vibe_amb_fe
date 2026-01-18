@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { toast } from "sonner";
-import { buildFunctionPath, parseContractError, getAptosClient } from "@/integrations/aptos";
+import { buildFunctionPath, parseContractError, getAptosClient, isAlreadyRegisteredError } from "@/integrations/aptos";
 import { whitelistQueries } from "@/entities/whitelist";
 
 export function useRegisterWhitelist() {
@@ -36,7 +36,12 @@ export function useRegisterWhitelist() {
       queryClient.invalidateQueries({ queryKey: whitelistQueries.all() });
       toast.success("Registration successful!");
     },
-    onError: (error) => {
+    onError: async (error) => {
+      if (isAlreadyRegisteredError(error)) {
+        await queryClient.invalidateQueries({ queryKey: whitelistQueries.all() });
+        return;
+      }
+
       toast.error(parseContractError(error));
     },
   });
