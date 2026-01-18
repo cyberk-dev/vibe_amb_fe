@@ -71,7 +71,7 @@ export function SeatsGrid({ seats, className }: SeatsGridProps) {
     <motion.div className={cn("flex flex-col gap-4 md:gap-6", className)} initial="hidden" animate="visible">
       {/* Connected players label - hidden on mobile, parent shows it */}
       <motion.p
-        className="hidden md:block font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-[#6a7282]"
+        className="hidden md:block font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-custom-dark-grayish-blue"
         variants={labelVariants}
       >
         <FormattedMessage id="waiting_room.connected_players" defaultMessage="Connected Players" />

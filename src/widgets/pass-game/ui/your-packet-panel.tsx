@@ -71,7 +71,7 @@ export function YourPacketPanel({ packet, className }: YourPacketPanelProps) {
     <motion.div className={cn("flex flex-col gap-4", className)} initial="hidden" animate="visible">
       {/* Label */}
       <motion.p
-        className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-[#6a7282]"
+        className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-custom-dark-grayish-blue"
         variants={labelVariants}
       >
         <FormattedMessage id="pass_game.your_packet" defaultMessage="Your Packet" />
