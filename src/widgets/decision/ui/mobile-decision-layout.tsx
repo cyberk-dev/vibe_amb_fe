@@ -93,8 +93,8 @@ const footerVariants = {
 interface MobileDecisionLayoutProps {
   totalPlayers: number;
   eliminatedPlayer: EliminatedPlayer;
-  prizePerPlayer: number;
-  totalPool: number;
+  prizePerPlayer: string;
+  totalPool: string;
   nextRoundPool: number;
   onSharePrize: () => void;
   onContinuePlaying: () => void;
@@ -199,7 +199,7 @@ export function MobileDecisionLayout({
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ type: "spring" as const, stiffness: 100, damping: 15, delay: 0.2 }}
                 >
-                  ${totalPool.toFixed(2)}
+                  ${totalPool}
                 </motion.p>
                 <p className="font-space text-xs font-normal uppercase tracking-[0.3px] text-black/60">
                   <FormattedMessage id="decision.header.players_remaining" values={{ count: totalPlayers }} />
@@ -213,7 +213,7 @@ export function MobileDecisionLayout({
                     <FormattedMessage id="decision.mobile.if_shared_now" />
                   </p>
                   <p className="font-space text-sm font-bold text-black">
-                    ${prizePerPlayer.toFixed(2)} <FormattedMessage id="decision.mobile.each" />
+                    ${prizePerPlayer} <FormattedMessage id="decision.mobile.each" />
                   </p>
                 </div>
                 <div className="flex items-center justify-between">
@@ -274,7 +274,7 @@ export function MobileDecisionLayout({
                     {hasVotedShare ? (
                       <FormattedMessage id="decision.cards.you_voted_share" />
                     ) : (
-                      <FormattedMessage id="decision.cards.split_equally" values={{ amount: totalPool.toFixed(2) }} />
+                      <FormattedMessage id="decision.cards.split_equally" values={{ amount: totalPool }} />
                     )}
                   </p>
                 </div>
