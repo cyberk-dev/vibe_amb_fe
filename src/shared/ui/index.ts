@@ -1,6 +1,8 @@
 // UI Components
 export * from "./alert";
 export * from "./alert-dialog";
+export * from "./animated-digits";
+export * from "./background-music";
 export * from "./badge";
 export * from "./button";
 export * from "./card";
@@ -8,6 +10,7 @@ export * from "./confirm-dialog";
 export * from "./cta-button";
 export * from "./dialog";
 export * from "./form";
+export * from "./form-field";
 export * from "./global-confirm-dialog-container";
 export * from "./input";
 export * from "./label";
@@ -19,6 +22,7 @@ export * from "./separator";
 export * from "./sheet";
 export * from "./show-for-role";
 export * from "./sonner";
+export * from "./sound-button";
 export * from "./table";
 export * from "./textarea";
 export * from "./theme-toggle-button";

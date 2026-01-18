@@ -27,5 +27,108 @@
       "balance_label": "Balance",
       "disconnect_button": "Disconnect Wallet"
     }
+  },
+  "invite_code": {
+    "hero": {
+      "line1": "Lucky <money>Money</money>",
+      "line2": "<battle>Battle</battle> Royale",
+      "byline": "by VIBE Ambassador"
+    },
+    "form": {
+      "code_label": "Enter Code",
+      "code_placeholder": "000000",
+      "name_label": "Your Name",
+      "name_placeholder": "Enter your name",
+      "submit": "Join Game",
+      "submitting": "Verifying..."
+    },
+    "errors": {
+      "invalid_code": "Please enter a valid 6-digit code",
+      "missing_name": "Please enter your name"
+    }
+  },
+  "landing": {
+    "hero": {
+      "title": "The lore",
+      "greeting": "Hello {playerName}, let us introduce to you <strikethrough>Year of the Horse</strikethrough> Horse of the Year"
+    },
+    "description": {
+      "first": "A competitive game with a thrilling CNY theme. Pass red packets until everyone has one, then reveal. One explosive packet eliminates a player.",
+      "second": "Eliminated players get $1-3. Remaining players decide: share $28 or continue for <highlight>bigger shares</highlight>."
+    },
+    "illustration_alt": "Game Illustration",
+    "footer": "VIBE Ambassador - 2026",
+    "players_required": "Players Required",
+    "actions": {
+      "join_matchmaking": "Gacha time",
+      "view_demo": "How to play?",
+      "view_wallet": "Claim your money here"
+    },
+    "how_to_play": {
+      "title": "How to play",
+      "content": {
+        "intro": "Players will participate in \"Lucky Money\" game and squidgame to find the Horse of the Year.",
+        "rounds": "The game will take place in 4 rounds. In each round, there will be a number of lucky money packets = total remaining players. There will be bombs equal to 1/4 of the INITIAL total players (rounded down).",
+        "phase1": "Phase 1: Players have the right to give this packet to another player or to themselves.",
+        "phase2": "Phase 2: Moment of truth: open the lucky money packet. The \"lucky\" ones will receive a small amount of money and... a bomb. Farewell. (This consolation money also increases with each round)",
+        "phase3": "Phase 3: Surviving players will vote whether to continue playing or split the money. If they split the money, the reward pool will be divided equally among them, then everyone goes home.",
+        "continue": "As long as 1 horse wants to continue playing, the game will continue. Until only 1 horse remains alive, becoming the Horse of the Year and receiving all the money in the pool."
+      }
+    },
+    "defaults": {
+      "player_name": "UserName"
+    }
+  },
+  "waiting_room": {
+    "title": "Waiting Room",
+    "matchmaking": "Matchmaking",
+    "connected_players": "Connected Players",
+    "status": {
+      "starting_soon": "Game will start soon",
+      "waiting": "Waiting for players..."
+    },
+    "aria": {
+      "mute": "Mute sound",
+      "unmute": "Unmute sound"
+    }
+  },
+  "wallet": {
+    "connect_google": "Continue with Google",
+    "connecting": "Connecting...",
+    "connected": "Connected"
+  },
+  "pass_game": {
+    "game_in_progress": "Game In Progress",
+    "pass": "Pass",
+    "your_turn_to_pass": "Your turn to pass",
+    "your_packet": "Your Packet",
+    "pass_to_player": "Pass To Player",
+    "confirm_pass": "Confirm Pass",
+    "round": "Round {number}",
+    "you": "You",
+    "player_label": "Player {number}",
+    "admin": "Admin"
+  },
+  "reveal_game": {
+    "moment_of_truth": "Moment of Truth",
+    "reveal": "Reveal",
+    "revealing_packets": "Revealing Packets",
+    "proceeding_to_next_phase": "→ Proceeding to next phase...",
+    "revealed_count": "{revealed} / {total}",
+    "boom": "BOOM!",
+    "trolled_by": "Trolled by {name}",
+    "player_label": "Player {number}"
+  },
+  "game_over": {
+    "final_results": "FINAL RESULTS",
+    "game_over_line1": "Game",
+    "game_over_line2": "Over",
+    "complete": "Complete",
+    "winner": "WINNER",
+    "total_winnings": "Total Winnings",
+    "final_standings": "FINAL STANDINGS",
+    "out": "OUT",
+    "footer": "A GAME BY VIBE AMBASSADOR · 2026",
+    "back_to_home": "Back to home"
   }
 }

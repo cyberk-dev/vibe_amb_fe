@@ -27,5 +27,108 @@
       "balance_label": "Số dư",
       "disconnect_button": "Ngắt kết nối Ví"
     }
+  },
+  "invite_code": {
+    "hero": {
+      "line1": "Lucky <money>Money</money>",
+      "line2": "<battle>Battle</battle> Royale",
+      "byline": "bởi VIBE Ambassador"
+    },
+    "form": {
+      "code_label": "Nhập mã",
+      "code_placeholder": "000000",
+      "name_label": "Tên của bạn",
+      "name_placeholder": "Nhập tên của bạn",
+      "submit": "Tham gia trò chơi",
+      "submitting": "Đang xác minh..."
+    },
+    "errors": {
+      "invalid_code": "Vui lòng nhập mã 6 chữ số hợp lệ",
+      "missing_name": "Vui lòng nhập tên của bạn"
+    }
+  },
+  "landing": {
+    "hero": {
+      "title": "Con Ngựa của năm",
+      "greeting": "Xin chào {playerName}, hãy để chúng tôi giới thiệu với bạn <strikethrough>Năm của con ngựa</strikethrough> Con Ngựa của năm"
+    },
+    "description": {
+      "first": "Người chơi sẽ tham gia  \"Lì xì\" Nga và squidgame để tìm ra Con Ngựa của năm. ",
+      "second": "Người bị loại nhận giải khuyến khích nhỏ. Con Ngựa của năm nhận phần lớn của pool $200"
+    },
+    "illustration_alt": "Hình minh họa trò chơi",
+    "footer": "VIBE Ambassador - 2026",
+    "players_required": "Cần đủ người chơi",
+    "actions": {
+      "join_matchmaking": "Gacha time",
+      "view_demo": "Chơi như nào?",
+      "view_wallet": "Gặt lúa ở đây"
+    },
+    "how_to_play": {
+      "title": "Hướng dẫn chơi",
+      "content": {
+        "intro": "Người chơi sẽ tham gia  \"Lì xì\" Nga và squidgame để tìm ra Con Ngựa của năm.",
+        "rounds": "Trò chơi sẽ diễn ra trong 4 vòng, ở mỗi vòng chơi, sẽ có số bao lì xì = tổng số người chơi còn lại. Có số bom là 1/4 tổng số người chơi BAN ĐẦU(làm tròn xuống).",
+        "phase1": "Giai đoạn 1: Người chơi được quyền đưa bao này cho 1 người chơi khác hoặc cho chính mình.",
+        "phase2": "Giai đoạn 2: Giây phút sự thật: mở lì xì, ai \"may mắn\" sẽ nhận được 1 số tiền nhỏ và... bom. Xin vĩnh biệt cụ. (Số tiền an ủi này cũng tăng theo mỗi vòng)",
+        "phase3": "Giai đoạn 3: Những người chơi còn sống sẽ vote xem nên chơi tiếp hay chia tiền. Nếu chia tiền thì pool thưởng sẽ chia đều cho họ,sau đó ai về nhà nấy.",
+        "continue": "Chỉ cần có 1 con ngựa muốn chơi tiếp thì trò chơi sẽ tiếp tục. Cho đến khi chỉ còn 1 con ngựa duy nhất sống sót, trở thành Con Ngựa của năm và nhận toàn bộ số tiền trong pool."
+      }
+    },
+    "defaults": {
+      "player_name": "Người chơi"
+    }
+  },
+  "waiting_room": {
+    "title": "Phòng chờ",
+    "matchmaking": "Ghép trận",
+    "connected_players": "Người chơi kết nối",
+    "status": {
+      "starting_soon": "Trò chơi sẽ sớm bắt đầu",
+      "waiting": "Đang chờ người chơi..."
+    },
+    "aria": {
+      "mute": "Tắt âm thanh",
+      "unmute": "Bật âm thanh"
+    }
+  },
+  "wallet": {
+    "connect_google": "Tiếp tục với Google",
+    "connecting": "Đang kết nối...",
+    "connected": "Đã kết nối"
+  },
+  "pass_game": {
+    "game_in_progress": "Trò chơi đang diễn ra",
+    "pass": "Smash or Pass",
+    "your_turn_to_pass": "Đến lượt bạn chuyền",
+    "your_packet": "Phong bao của bạn",
+    "pass_to_player": "Chuyền cho người chơi",
+    "confirm_pass": "Xác nhận chuyền",
+    "round": "Vòng {number}",
+    "you": "Bạn",
+    "player_label": "Người chơi {number}",
+    "admin": "Quản trị viên"
+  },
+  "reveal_game": {
+    "moment_of_truth": "Khoảnh khắc sự thật",
+    "reveal": "Mở ra",
+    "revealing_packets": "Đang mở phong bao",
+    "proceeding_to_next_phase": "→ Tiến tới giai đoạn tiếp theo...",
+    "revealed_count": "{revealed} / {total}",
+    "boom": "BOOM!",
+    "trolled_by": "Bị troll bởi {name}",
+    "player_label": "Người chơi {number}"
+  },
+  "game_over": {
+    "final_results": "KẾT QUẢ CUỐI CÙNG",
+    "game_over_line1": "Trò chơi",
+    "game_over_line2": "kết thúc",
+    "complete": "Hoàn tất",
+    "winner": "NGƯỜI THẮNG",
+    "total_winnings": "Tổng thắng",
+    "final_standings": "BẢNG XẾP HẠNG CUỐI CÙNG",
+    "out": "BỊ LOẠI",
+    "footer": "TRÒ CHƠI BỞI VIBE AMBASSADOR · 2026",
+    "back_to_home": "Về trang chủ"
   }
 }

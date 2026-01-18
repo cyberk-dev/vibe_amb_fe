@@ -22,4 +22,4 @@ export const messages: Record<string, Record<string, string>> = {
 };
 
 export type Locale = "en-US" | "vi";
-export const initialLocale: Locale = "en-US";
+export const initialLocale: Locale = "vi";
