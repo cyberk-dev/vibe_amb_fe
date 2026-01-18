@@ -193,6 +193,11 @@
       "each": "each",
       "next_round_pool": "Next round pool:",
       "make_your_choice": "Make Your Choice"
+    },
+    "confirm_share": {
+      "message": "Are you scared?",
+      "cancel": "Yes, I'm scared",
+      "confirm": "Not scared, continue playing"
     }
   }
 }

@@ -193,6 +193,11 @@
       "each": "mỗi người",
       "next_round_pool": "Giải vòng tiếp theo:",
       "make_your_choice": "Đưa Ra Lựa Chọn"
+    },
+    "confirm_share": {
+      "message": "Bạn sợ à?",
+      "cancel": "Thôi, sợ lắm",
+      "confirm": "Sợ gì, chơi tiếp"
     }
   }
 }
