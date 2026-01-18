@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
+import { FormattedMessage } from "react-intl";
 import { AlertTriangle, Chrome, Globe } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "./dialog";
 import { Button } from "./button";
@@ -22,7 +22,6 @@ interface PopupBlockerWarningDialogProps {
  * includes an option to not show the warning again.
  */
 export function PopupBlockerWarningDialog({ open, onOpenChange, onProceed }: PopupBlockerWarningDialogProps) {
-  const intl = useIntl();
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
   const handleProceed = useCallback(() => {

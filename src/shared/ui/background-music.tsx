@@ -73,7 +73,7 @@ export function BackgroundMusic() {
       await audioRef.current.play();
       hasInteracted.current = true;
       setPlaying(true);
-    } catch (error) {
+    } catch {
       // Autoplay was prevented, will try again on next interaction
       console.log("Autoplay prevented, waiting for user interaction");
     }

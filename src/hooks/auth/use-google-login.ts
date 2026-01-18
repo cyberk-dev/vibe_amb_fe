@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
-interface UseGoogleLoginProps {
-  onSuccess?: () => void;
-}
-
 /**
  * Hook for handling Google OAuth login with redirect flow
  *
@@ -19,7 +15,7 @@ interface UseGoogleLoginProps {
  *    - https://yourdomain.com/auth/google/callback (production)
  * 4. Your backend should implement: GET /auth/google/callback?access_token={token}
  */
-export const useGoogleLogin = ({ onSuccess }: UseGoogleLoginProps) => {
+export const useGoogleLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleLogin = () => {

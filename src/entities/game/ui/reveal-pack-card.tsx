@@ -2,12 +2,12 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type HTMLMotionProps } from "framer-motion";
 import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
 import type { RevealPackData, PackRevealState } from "../model/types";
 
-export interface RevealPackCardProps extends React.ComponentPropsWithoutRef<"div"> {
+export interface RevealPackCardProps extends Omit<HTMLMotionProps<"div">, "ref"> {
   /**
    * Pack data containing player info and reveal state
    */
