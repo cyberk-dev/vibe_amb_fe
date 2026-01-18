@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
+import { motion } from "framer-motion";
 import { SoundButton } from "@/shared/ui/sound-button";
 import { GameFormField } from "@/shared/ui/form-field";
 import { useInviteCodeFlow, type FlowState } from "../lib/use-invite-code-flow";
+import { LanguageToggleButton } from "@/shared/ui";
 
 /**
  * Invite Code Screen - Whitelist Registration
@@ -23,16 +25,99 @@ import { useInviteCodeFlow, type FlowState } from "../lib/use-invite-code-flow";
  */
 
 // ========================================
-// Constants - Hoisted for performance
+// Animation Variants
 // ========================================
 
-/** Static decorative circles - hoisted to prevent re-creation on every render */
-const DECORATIVE_CIRCLES = (
-  <>
-    <div className="absolute w-[524.658px] h-[524.658px] rounded-full bg-custom-light-orange animate-float top-[354px] left-[639px] will-change-transform" />
-    <div className="absolute w-[431.213px] h-[431.213px] rounded-full bg-custom-very-dark-blue animate-float-delayed top-[360.37px] left-[965.68px] will-change-transform" />
-  </>
-);
+const circleVariants = {
+  initial: { scale: 0, opacity: 0 },
+  animate: (i: number) => ({
+    scale: 1,
+    opacity: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 15,
+      delay: i * 0.2,
+    },
+  }),
+};
+
+const floatAnimation = {
+  y: [0, -20, 0],
+  transition: {
+    duration: 4,
+    repeat: Infinity,
+    ease: "easeInOut" as const,
+  },
+};
+
+const titleContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.3,
+    },
+  },
+};
+
+const wordVariants = {
+  hidden: { opacity: 0, x: -100 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 15,
+    },
+  },
+};
+
+const bylineVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: 1.2,
+      duration: 0.6,
+      ease: "easeOut" as const,
+    },
+  },
+};
+
+const formContainerVariants = {
+  hidden: {
+    opacity: 0,
+    y: 100,
+    scale: 0.9,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 80,
+      damping: 15,
+      delay: 0.8,
+    },
+  },
+};
+
+const buttonVariants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      opacity: { delay: 1.4, duration: 0.3 },
+      scale: { type: "spring" as const, stiffness: 300, damping: 20 },
+    },
+  },
+};
 
 /** Get button text based on flow state */
 function getButtonTextId(flowState: FlowState, canContinue: boolean): string {
@@ -57,7 +142,6 @@ function getButtonTextId(flowState: FlowState, canContinue: boolean): string {
 
 export function InviteCodeScreen() {
   const intl = useIntl();
-  const [isMuted, setIsMuted] = useState(false);
 
   const { flowState, inviteCode, displayName, setDisplayName, handleConnect, handleContinue, canContinue } =
     useInviteCodeFlow();
@@ -93,51 +177,72 @@ export function InviteCodeScreen() {
 
   return (
     <div className="h-full bg-custom-vivid-red overflow-hidden relative">
-      {/* Decorative circles - static, hoisted for performance */}
-      {DECORATIVE_CIRCLES}
-
-      {/* Sound button */}
-      <SoundButton
-        isMuted={isMuted}
-        onToggle={() => setIsMuted(!isMuted)}
-        iconColor="text-custom-vivid-red"
-        className="absolute top-6 right-6"
+      {/* Decorative circles with entrance animations */}
+      <motion.div
+        className="absolute w-[524.658px] h-[524.658px] rounded-full bg-custom-light-orange top-[354px] left-[639px] will-change-transform"
+        variants={circleVariants}
+        initial="initial"
+        animate="animate"
+        custom={0}
+        whileInView={floatAnimation}
       />
+      <motion.div
+        className="absolute w-[431.213px] h-[431.213px] rounded-full bg-custom-very-dark-blue top-[360.37px] left-[965.68px] will-change-transform"
+        variants={circleVariants}
+        initial="initial"
+        animate="animate"
+        custom={1}
+        whileInView={floatAnimation}
+      />
+
+      {/* Top right controls: Language toggle and Sound button */}
+      <div className="absolute top-6 right-6 flex items-center gap-3 z-20">
+        <LanguageToggleButton />
+        <SoundButton variant="dark" />
+      </div>
 
       {/* Main content */}
       <div className="h-full flex flex-col justify-between p-6 md:p-12 relative z-10">
         {/* Hero title */}
         <div className="flex-1 flex items-center">
           <div className="w-full max-w-[1027px]">
-            <div className="animate-fade-in-left">
+            <motion.div variants={titleContainerVariants} initial="hidden" animate="visible">
               <h1 className="font-bold leading-[0.9] text-white font-bricolage text-[160px] [font-variation-settings:'opsz'_14,'wdth'_100]">
-                <span className="block whitespace-nowrap">
+                <motion.span className="block whitespace-nowrap" variants={wordVariants}>
                   <FormattedMessage
                     id="invite_code.hero.line1"
                     values={{
                       money: (chunks: ReactNode) => <span className="text-custom-light-orange">{chunks}</span>,
                     }}
                   />
-                </span>
-                <span className="block whitespace-nowrap">
+                </motion.span>
+                <motion.span className="block whitespace-nowrap" variants={wordVariants}>
                   <FormattedMessage
                     id="invite_code.hero.line2"
                     values={{
                       battle: (chunks: ReactNode) => <span className="text-custom-very-dark-blue">{chunks}</span>,
                     }}
                   />
-                </span>
+                </motion.span>
               </h1>
-              <p className="text-white/60 text-[20px] uppercase tracking-[1.2px] mt-6 font-normal font-space">
+              <motion.p
+                className="text-white text-[20px] uppercase tracking-[1.2px] mt-6 font-space"
+                variants={bylineVariants}
+              >
                 <FormattedMessage id="invite_code.hero.byline" />
-              </p>
-            </div>
+              </motion.p>
+            </motion.div>
           </div>
         </div>
 
         {/* Bottom section with form */}
-        <div className="w-full max-w-[576px]">
-          <div className="border-2 border-[rgba(255,228,220,0.5)] p-8 md:p-9 bg-white/10 backdrop-blur-sm animate-fade-in-up">
+        <motion.div
+          className="w-full max-w-[576px]"
+          variants={formContainerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <div className="border-2 border-[rgba(255,228,220,0.5)] p-8 md:p-9 bg-white/10 backdrop-blur-sm">
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Code Input - Readonly, auto-filled after registration */}
               <GameFormField>
@@ -182,10 +287,15 @@ export function InviteCodeScreen() {
               )}
 
               {/* Submit button */}
-              <button
+              <motion.button
                 type="submit"
                 disabled={isLoading || (flowState === "ready" && !canContinue)}
-                className="group flex items-center gap-3 text-white text-xl font-medium hover:text-yellow-200 transition-colors pt-2 disabled:opacity-50 disabled:cursor-not-allowed font-space"
+                className="group flex items-center gap-3 text-white text-xl font-medium hover:text-yellow-200 transition-colors pt-2 disabled:opacity-50 disabled:cursor-not-allowed font-space cursor-pointer"
+                variants={buttonVariants}
+                initial="hidden"
+                animate="visible"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 <span className="uppercase tracking-wider">
                   <FormattedMessage id={getButtonTextId(flowState, canContinue)} />
@@ -193,12 +303,22 @@ export function InviteCodeScreen() {
                 {isLoading ? (
                   <span className="animate-spin">⏳</span>
                 ) : (
-                  <span className="text-xl group-hover:translate-x-2 transition-transform">→</span>
+                  <motion.span
+                    className="text-xl"
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    →
+                  </motion.span>
                 )}
-              </button>
+              </motion.button>
             </form>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

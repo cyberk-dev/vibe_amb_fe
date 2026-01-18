@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { FormattedMessage, useIntl } from "react-intl";
 import { cn } from "@/shared/lib/utils";
 import { Volume2, VolumeX } from "lucide-react";
 import type { EliminatedPlayer } from "./decision-widget";
@@ -39,6 +40,7 @@ export function MobileDecisionLayout({
   currentUserVote = null,
   className,
 }: MobileDecisionLayoutProps) {
+  const intl = useIntl();
   const hasVotedShare = currentUserVote === "share";
   const hasVotedContinue = currentUserVote === "continue";
 
@@ -57,20 +59,28 @@ export function MobileDecisionLayout({
           {/* Header */}
           <div className="flex flex-col gap-3">
             <p className="font-space text-[10px] font-normal uppercase tracking-[2px] text-custom-teal">
-              Critical Choice
+              <FormattedMessage id="decision.header.critical_choice" />
             </p>
-            <h1 className="font-bricolage text-[60px] font-bold leading-[0.85] text-black">Decision</h1>
+            <h1 className="font-bricolage text-[60px] font-bold leading-[0.85] text-black">
+              <FormattedMessage id="decision.header.title" />
+            </h1>
 
             {/* Controls row */}
             <div className="flex items-center gap-3 mt-2">
               <div className="h-9 border-[1.8px] border-custom-teal px-4 flex items-center">
-                <span className="font-space text-xs font-medium text-custom-teal">{totalPlayers} Players</span>
+                <span className="font-space text-xs font-medium text-custom-teal">
+                  <FormattedMessage id="decision.header.players" values={{ count: totalPlayers }} />
+                </span>
               </div>
               <button
                 type="button"
                 onClick={onToggleMute}
                 className="size-10 bg-custom-light-orange flex items-center justify-center"
-                aria-label={isMuted ? "Unmute" : "Mute"}
+                aria-label={
+                  isMuted
+                    ? intl.formatMessage({ id: "waiting_room.aria.unmute" })
+                    : intl.formatMessage({ id: "waiting_room.aria.mute" })
+                }
               >
                 {isMuted ? <VolumeX className="size-5 text-white" /> : <Volume2 className="size-5 text-white" />}
               </button>
@@ -80,13 +90,13 @@ export function MobileDecisionLayout({
           {/* Prize Pool Card */}
           <div className="bg-white border-[1.8px] border-custom-teal p-4 flex flex-col gap-4">
             <p className="font-space text-[10px] font-normal uppercase tracking-[2px] text-custom-teal">
-              Current Prize Pool
+              <FormattedMessage id="decision.mobile.current_prize_pool" />
             </p>
 
             <div className="flex flex-col gap-2">
               <p className="font-bricolage text-5xl font-bold text-black">${totalPool.toFixed(2)}</p>
               <p className="font-space text-xs font-normal uppercase tracking-[0.3px] text-black/60">
-                {totalPlayers} players remaining
+                <FormattedMessage id="decision.header.players_remaining" values={{ count: totalPlayers }} />
               </p>
             </div>
 
@@ -94,13 +104,15 @@ export function MobileDecisionLayout({
             <div className="border-t border-black/10 pt-4 flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <p className="font-space text-[10px] font-normal uppercase tracking-[0.25px] text-black/60">
-                  If shared now:
+                  <FormattedMessage id="decision.mobile.if_shared_now" />
                 </p>
-                <p className="font-space text-sm font-bold text-black">${prizePerPlayer.toFixed(2)} each</p>
+                <p className="font-space text-sm font-bold text-black">
+                  ${prizePerPlayer.toFixed(2)} <FormattedMessage id="decision.mobile.each" />
+                </p>
               </div>
               <div className="flex items-center justify-between">
                 <p className="font-space text-[10px] font-normal uppercase tracking-[0.25px] text-black/60">
-                  Next round pool:
+                  <FormattedMessage id="decision.mobile.next_round_pool" />
                 </p>
                 <p className="font-space text-sm font-bold text-custom-teal">${nextRoundPool.toFixed(2)}</p>
               </div>
@@ -109,7 +121,9 @@ export function MobileDecisionLayout({
 
           {/* Eliminated section */}
           <div className="flex flex-col gap-3">
-            <p className="font-space text-[10px] font-normal uppercase tracking-[2px] text-black/40">Eliminated (1)</p>
+            <p className="font-space text-[10px] font-normal uppercase tracking-[2px] text-black/40">
+              <FormattedMessage id="decision.eliminated.eliminated_count" values={{ count: 1 }} />
+            </p>
             <div className="bg-white/50 border border-black/10 px-2 py-2 flex items-center gap-2 w-fit">
               <div className="size-6 bg-black/10 flex items-center justify-center">
                 <span className="font-space text-[10px] font-bold text-black/30">✕</span>
@@ -121,7 +135,7 @@ export function MobileDecisionLayout({
           {/* Make Your Choice section */}
           <div className="flex flex-col gap-3">
             <p className="font-space text-[10px] font-normal uppercase tracking-[2px] text-black/40">
-              Make Your Choice
+              <FormattedMessage id="decision.mobile.make_your_choice" />
             </p>
 
             {/* Share Now button */}
@@ -137,12 +151,16 @@ export function MobileDecisionLayout({
             >
               <div className="flex flex-col gap-3">
                 <h2 className="font-bricolage text-[30px] font-bold leading-[1.2] text-white">
-                  Share
+                  <FormattedMessage id="decision.cards.share_now_line1" />
                   <br />
-                  Now
+                  <FormattedMessage id="decision.cards.share_now_line2" />
                 </h2>
                 <p className="font-space text-xs font-normal uppercase tracking-[0.3px] text-white/80">
-                  {hasVotedShare ? "You voted to share" : `Split $${totalPool.toFixed(2)} equally`}
+                  {hasVotedShare ? (
+                    <FormattedMessage id="decision.cards.you_voted_share" />
+                  ) : (
+                    <FormattedMessage id="decision.cards.split_equally" values={{ amount: totalPool.toFixed(2) }} />
+                  )}
                 </p>
               </div>
             </button>
@@ -160,12 +178,16 @@ export function MobileDecisionLayout({
             >
               <div className="flex flex-col gap-3">
                 <h2 className="font-bricolage text-[30px] font-bold leading-[1.2] text-white">
-                  Keep
+                  <FormattedMessage id="decision.cards.keep_going_line1" />
                   <br />
-                  Going
+                  <FormattedMessage id="decision.cards.keep_going_line2" />
                 </h2>
                 <p className="font-space text-xs font-normal uppercase tracking-[0.3px] text-white/80">
-                  {hasVotedContinue ? "You voted to continue" : `Risk for $${nextRoundPool.toFixed(2)}`}
+                  {hasVotedContinue ? (
+                    <FormattedMessage id="decision.cards.you_voted_continue" />
+                  ) : (
+                    <FormattedMessage id="decision.cards.risk_for" values={{ amount: nextRoundPool.toFixed(2) }} />
+                  )}
                 </p>
               </div>
             </button>
@@ -174,7 +196,7 @@ export function MobileDecisionLayout({
           {/* Footer */}
           <div className="border-t border-black/10 pt-6">
             <p className="font-space text-[10px] font-normal uppercase tracking-[1.5px] text-black/40 text-center">
-              we know you are ambitious
+              <FormattedMessage id="decision.widget.footer" />
             </p>
           </div>
         </div>

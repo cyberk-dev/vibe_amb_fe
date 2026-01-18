@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { FormattedMessage, useIntl } from "react-intl";
 import { cn } from "@/shared/lib/utils";
 
 interface DecisionCardsProps {
@@ -33,6 +34,7 @@ export function DecisionCards({
   currentUserVote = null,
   className,
 }: DecisionCardsProps) {
+  const intl = useIntl();
   const hasVotedShare = currentUserVote === "share";
   const hasVotedContinue = currentUserVote === "continue";
 
@@ -49,19 +51,21 @@ export function DecisionCards({
         <div className="flex flex-col gap-6">
           {/* Option label */}
           <div className="border-2 border-custom-teal w-fit px-4 py-2">
-            <span className="font-space text-xs font-normal uppercase tracking-[2.4px] text-custom-teal">Option A</span>
+            <span className="font-space text-xs font-normal uppercase tracking-[2.4px] text-custom-teal">
+              <FormattedMessage id="decision.cards.option_a" />
+            </span>
           </div>
 
           {/* Title */}
           <h2 className="font-bricolage text-5xl md:text-7xl font-bold leading-[1] text-custom-teal">
-            Share
+            <FormattedMessage id="decision.cards.share_prize_line1" />
             <br />
-            Prize
+            <FormattedMessage id="decision.cards.share_prize_line2" />
           </h2>
 
           {/* Description */}
           <p className="font-space text-sm font-normal uppercase tracking-[0.7px] text-black/60">
-            End the game now and split equally
+            <FormattedMessage id="decision.cards.share_description" />
           </p>
 
           {/* Prize box */}
@@ -70,7 +74,7 @@ export function DecisionCards({
               ${prizePerPlayer.toFixed(2)}
             </span>
             <span className="font-space text-xs font-normal uppercase tracking-[0.6px] text-custom-teal">
-              Per Player
+              <FormattedMessage id="decision.cards.per_player" />
             </span>
           </div>
         </div>
@@ -88,7 +92,11 @@ export function DecisionCards({
             "disabled:opacity-50 disabled:cursor-not-allowed",
           )}
         >
-          {hasVotedShare ? "Voted" : "Share Prize"}
+          {hasVotedShare ? (
+            <FormattedMessage id="decision.cards.voted" />
+          ) : (
+            <FormattedMessage id="decision.cards.share_prize" />
+          )}
         </button>
       </div>
 
@@ -103,25 +111,29 @@ export function DecisionCards({
         <div className="flex flex-col gap-6">
           {/* Option label */}
           <div className="border-2 border-white/40 w-fit px-4 py-2">
-            <span className="font-space text-xs font-normal uppercase tracking-[2.4px] text-white/90">Option B</span>
+            <span className="font-space text-xs font-normal uppercase tracking-[2.4px] text-white/90">
+              <FormattedMessage id="decision.cards.option_b" />
+            </span>
           </div>
 
           {/* Title */}
           <h2 className="font-bricolage text-5xl md:text-7xl font-bold leading-[1] text-white">
-            Keep
+            <FormattedMessage id="decision.cards.keep_playing_line1" />
             <br />
-            Playing
+            <FormattedMessage id="decision.cards.keep_playing_line2" />
           </h2>
 
           {/* Description */}
           <p className="font-space text-sm font-normal uppercase tracking-[0.7px] text-white/80">
-            Eliminate more players for bigger shares
+            <FormattedMessage id="decision.cards.continue_description" />
           </p>
 
           {/* Prize box */}
           <div className="bg-white/10 border-2 border-white/40 p-8 flex flex-col items-center gap-2">
             <span className="font-bricolage text-5xl md:text-6xl font-bold text-white">${totalPool}</span>
-            <span className="font-space text-xs font-normal uppercase tracking-[0.6px] text-white/80">Total Pool</span>
+            <span className="font-space text-xs font-normal uppercase tracking-[0.6px] text-white/80">
+              <FormattedMessage id="decision.cards.total_pool" />
+            </span>
           </div>
         </div>
 
@@ -138,7 +150,11 @@ export function DecisionCards({
             "disabled:opacity-50 disabled:cursor-not-allowed",
           )}
         >
-          {hasVotedContinue ? "Voted" : "Continue Playing"}
+          {hasVotedContinue ? (
+            <FormattedMessage id="decision.cards.voted" />
+          ) : (
+            <FormattedMessage id="decision.cards.continue_playing" />
+          )}
         </button>
       </div>
     </div>

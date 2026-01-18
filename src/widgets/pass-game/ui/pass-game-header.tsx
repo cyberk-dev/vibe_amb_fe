@@ -6,6 +6,7 @@ import { useIntl, FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
 import type { GameHost } from "@/entities/game";
 import { GameHostBadge } from "@/entities/game";
+import { LanguageToggleButton } from "@/shared/ui";
 
 interface PassGameHeaderProps {
   /**
@@ -72,10 +73,13 @@ export function PassGameHeader({ round, countdown, host, isMuted, onToggleMute, 
         </p>
       </div>
 
-      {/* Right section: Round, sound toggle, and host badge */}
+      {/* Right section: Language toggle, Round, sound toggle, and host badge */}
       <div className="flex flex-col items-end gap-6">
-        {/* Top row: Round indicator and sound toggle */}
+        {/* Top row: Language toggle, Round indicator and sound toggle */}
         <div className="flex gap-2.5 items-center">
+          {/* Language toggle button */}
+          <LanguageToggleButton />
+
           {/* Round indicator */}
           <div className="border-2 border-[#e7000b] flex items-center justify-center px-[18px] py-[10px] h-10">
             <p className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-[#e7000b] whitespace-nowrap">

@@ -87,12 +87,12 @@ const GameFormFieldInput = React.memo(
           {
             // Default variant - uses shared Input styles
             default: "",
-            // Game code variant - large, centered, monospace style for OTP
+            // Game code variant - large, left-aligned for OTP code
             "game-code":
-              "w-full px-4 py-4 bg-white/15 border-2 border-white/40 text-white text-4xl font-bold tracking-[4.32px] text-center focus:outline-none focus:border-white/70 focus:bg-white/20 transition-all placeholder:text-white/30",
+              "w-full px-4 py-4 bg-white/15 border-2 border-white/40 rounded-none text-white md:!text-[24px] font-bold tracking-[4.32px] text-left focus:outline-none focus:border-white focus:ring-0 focus-visible:ring-0 focus-visible:border-white focus:bg-white/20 transition-all placeholder:text-white/30",
             // Game text variant - standard text input with game theme
             "game-text":
-              "w-full px-4 py-3 bg-white/15 border-2 border-white/40 text-white text-lg focus:outline-none focus:border-white/70 focus:bg-white/20 transition-all placeholder:text-white/40",
+              "w-full px-4 py-3 bg-white/15 border-2 border-white/40 rounded-none text-white md:!text-[18px] focus:outline-none focus:border-white focus:ring-0 focus-visible:ring-0 focus-visible:border-white focus:bg-white/20 transition-all placeholder:text-white/40",
           }[variant],
           className,
         )}

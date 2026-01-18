@@ -1,6 +1,7 @@
 "use client";
 
 import { Volume2, VolumeX } from "lucide-react";
+import { motion } from "framer-motion";
 import { cn } from "@/shared/lib/utils";
 import { useSoundToggle } from "@/shared/lib/stores";
 
@@ -14,12 +15,14 @@ export interface SoundButtonProps {
    */
   onToggle?: () => void;
   /**
-   * Icon color class (tailwind text-* class)
-   * @default "text-custom-vivid-red"
+   * Style variant for different backgrounds
+   * - "light": For dark backgrounds (white/light icon)
+   * - "dark": For light backgrounds (dark/red icon)
+   * @default "dark"
    */
-  iconColor?: string;
+  variant?: "light" | "dark";
   /**
-   * Additional classes for container
+   * Additional classes for container positioning (e.g., "absolute top-6 right-6")
    */
   className?: string;
 }
@@ -27,8 +30,14 @@ export interface SoundButtonProps {
 /**
  * Sound Toggle Button
  *
- * A reusable button component for toggling sound on/off.
+ * A reusable button component for toggling sound on/off with built-in animations.
  * Displays VolumeX icon when muted, Volume2 icon when unmuted.
+ *
+ * Features:
+ * - Entrance animation (scale pop-in)
+ * - Hover animation (scale up)
+ * - Two style variants for different backgrounds
+ * - Uses global audio store by default
  *
  * Can be used in two modes:
  * 1. Controlled: Pass isMuted and onToggle props
@@ -36,8 +45,11 @@ export interface SoundButtonProps {
  *
  * @example
  * ```tsx
- * // Using global store (recommended)
- * <SoundButton />
+ * // Using global store with light variant (for dark backgrounds)
+ * <SoundButton variant="light" className="absolute top-6 right-6" />
+ *
+ * // Using global store with dark variant (for light backgrounds)
+ * <SoundButton variant="dark" className="absolute top-6 right-6" />
  *
  * // Controlled mode
  * const [isMuted, setIsMuted] = useState(false);
@@ -47,7 +59,7 @@ export interface SoundButtonProps {
 export function SoundButton({
   isMuted: controlledMuted,
   onToggle: controlledToggle,
-  iconColor = "text-custom-vivid-red",
+  variant = "dark",
   className,
 }: SoundButtonProps) {
   const { isMuted: globalMuted, toggleMute: globalToggle } = useSoundToggle();
@@ -56,11 +68,24 @@ export function SoundButton({
   const isMuted = controlledMuted ?? globalMuted;
   const onToggle = controlledToggle ?? globalToggle;
 
+  const iconColor = variant === "light" ? "text-white" : "text-custom-vivid-red";
+  const bgColor = variant === "light" ? "bg-white/20" : "bg-white/50";
+
   return (
-    <div className={cn("bg-white/50 rounded-lg p-1", className)}>
+    <motion.div
+      className={cn("rounded-lg p-1 z-20", bgColor, className)}
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{
+        opacity: { delay: 0.5, duration: 0.3 },
+        scale: { type: "spring" as const, stiffness: 300, damping: 20 },
+      }}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.95 }}
+    >
       <button
         type="button"
-        className="w-8 h-8 flex items-center justify-center"
+        className="w-8 h-8 flex items-center justify-center cursor-pointer"
         aria-label="Toggle sound"
         onClick={onToggle}
       >
@@ -70,6 +95,6 @@ export function SoundButton({
           <Volume2 className={cn("w-full h-full", iconColor)} />
         )}
       </button>
-    </div>
+    </motion.div>
   );
 }
