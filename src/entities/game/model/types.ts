@@ -8,6 +8,7 @@ export interface Player {
   address: string;
   name: string;
   hasActed: boolean;
+  seat?: number; // initial_bao_id (0-indexed)
 }
 
 export interface PlayerWithVote extends Player {

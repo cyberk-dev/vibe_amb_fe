@@ -87,7 +87,8 @@ export function GameFlowGuard({ children }: PropsWithChildren) {
           case GameStatus.SELECTION:
             return "selection";
           case GameStatus.REVEALING:
-            return "revealing";
+          case GameStatus.REVEALED:
+            return "revealing"; // Both go to /reveal
           case GameStatus.VOTING:
             return "voting";
           case GameStatus.ENDED:

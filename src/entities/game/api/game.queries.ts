@@ -1,6 +1,13 @@
 import { queryOptions, keepPreviousData } from "@tanstack/react-query";
 import { gameViewService } from "./game-views";
-import { mapAllPlayers, mapVotingState, mapRoundPrizes } from "../lib/mappers";
+import {
+  mapAllPlayers,
+  mapAllPlayersWithSeats,
+  mapVotingState,
+  mapRoundPrizes,
+  mapVictimsWithSeats,
+  type Victim,
+} from "../lib/mappers";
 import type { AdminGameState, Player, VotingState, RoundPrizes, GameOverview } from "../model/types";
 import { GameStatus } from "@/integrations/aptos";
 
@@ -39,9 +46,20 @@ export const gameQueries = {
         const dto = await gameViewService.getAllPlayers();
         return mapAllPlayers(dto);
       },
-      staleTime: 3_000, // Consider fresh for 3s (prevents rapid refetches)
+      staleTime: 1_000, // 1s - must be less than refetchInterval to actually poll
       refetchInterval: pollingInterval, // 1.5-4.5s jittered interval
       placeholderData: keepPreviousData,
+    }),
+
+  // Player list with seats (for reveal screen)
+  playersWithSeats: () =>
+    queryOptions({
+      queryKey: [...gameQueries.all(), "playersWithSeats"],
+      queryFn: async (): Promise<Player[]> => {
+        const dto = await gameViewService.getAllPlayersWithSeats();
+        return mapAllPlayersWithSeats(dto);
+      },
+      staleTime: 5_000,
     }),
 
   // Voting state (only relevant in VOTING phase)
@@ -74,6 +92,17 @@ export const gameQueries = {
         return gameViewService.getRoundVictims();
       },
       staleTime: 30_000,
+    }),
+
+  // Round victims with seats (optimized single call)
+  victimsWithNames: () =>
+    queryOptions({
+      queryKey: [...gameQueries.all(), "victimsWithSeats"], // Changed key to bust cache
+      queryFn: async (): Promise<Victim[]> => {
+        const dto = await gameViewService.getRoundVictimsWithSeats();
+        return mapVictimsWithSeats(dto);
+      },
+      staleTime: 5_000, // Allow refetch after 5s
     }),
 
   // Check if player has joined current game

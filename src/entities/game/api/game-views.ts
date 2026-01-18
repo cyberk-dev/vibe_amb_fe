@@ -1,5 +1,13 @@
 import { getAptosClient, GAME_MODULE, GameStatus } from "@/integrations/aptos";
-import type { AllPlayersDto, VotingStateDto, RoundPrizesDto, VoteDto } from "./dto/game.dto";
+import type {
+  AllPlayersDto,
+  VotingStateDto,
+  RoundPrizesDto,
+  VoteDto,
+  VictimsWithNamesDto,
+  VictimsWithSeatsDto,
+  AllPlayersWithSeatsDto,
+} from "./dto/game.dto";
 
 class GameViewService {
   private get aptos() {
@@ -59,6 +67,17 @@ class GameViewService {
       },
     });
     return { 0: result[0], 1: result[1], 2: result[2] };
+  }
+
+  async getAllPlayersWithSeats(): Promise<AllPlayersWithSeatsDto> {
+    const result = await this.aptos.view<[string[], string[], boolean[], string[]]>({
+      payload: {
+        function: `${GAME_MODULE}::get_all_players_with_seats`,
+        typeArguments: [],
+        functionArguments: [],
+      },
+    });
+    return { 0: result[0], 1: result[1], 2: result[2], 3: result[3] };
   }
 
   async hasSelected(playerAddress: string): Promise<boolean> {
@@ -136,6 +155,39 @@ class GameViewService {
       },
     });
     return victims;
+  }
+
+  async getRoundVictimsWithNames(): Promise<VictimsWithNamesDto> {
+    const result = await this.aptos.view<[string[], string[]]>({
+      payload: {
+        function: `${GAME_MODULE}::get_round_victims_with_names`,
+        typeArguments: [],
+        functionArguments: [],
+      },
+    });
+    return { 0: result[0], 1: result[1] };
+  }
+
+  async getRoundVictimsWithSeats(): Promise<VictimsWithSeatsDto> {
+    const result = await this.aptos.view<[string[], string[], string[]]>({
+      payload: {
+        function: `${GAME_MODULE}::get_round_victims_with_seats`,
+        typeArguments: [],
+        functionArguments: [],
+      },
+    });
+    return { 0: result[0], 1: result[1], 2: result[2] };
+  }
+
+  async getPlayerInfo(playerAddress: string): Promise<{ name: string; acted: boolean }> {
+    const result = await this.aptos.view<[string, boolean, { vec: string[] }]>({
+      payload: {
+        function: `${GAME_MODULE}::get_player_info`,
+        typeArguments: [],
+        functionArguments: [playerAddress],
+      },
+    });
+    return { name: result[0], acted: result[1] };
   }
 
   async getVote(playerAddress: string): Promise<VoteDto> {
