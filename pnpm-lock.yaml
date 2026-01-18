@@ -77,6 +77,9 @@ importers:
       axios:
         specifier: ^1.11.0
         version: 1.11.0
+      cacheable-request:
+        specifier: 7.0.4
+        version: 7.0.4
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -98,6 +101,9 @@ importers:
       idb-keyval:
         specifier: ^6.2.2
         version: 6.2.2
+      keyv:
+        specifier: 4.5.4
+        version: 4.5.4
       lucide-react:
         specifier: ^0.540.0
         version: 0.540.0(react@19.1.3)
