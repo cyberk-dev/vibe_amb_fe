@@ -1,12 +1,12 @@
 "use client";
 
-import { RegistrationGuard } from "@/shared";
+import { GameFlowGuard } from "@/widgets/game-flow-guard";
 import { PassScreen } from "@/screens/pass";
 
 export default function PassPage() {
   return (
-    <RegistrationGuard>
+    <GameFlowGuard>
       <PassScreen />
-    </RegistrationGuard>
+    </GameFlowGuard>
   );
 }

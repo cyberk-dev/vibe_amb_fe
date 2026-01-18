@@ -1,12 +1,58 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import { cn } from "@/shared/lib/utils";
 import type { GamePlayer, GameHost, RedPacket } from "@/entities/game";
 import { PassGameHeader } from "./pass-game-header";
 import { YourPacketPanel } from "./your-packet-panel";
 import { PlayerSelectionGrid } from "./player-selection-grid";
 import { ConfirmPassButton } from "./confirm-pass-button";
+
+// ========================================
+// Animation Variants
+// ========================================
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.3,
+      staggerChildren: 0.1,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const mainContentVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 80,
+      damping: 15,
+      delay: 0.2,
+    },
+  },
+};
+
+const confirmButtonVariants = {
+  hidden: { opacity: 0, scale: 0.9, y: 20 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 15,
+      delay: 0.5,
+    },
+  },
+};
 
 export interface PassGameProps {
   /**
@@ -54,14 +100,6 @@ export interface PassGameProps {
    */
   isPassing?: boolean;
   /**
-   * Whether sound is muted
-   */
-  isMuted: boolean;
-  /**
-   * Callback when sound toggle is clicked
-   */
-  onToggleMute: () => void;
-  /**
    * Additional classes for container
    */
   className?: string;
@@ -107,8 +145,6 @@ export function PassGame({
   onPlayerSelect,
   onConfirmPass,
   isPassing = false,
-  isMuted,
-  onToggleMute,
   className,
 }: PassGameProps) {
   const hasSelection = selectedPlayerId !== null;
@@ -116,12 +152,17 @@ export function PassGame({
   return (
     <div className={cn("min-h-screen w-full bg-[#fff7ed]", className)}>
       {/* Border frame */}
-      <div className="min-h-screen border-8 border-[#e7000b] flex flex-col gap-4 px-4 py-8 sm:px-8 md:pl-[72px] md:pr-2 md:py-[48px]">
+      <motion.div
+        className="min-h-screen border-8 border-[#e7000b] flex flex-col gap-4 px-4 py-8 sm:px-8 md:pl-[72px] md:pr-2 md:py-[48px]"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         {/* Header section */}
-        <PassGameHeader round={round} countdown={countdown} host={host} isMuted={isMuted} onToggleMute={onToggleMute} />
+        <PassGameHeader round={round} countdown={countdown} host={host} />
 
         {/* Main content: Packet panel + Player grid */}
-        <div className="flex flex-col lg:flex-row gap-12">
+        <motion.div className="flex flex-col lg:flex-row gap-12" variants={mainContentVariants}>
           {/* Left panel: Your packet */}
           <div className="w-full lg:w-auto lg:shrink-0">
             <YourPacketPanel packet={packet} imageUrl={packetImageUrl} />
@@ -139,10 +180,12 @@ export function PassGame({
             />
 
             {/* Confirm button */}
-            <ConfirmPassButton hasSelection={hasSelection} isPending={isPassing} onClick={onConfirmPass} />
+            <motion.div variants={confirmButtonVariants}>
+              <ConfirmPassButton hasSelection={hasSelection} isPending={isPassing} onClick={onConfirmPass} />
+            </motion.div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

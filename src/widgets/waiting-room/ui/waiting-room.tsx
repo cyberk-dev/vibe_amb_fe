@@ -1,11 +1,42 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import { cn } from "@/shared/lib/utils";
 import type { PlayerSeat } from "@/entities/player-seat";
 import { WaitingRoomHeader } from "./waiting-room-header";
 import { SeatsGrid } from "./seats-grid";
 import { CountdownPanel } from "./countdown-panel";
+
+// ========================================
+// Animation Variants
+// ========================================
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.4,
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const mainContentVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 80,
+      damping: 15,
+      delay: 0.3,
+    },
+  },
+};
 
 export interface WaitingRoomProps {
   /**
@@ -24,14 +55,6 @@ export interface WaitingRoomProps {
    * Whether countdown is active (all seats are full)
    */
   isCountdownActive: boolean;
-  /**
-   * Whether sound is muted
-   */
-  isMuted: boolean;
-  /**
-   * Callback when sound toggle is clicked
-   */
-  onToggleMute: () => void;
   /**
    * Additional classes for container
    */
@@ -55,20 +78,10 @@ export interface WaitingRoomProps {
  *   maxSeats={20}
  *   countdown={60}
  *   isCountdownActive={false}
- *   isMuted={false}
- *   onToggleMute={() => setIsMuted(!isMuted)}
  * />
  * ```
  */
-export function WaitingRoom({
-  seats,
-  maxSeats,
-  countdown,
-  isCountdownActive,
-  isMuted,
-  onToggleMute,
-  className,
-}: WaitingRoomProps) {
+export function WaitingRoom({ seats, maxSeats, countdown, isCountdownActive, className }: WaitingRoomProps) {
   const connectedPlayers = seats.filter((seat) => seat.isOccupied).length;
 
   return (
@@ -80,17 +93,17 @@ export function WaitingRoom({
       )}
     >
       {/* Border frame */}
-      <div className="min-h-screen border-8 border-custom-vivid-orange flex flex-col gap-8 px-4 py-8 sm:px-8 md:pl-[72px] md:pr-2 md:py-[48px]">
+      <motion.div
+        className="min-h-screen border-8 border-custom-vivid-orange flex flex-col gap-8 px-4 py-8 sm:px-8 md:pl-[72px] md:pr-2 md:py-[48px]"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         {/* Header section */}
-        <WaitingRoomHeader
-          connectedPlayers={connectedPlayers}
-          maxSeats={maxSeats}
-          isMuted={isMuted}
-          onToggleMute={onToggleMute}
-        />
+        <WaitingRoomHeader connectedPlayers={connectedPlayers} maxSeats={maxSeats} />
 
         {/* Main content: Seats grid + Countdown panel */}
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-4">
+        <motion.div className="flex flex-col lg:flex-row gap-8 lg:gap-4" variants={mainContentVariants}>
           {/* Seats grid - takes most of the space */}
           <div className="flex-1 lg:flex-[4]">
             <SeatsGrid seats={seats} />
@@ -100,8 +113,8 @@ export function WaitingRoom({
           <div className="w-full lg:w-[200px] lg:flex-shrink-0 lg:h-auto">
             <CountdownPanel countdown={countdown} isActive={isCountdownActive} />
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
