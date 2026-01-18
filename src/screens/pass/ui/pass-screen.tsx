@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import type { GamePlayer, GameHost } from "@/entities/game";
+import type { GamePlayer } from "@/entities/game";
 import { PassGame } from "@/widgets/pass-game";
 import { usePassSelectionStore, usePassToPlayer } from "@/features/pass-to-player";
 import { PlayerAlreadySelectedDialog } from "@/features/pass-to-player/ui/player-already-selected-dialog";
@@ -39,17 +39,6 @@ const FAKE_PLAYER_NAMES = [
   "Thomas",
 ];
 
-/** Default host configuration */
-const DEFAULT_HOST: GameHost = {
-  name: "Mr. Horse",
-  role: "Admin",
-  avatarUrl: "https://www.figma.com/api/mcp/asset/96329116-3447-40bf-86b3-3ca73059ad0d",
-  message: "Make right decision...",
-};
-
-/** Default packet image URL (from Figma) */
-const DEFAULT_PACKET_IMAGE = "https://www.figma.com/api/mcp/asset/94d322f7-9d29-43ad-89e2-47a9096985c8";
-
 /** Current user ID (for demo purposes) */
 const CURRENT_USER_ID = "player-1";
 
@@ -73,7 +62,6 @@ function generateFakePlayers(): GamePlayer[] {
  * - 20 player grid for selection
  * - Red packet display
  * - Countdown timer
- * - Host/admin badge with speech bubble
  * - Player selection with confirmation
  *
  * Flow:
@@ -179,8 +167,6 @@ export function PassScreen() {
         countdown={countdown}
         players={players}
         currentUserId={CURRENT_USER_ID}
-        host={DEFAULT_HOST}
-        packetImageUrl={DEFAULT_PACKET_IMAGE}
         selectedPlayerId={selectedPlayerId}
         onPlayerSelect={handlePlayerSelect}
         onConfirmPass={handleConfirmPass}

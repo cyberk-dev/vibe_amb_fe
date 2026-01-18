@@ -77,9 +77,12 @@ export function SeatsGrid({ seats, className }: SeatsGridProps) {
         <FormattedMessage id="waiting_room.connected_players" defaultMessage="Connected Players" />
       </motion.p>
 
-      {/* Grid of seats - 2 cols mobile, scales up for larger screens */}
+      {/* Grid of seats - auto-fit columns based on available width */}
       <motion.div
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4"
+        className="grid gap-3 md:gap-4"
+        style={{
+          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+        }}
         variants={gridContainerVariants}
       >
         {seats.map((seat) => (

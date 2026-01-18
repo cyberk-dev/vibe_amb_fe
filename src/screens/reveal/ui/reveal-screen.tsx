@@ -44,7 +44,7 @@ const DEFAULT_HOST: GameHost = {
 };
 
 /** Default pack image URL */
-const DEFAULT_PACK_IMAGE = "https://www.figma.com/api/mcp/asset/9e74a999-5721-456a-b409-f8c118cc68ef";
+const DEFAULT_PACK_IMAGE = "/packet.png";
 
 /**
  * Generate initial mock packs for all players
@@ -261,7 +261,12 @@ function RevealPackGrid({ packs }: RevealPackGridProps) {
 
       {/* Pack grid - scrollable container */}
       <div className="flex-1 overflow-y-auto min-h-0">
-        <div className="flex flex-wrap gap-[30px] pb-4">
+        <div
+          className="grid gap-[30px] pb-4"
+          style={{
+            gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+          }}
+        >
           {packs.map((pack) => (
             <RevealPackCard key={pack.id} pack={pack} size="md" />
           ))}
