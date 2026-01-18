@@ -67,5 +67,35 @@
     "defaults": {
       "player_name": "UserName"
     }
+  },
+  "waiting_room": {
+    "title": "Waiting Room",
+    "matchmaking": "Matchmaking",
+    "connected_players": "Connected Players",
+    "status": {
+      "starting_soon": "Game will start soon",
+      "waiting": "Waiting for players..."
+    },
+    "aria": {
+      "mute": "Mute sound",
+      "unmute": "Unmute sound"
+    }
+  },
+  "wallet": {
+    "connect_google": "Continue with Google",
+    "connecting": "Connecting...",
+    "connected": "Connected"
+  },
+  "pass_game": {
+    "game_in_progress": "Game In Progress",
+    "pass": "Pass",
+    "your_turn_to_pass": "Your turn to pass",
+    "your_packet": "Your Packet",
+    "pass_to_player": "Pass To Player",
+    "confirm_pass": "Confirm Pass",
+    "round": "Round {number}",
+    "you": "You",
+    "player_label": "Player {number}",
+    "admin": "Admin"
   }
 }
