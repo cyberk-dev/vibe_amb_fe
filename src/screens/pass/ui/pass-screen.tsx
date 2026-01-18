@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import type { GamePlayer, GameHost } from "@/entities/game";
 import { PassGame } from "@/widgets/pass-game";
 import { usePassSelectionStore, usePassToPlayer } from "@/features/pass-to-player";
+import { PlayerAlreadySelectedDialog } from "@/features/pass-to-player/ui/player-already-selected-dialog";
+import { isTargetAlreadySelectedError } from "@/integrations/aptos/utils/error-parser";
 import { gameQueries, GameStatus } from "@/entities/game";
 import { useQuery } from "@tanstack/react-query";
 
@@ -98,6 +100,9 @@ export function PassScreen() {
   // Pass mutation
   const { mutateAsync: passToPlayer, isPending } = usePassToPlayer();
 
+  // Dialog state for player already selected error
+  const [showPlayerAlreadySelectedDialog, setShowPlayerAlreadySelectedDialog] = useState(false);
+
   // Monitor game status - redirect to game-over when game ends
   const { data: gameStatus } = useQuery(gameQueries.status());
 
@@ -159,21 +164,33 @@ export function PassScreen() {
       console.log("[PassScreen] Pass confirmed successfully");
     } catch (error) {
       console.error("[PassScreen] Pass failed:", error);
+
+      // Check if error is about player already selected
+      if (isTargetAlreadySelectedError(error)) {
+        setShowPlayerAlreadySelectedDialog(true);
+      }
     }
   }, [selectedPlayerId, isConfirmed, isPassing, isPending, passToPlayer]);
 
   return (
-    <PassGame
-      round={round}
-      countdown={countdown}
-      players={players}
-      currentUserId={CURRENT_USER_ID}
-      host={DEFAULT_HOST}
-      packetImageUrl={DEFAULT_PACKET_IMAGE}
-      selectedPlayerId={selectedPlayerId}
-      onPlayerSelect={handlePlayerSelect}
-      onConfirmPass={handleConfirmPass}
-      isPassing={isPassing || isPending}
-    />
+    <>
+      <PassGame
+        round={round}
+        countdown={countdown}
+        players={players}
+        currentUserId={CURRENT_USER_ID}
+        host={DEFAULT_HOST}
+        packetImageUrl={DEFAULT_PACKET_IMAGE}
+        selectedPlayerId={selectedPlayerId}
+        onPlayerSelect={handlePlayerSelect}
+        onConfirmPass={handleConfirmPass}
+        isPassing={isPassing || isPending}
+      />
+
+      <PlayerAlreadySelectedDialog
+        open={showPlayerAlreadySelectedDialog}
+        onOpenChange={setShowPlayerAlreadySelectedDialog}
+      />
+    </>
   );
 }

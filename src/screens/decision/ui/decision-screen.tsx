@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useMemo } from "react";
 import { DecisionWidget } from "@/widgets/decision";
+import { ConfirmShareDialog } from "@/widgets/decision/ui/confirm-share-dialog";
 import type { DecisionPlayer, EliminatedPlayer } from "@/widgets/decision/ui/decision-widget";
 
 /** Mock current user ID - in real app, get from auth */
@@ -57,6 +58,7 @@ const NEXT_ROUND_POOL = 42;
 export function DecisionScreen() {
   const [currentUserVote, setCurrentUserVote] = useState<"share" | "continue" | null>(null);
   const [isVoting, setIsVoting] = useState(false);
+  const [showConfirmShareDialog, setShowConfirmShareDialog] = useState(false);
 
   // Update the current user's vote status in the players list
   const remainingPlayers = useMemo(() => {
@@ -82,12 +84,18 @@ export function DecisionScreen() {
 
   const prizePerPlayer = TOTAL_POOL / remainingPlayers.length;
 
-  const handleSharePrize = useCallback(async () => {
+  const handleSharePrizeClick = useCallback(() => {
+    // Show confirm dialog instead of voting immediately
+    setShowConfirmShareDialog(true);
+  }, []);
+
+  const handleConfirmShare = useCallback(async () => {
     setIsVoting(true);
     // TODO: Call vote mutation with Vote.STOP
     // await vote(Vote.STOP);
     setCurrentUserVote("share");
     setIsVoting(false);
+    setShowConfirmShareDialog(false);
   }, []);
 
   const handleContinuePlaying = useCallback(async () => {
@@ -99,18 +107,26 @@ export function DecisionScreen() {
   }, []);
 
   return (
-    <DecisionWidget
-      totalPlayers={remainingPlayers.length}
-      eliminatedPlayer={MOCK_ELIMINATED_PLAYER}
-      remainingPlayers={remainingPlayers}
-      prizePerPlayer={prizePerPlayer}
-      totalPool={TOTAL_POOL}
-      nextRoundPool={NEXT_ROUND_POOL}
-      voteCounts={voteCounts}
-      onSharePrize={handleSharePrize}
-      onContinuePlaying={handleContinuePlaying}
-      isVoting={isVoting}
-      currentUserVote={currentUserVote}
-    />
+    <>
+      <DecisionWidget
+        totalPlayers={remainingPlayers.length}
+        eliminatedPlayer={MOCK_ELIMINATED_PLAYER}
+        remainingPlayers={remainingPlayers}
+        prizePerPlayer={prizePerPlayer}
+        totalPool={TOTAL_POOL}
+        nextRoundPool={NEXT_ROUND_POOL}
+        voteCounts={voteCounts}
+        onSharePrize={handleSharePrizeClick}
+        onContinuePlaying={handleContinuePlaying}
+        isVoting={isVoting}
+        currentUserVote={currentUserVote}
+      />
+
+      <ConfirmShareDialog
+        open={showConfirmShareDialog}
+        onOpenChange={setShowConfirmShareDialog}
+        onConfirm={handleConfirmShare}
+      />
+    </>
   );
 }

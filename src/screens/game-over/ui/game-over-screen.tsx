@@ -62,12 +62,11 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
               </p>
               {/* "Game Over" heading */}
               <h1
-                className={`font-bricolage font-bold ${isMobile ? "text-4xl" : "text-[192px]"} leading-[0.85] text-black`}
+                className={`font-bricolage font-bold ${isMobile ? "text-3xl" : "text-[120px]"} leading-[0.85] text-black flex flex-row gap-6`}
               >
                 <span>
                   <FormattedMessage id="game_over.game_over_line1" defaultMessage="Game" />
                 </span>
-                <br />
                 <span>
                   <FormattedMessage id="game_over.game_over_line2" defaultMessage="Over" />
                 </span>

@@ -44,8 +44,10 @@
       "connect_wallet": "Kết nối Ví",
       "connecting": "Đang kết nối...",
       "registering": "Đang đăng ký...",
+      "failed": "Thử lại",
       "continue": "Tiếp tục",
-      "enter_name": "Nhập tên"
+      "enter_name": "Nhập tên",
+      "name_hint": "Tên phải có ít nhất 2 ký tự"
     },
     "errors": {
       "invalid_code": "Vui lòng nhập mã 6 chữ số hợp lệ",
@@ -112,7 +114,10 @@
     "round": "Vòng {number}",
     "you": "Bạn",
     "player_label": "Người chơi {number}",
-    "admin": "Quản trị viên"
+    "admin": "Quản trị viên",
+    "errors": {
+      "player_already_selected": "Tiếc quá, người này bị pick trước rồi, hãy chọn lại"
+    }
   },
   "reveal_game": {
     "moment_of_truth": "Khoảnh khắc sự thật",
@@ -126,11 +131,11 @@
   },
   "game_over": {
     "final_results": "KẾT QUẢ CUỐI CÙNG",
-    "game_over_line1": "Trò chơi",
-    "game_over_line2": "kết thúc",
+    "game_over_line1": "Và thế",
+    "game_over_line2": "là hết...",
     "complete": "Hoàn tất",
-    "winner": "NGƯỜI THẮNG",
-    "total_winnings": "Tổng thắng",
+    "winner": "và danh hiệu Con ngựa của năm thuộc về",
+    "total_winnings": "Bú Đẫm",
     "final_standings": "BẢNG XẾP HẠNG CUỐI CÙNG",
     "out": "BỊ LOẠI",
     "footer": "TRÒ CHƠI BỞI VIBE AMBASSADOR · 2026",
@@ -188,6 +193,11 @@
       "each": "mỗi người",
       "next_round_pool": "Giải vòng tiếp theo:",
       "make_your_choice": "Đưa Ra Lựa Chọn"
+    },
+    "confirm_share": {
+      "message": "Bạn sợ à?",
+      "cancel": "Thôi, sợ lắm",
+      "confirm": "Sợ gì, chơi tiếp"
     }
   },
   "popup_warning": {

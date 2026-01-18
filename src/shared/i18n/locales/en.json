@@ -44,8 +44,10 @@
       "connect_wallet": "Connect Wallet",
       "connecting": "Connecting...",
       "registering": "Registering...",
+      "failed": "Retry",
       "continue": "Continue",
-      "enter_name": "Enter Name"
+      "enter_name": "Enter Name",
+      "name_hint": "Name must be at least 2 characters"
     },
     "errors": {
       "invalid_code": "Please enter a valid 6-digit code",
@@ -112,7 +114,10 @@
     "round": "Round {number}",
     "you": "You",
     "player_label": "Player {number}",
-    "admin": "Admin"
+    "admin": "Admin",
+    "errors": {
+      "player_already_selected": "Sorry, this player has already been selected, please choose again"
+    }
   },
   "reveal_game": {
     "moment_of_truth": "Moment of Truth",
@@ -188,6 +193,11 @@
       "each": "each",
       "next_round_pool": "Next round pool:",
       "make_your_choice": "Make Your Choice"
+    },
+    "confirm_share": {
+      "message": "Are you scared?",
+      "cancel": "Yes, I'm scared",
+      "confirm": "Not scared, continue playing"
     }
   },
   "popup_warning": {
