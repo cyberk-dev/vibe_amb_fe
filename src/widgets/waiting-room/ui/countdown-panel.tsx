@@ -58,21 +58,24 @@ interface CountdownPanelProps {
  * Shows:
  * - Large countdown number (e.g., "60")
  * - "Game will start soon" button/indicator when countdown is active
+ *
+ * Mobile: Horizontal layout at bottom
+ * Desktop: Vertical layout on right side
  */
 export function CountdownPanel({ countdown, isActive, className }: CountdownPanelProps) {
   return (
     <motion.div
-      className={cn("flex flex-col items-center justify-between h-full", className)}
+      className={cn("flex flex-col items-center", "lg:justify-between lg:h-full", className)}
       initial="hidden"
       animate="visible"
     >
       {/* Countdown number */}
-      <motion.div className="flex-1 flex items-center justify-center" variants={countdownVariants}>
+      <motion.div className="flex items-center justify-center py-4 lg:py-0 lg:flex-1" variants={countdownVariants}>
         <AnimatedDigits
           value={countdown}
           minDigits={2}
           className={cn(
-            "font-space font-light text-[80px] md:text-[100px] lg:text-[128px] text-center tracking-[0.7px] uppercase transition-colors duration-300",
+            "font-space font-light text-[64px] md:text-[100px] lg:text-[128px] text-center tracking-[0.7px] uppercase transition-colors duration-300",
             isActive ? "text-black" : "text-gray-300",
           )}
         />
@@ -81,13 +84,13 @@ export function CountdownPanel({ countdown, isActive, className }: CountdownPane
       {/* Game start button/indicator */}
       <motion.div
         className={cn(
-          "w-full bg-black h-[60px] flex items-center justify-center transition-opacity duration-300",
+          "w-full bg-black h-[50px] md:h-[60px] flex items-center justify-center transition-opacity duration-300",
           isActive ? "opacity-100" : "opacity-50",
         )}
         variants={statusBarVariants}
         whileHover={isActive ? { scale: 1.02 } : undefined}
       >
-        <p className="font-space font-bold text-sm leading-5 text-center text-white tracking-[0.7px] uppercase">
+        <p className="font-space font-bold text-xs md:text-sm leading-5 text-center text-white tracking-[0.7px] uppercase">
           {isActive ? (
             <FormattedMessage id="waiting_room.status.starting_soon" defaultMessage="Game will start soon" />
           ) : (
