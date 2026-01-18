@@ -1,7 +1,7 @@
 import { queryOptions, keepPreviousData } from "@tanstack/react-query";
 import { gameViewService } from "./game-views";
 import { mapPlayerStatuses, mapVotingState, mapRoundPrizes } from "../lib/mappers";
-import type { GameState, Player, VotingState, RoundPrizes, GameOverview } from "../model/types";
+import type { AdminGameState, Player, VotingState, RoundPrizes, GameOverview } from "../model/types";
 import { GameStatus } from "@/integrations/aptos";
 
 export const gameQueries = {
@@ -12,7 +12,7 @@ export const gameQueries = {
   status: () =>
     queryOptions({
       queryKey: [...gameQueries.all(), "status"],
-      queryFn: async (): Promise<GameState> => {
+      queryFn: async (): Promise<AdminGameState> => {
         const [status, round, playersCount, eliminationCount] = await Promise.all([
           gameViewService.getStatus(),
           gameViewService.getRound(),
@@ -74,15 +74,14 @@ export const gameQueries = {
     queryOptions({
       queryKey: [...gameQueries.all(), "overview"],
       queryFn: async (): Promise<GameOverview> => {
-        const [status, round, playersCount, eliminationCount, playersDto, prizesDto] =
-          await Promise.all([
-            gameViewService.getStatus(),
-            gameViewService.getRound(),
-            gameViewService.getPlayersCount(),
-            gameViewService.getEliminationCount(),
-            gameViewService.getPlayerStatuses(),
-            gameViewService.getRoundPrizes(),
-          ]);
+        const [status, round, playersCount, eliminationCount, playersDto, prizesDto] = await Promise.all([
+          gameViewService.getStatus(),
+          gameViewService.getRound(),
+          gameViewService.getPlayersCount(),
+          gameViewService.getEliminationCount(),
+          gameViewService.getPlayerStatuses(),
+          gameViewService.getRoundPrizes(),
+        ]);
 
         const base: GameOverview = {
           status,

@@ -1,12 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import {
-  gameQueries,
-  GameStatusBadge,
-  formatAptAmount,
-  STATUS_DESCRIPTIONS,
-} from "@/entities/game";
+import { gameQueries, GameStatusBadge, GameStatus, formatAptAmount, STATUS_DESCRIPTIONS } from "@/entities/game";
 
 export function GameOverviewPanel() {
   const { data: state } = useQuery(gameQueries.status());
@@ -44,9 +39,7 @@ export function GameOverviewPanel() {
         </div>
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
-        {STATUS_DESCRIPTIONS[state.status]}
-      </p>
+      <p className="mt-4 text-sm text-gray-400">{STATUS_DESCRIPTIONS[state.status]}</p>
     </div>
   );
 }

@@ -5,7 +5,7 @@
   "scripts": {
     "local-env": "----------------LOCAL----------------",
     "dev:local": "dotenv -e .env.local -- next dev --turbopack",
-    "build:local": "dotenv -e .env.local -- next build --turbopack",
+    "build:local": "dotenv -e .env.local -- next build",
     "start:local": "dotenv -e .env.local -- next start",
     "dev-env": "------------------DEV--------------",
     "dev:dev": "dotenv -e .env.dev -- next dev --turbopack",

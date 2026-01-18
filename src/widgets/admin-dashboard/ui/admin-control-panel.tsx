@@ -1,10 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import {
-  gameQueries,
-  ADMIN_ACTIONS_BY_STATUS,
-} from "@/entities/game";
+import { gameQueries, ADMIN_ACTIONS_BY_STATUS, GameStatus } from "@/entities/game";
 import {
   StartGameButton,
   FinalizeSelectionButton,
@@ -26,27 +23,16 @@ export function AdminControlPanel() {
 
       <div className="flex flex-wrap gap-3">
         {availableActions.includes("start_game") && (
-          <StartGameButton
-            currentStatus={state.status}
-            playersCount={state.playersCount}
-          />
+          <StartGameButton currentStatus={state.status} playersCount={state.playersCount} />
         )}
 
-        {availableActions.includes("finalize_selection") && (
-          <FinalizeSelectionButton currentStatus={state.status} />
-        )}
+        {availableActions.includes("finalize_selection") && <FinalizeSelectionButton currentStatus={state.status} />}
 
-        {availableActions.includes("reveal_bombs") && (
-          <RevealBombsButton currentStatus={state.status} />
-        )}
+        {availableActions.includes("reveal_bombs") && <RevealBombsButton currentStatus={state.status} />}
 
-        {availableActions.includes("finalize_voting") && (
-          <FinalizeVotingButton currentStatus={state.status} />
-        )}
+        {availableActions.includes("finalize_voting") && <FinalizeVotingButton currentStatus={state.status} />}
 
-        {availableActions.includes("reset_game") && (
-          <ResetGameButton currentStatus={state.status} />
-        )}
+        {availableActions.includes("reset_game") && <ResetGameButton currentStatus={state.status} />}
       </div>
     </div>
   );

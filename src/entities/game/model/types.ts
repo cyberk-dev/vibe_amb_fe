@@ -37,6 +37,14 @@ export interface GameOverview {
   victims?: string[];
 }
 
+// Admin game state for dashboard
+export interface AdminGameState {
+  status: GameStatus;
+  round: number;
+  playersCount: number;
+  eliminationCount: number;
+}
+
 // Re-export for convenience
 export { GameStatus, Vote };
 
