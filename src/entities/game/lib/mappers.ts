@@ -6,8 +6,9 @@ import type {
   VictimsWithNamesDto,
   VictimsWithSeatsDto,
   AllPlayersWithSeatsDto,
+  AllPlayersWithVotesDto,
 } from "../api/dto/game.dto";
-import type { Player, VotingState, RoundPrizes } from "../model/types";
+import type { Player, PlayerWithVote, VotingState, RoundPrizes, Vote } from "../model/types";
 
 export interface Victim {
   address: string;
@@ -29,6 +30,24 @@ export function mapAllPlayersWithSeats(dto: AllPlayersWithSeatsDto): Player[] {
     name: dto[1][index],
     hasActed: dto[2][index],
     seat: Number(dto[3][index]),
+  }));
+}
+
+export function mapAllPlayersWithVotes(dto: AllPlayersWithVotesDto): PlayerWithVote[] {
+  // Parse hex string votes (0x0001010101) to number array
+  const votesHex = dto[4].slice(2); // Remove 0x prefix
+  const votes: number[] = [];
+  for (let i = 0; i < votesHex.length; i += 2) {
+    votes.push(parseInt(votesHex.substring(i, i + 2), 16));
+  }
+
+  return dto[0].map((address, index) => ({
+    address,
+    name: dto[1][index],
+    hasActed: false, // Not returned in this view
+    seat: Number(dto[2][index]),
+    hasVoted: dto[3][index],
+    vote: dto[3][index] ? (votes[index] as Vote) : undefined,
   }));
 }
 

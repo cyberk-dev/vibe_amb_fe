@@ -91,9 +91,9 @@ export interface DecisionWidgetProps {
   /** Remaining active players */
   remainingPlayers: DecisionPlayer[];
   /** Prize per player if sharing */
-  prizePerPlayer: number;
+  prizePerPlayer: string;
   /** Total prize pool */
-  totalPool: number;
+  totalPool: string;
   /** Next round pool (if continuing) */
   nextRoundPool: number;
   /** Vote counts for each option */

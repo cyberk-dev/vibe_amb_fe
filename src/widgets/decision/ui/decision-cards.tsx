@@ -37,8 +37,8 @@ const prizeBoxVariants = {
 };
 
 interface DecisionCardsProps {
-  prizePerPlayer: number;
-  totalPool: number;
+  prizePerPlayer: string;
+  totalPool: string;
   onSharePrize: () => void;
   onContinuePlaying: () => void;
   isVoting?: boolean;
@@ -68,6 +68,7 @@ export function DecisionCards({
 }: DecisionCardsProps) {
   const hasVotedShare = currentUserVote === "share";
   const hasVotedContinue = currentUserVote === "continue";
+  const hasVoted = currentUserVote !== null;
 
   return (
     <motion.div
@@ -122,9 +123,7 @@ export function DecisionCards({
             className="bg-custom-teal/5 border-2 border-custom-teal p-8 flex flex-col items-center gap-2"
             variants={prizeBoxVariants}
           >
-            <span className="font-bricolage text-5xl md:text-6xl font-bold text-custom-teal">
-              ${prizePerPlayer.toFixed(2)}
-            </span>
+            <span className="font-bricolage text-5xl md:text-6xl font-bold text-custom-teal">${prizePerPlayer}</span>
             <span className="font-space text-xs font-normal uppercase tracking-[0.6px] text-custom-teal">
               <FormattedMessage id="decision.cards.per_player" />
             </span>
@@ -135,7 +134,7 @@ export function DecisionCards({
         <motion.button
           type="button"
           onClick={onSharePrize}
-          disabled={isVoting || hasVotedShare}
+          disabled={isVoting || hasVoted}
           className={cn(
             "w-full h-[60px] mt-8 md:mt-auto cursor-pointer",
             "bg-custom-teal text-white",
@@ -143,8 +142,8 @@ export function DecisionCards({
             "hover:opacity-90 transition-opacity",
             "disabled:opacity-50 disabled:cursor-not-allowed",
           )}
-          whileHover={!isVoting && !hasVotedShare ? { scale: 1.02 } : undefined}
-          whileTap={!isVoting && !hasVotedShare ? { scale: 0.98 } : undefined}
+          whileHover={!isVoting && !hasVoted ? { scale: 1.02 } : undefined}
+          whileTap={!isVoting && !hasVoted ? { scale: 0.98 } : undefined}
         >
           {hasVotedShare ? (
             <FormattedMessage id="decision.cards.voted" />
@@ -205,7 +204,7 @@ export function DecisionCards({
         <motion.button
           type="button"
           onClick={onContinuePlaying}
-          disabled={isVoting || hasVotedContinue}
+          disabled={isVoting || hasVoted}
           className={cn(
             "w-full h-[60px] mt-8 md:mt-auto cursor-pointer",
             "bg-black text-white",
@@ -213,8 +212,8 @@ export function DecisionCards({
             "hover:opacity-90 transition-opacity",
             "disabled:opacity-50 disabled:cursor-not-allowed",
           )}
-          whileHover={!isVoting && !hasVotedContinue ? { scale: 1.02 } : undefined}
-          whileTap={!isVoting && !hasVotedContinue ? { scale: 0.98 } : undefined}
+          whileHover={!isVoting && !hasVoted ? { scale: 1.02 } : undefined}
+          whileTap={!isVoting && !hasVoted ? { scale: 0.98 } : undefined}
         >
           {hasVotedContinue ? (
             <FormattedMessage id="decision.cards.voted" />
