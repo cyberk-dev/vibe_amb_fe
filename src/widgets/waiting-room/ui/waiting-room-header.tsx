@@ -74,11 +74,15 @@ interface WaitingRoomHeaderProps {
  * - "MATCHMAKING" label and "Waiting Room" title
  * - Player count indicator (e.g., "1 / 20")
  * - Sound toggle button
+ *
+ * Mobile: Controls are under the title
+ * Desktop: Controls are on the right side
  */
 export function WaitingRoomHeader({ connectedPlayers, maxSeats, className }: WaitingRoomHeaderProps) {
   return (
     <motion.div className={cn("relative", className)} initial="hidden" animate="visible">
-      <div className="flex items-start justify-between">
+      {/* Desktop layout: side by side */}
+      <div className="hidden md:flex items-start justify-between">
         {/* Left section: Title */}
         <div className="flex flex-col gap-2">
           {/* Matchmaking label */}
@@ -90,7 +94,7 @@ export function WaitingRoomHeader({ connectedPlayers, maxSeats, className }: Wai
           </motion.p>
           {/* Main title */}
           <motion.div
-            className="font-bricolage font-bold text-[80px] md:text-[100px] lg:text-[128px] leading-[0.94] text-black"
+            className="font-bricolage font-bold text-[100px] lg:text-[128px] leading-[0.94] text-black"
             variants={titleVariants}
           >
             <p>
@@ -114,6 +118,37 @@ export function WaitingRoomHeader({ connectedPlayers, maxSeats, className }: Wai
           {/* Sound toggle button - uses global store */}
           <SoundButton variant="dark" />
         </div>
+      </div>
+
+      {/* Mobile layout: stacked */}
+      <div className="flex flex-col gap-3 md:hidden">
+        {/* Matchmaking label */}
+        <motion.p
+          className="font-space text-[10px] font-normal leading-4 tracking-[2px] uppercase text-custom-vivid-orange"
+          variants={labelVariants}
+        >
+          <FormattedMessage id="waiting_room.matchmaking" defaultMessage="Matchmaking" />
+        </motion.p>
+
+        {/* Main title */}
+        <motion.div className="font-bricolage font-bold text-[60px] leading-[0.85] text-black" variants={titleVariants}>
+          <p>
+            <FormattedMessage id="waiting_room.title" defaultMessage="Waiting Room" />
+          </p>
+        </motion.div>
+
+        {/* Controls row - under title on mobile */}
+        <motion.div className="flex gap-2 items-center" variants={playerCountVariants}>
+          {/* Player count indicator */}
+          <div className="border-2 border-custom-vivid-orange flex items-center justify-center px-4 py-2 h-10">
+            <p className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-custom-vivid-orange whitespace-nowrap">
+              {connectedPlayers} / {maxSeats}
+            </p>
+          </div>
+
+          {/* Sound toggle button */}
+          <SoundButton variant="dark" />
+        </motion.div>
       </div>
     </motion.div>
   );
