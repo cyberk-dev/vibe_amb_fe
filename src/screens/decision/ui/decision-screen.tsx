@@ -3,7 +3,6 @@
 import { useState, useCallback, useMemo } from "react";
 import { DecisionWidget } from "@/widgets/decision";
 import type { DecisionPlayer, EliminatedPlayer } from "@/widgets/decision/ui/decision-widget";
-import { useSoundToggle } from "@/shared/lib/stores";
 
 /** Mock current user ID - in real app, get from auth */
 const CURRENT_USER_ID = "5"; // Diana
@@ -56,7 +55,6 @@ const NEXT_ROUND_POOL = 42;
  * - If ANY vote CONTINUE → next round starts
  */
 export function DecisionScreen() {
-  const { isMuted, toggleMute } = useSoundToggle();
   const [currentUserVote, setCurrentUserVote] = useState<"share" | "continue" | null>(null);
   const [isVoting, setIsVoting] = useState(false);
 
@@ -109,8 +107,6 @@ export function DecisionScreen() {
       totalPool={TOTAL_POOL}
       nextRoundPool={NEXT_ROUND_POOL}
       voteCounts={voteCounts}
-      isMuted={isMuted}
-      onToggleMute={toggleMute}
       onSharePrize={handleSharePrize}
       onContinuePlaying={handleContinuePlaying}
       isVoting={isVoting}

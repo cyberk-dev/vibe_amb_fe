@@ -1,12 +1,86 @@
 "use client";
 
-import * as React from "react";
-import { Volume2, VolumeX } from "lucide-react";
-import { useIntl, FormattedMessage } from "react-intl";
+import { motion } from "framer-motion";
+import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
 import type { GameHost } from "@/entities/game";
 import { GameHostBadge } from "@/entities/game";
-import { LanguageToggleButton } from "@/shared/ui";
+import { AnimatedDigits, LanguageToggleButton, SoundButton } from "@/shared/ui";
+
+// ========================================
+// Animation Variants
+// ========================================
+
+const labelVariants = {
+  hidden: { opacity: 0, x: -30 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 15,
+    },
+  },
+};
+
+const titleVariants = {
+  hidden: { opacity: 0, x: -80, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 70,
+      damping: 15,
+      delay: 0.1,
+    },
+  },
+};
+
+const subtitleVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 15,
+      delay: 0.2,
+    },
+  },
+};
+
+const rightSectionVariants = {
+  hidden: { opacity: 0, x: 50 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 80,
+      damping: 15,
+      delay: 0.2,
+    },
+  },
+};
+
+const hostBadgeVariants = {
+  hidden: { opacity: 0, scale: 0.8, y: 20 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 15,
+      delay: 0.4,
+    },
+  },
+};
 
 interface PassGameHeaderProps {
   /**
@@ -21,14 +95,6 @@ interface PassGameHeaderProps {
    * Game host/admin info
    */
   host: GameHost;
-  /**
-   * Whether sound is muted
-   */
-  isMuted: boolean;
-  /**
-   * Callback when sound toggle is clicked
-   */
-  onToggleMute: () => void;
   /**
    * Additional classes for container
    */
@@ -45,66 +111,68 @@ interface PassGameHeaderProps {
  * - Round indicator and sound toggle (right side)
  * - Admin host badge (right side)
  */
-export function PassGameHeader({ round, countdown, host, isMuted, onToggleMute, className }: PassGameHeaderProps) {
-  const intl = useIntl();
-
+export function PassGameHeader({ round, countdown, host, className }: PassGameHeaderProps) {
   return (
-    <div className={cn("flex items-start justify-between", className)}>
+    <motion.div className={cn("flex items-start justify-between", className)} initial="hidden" animate="visible">
       {/* Left section: Title */}
       <div className="flex flex-col gap-2">
         {/* Game in progress label */}
-        <p className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-[#e7000b]">
+        <motion.p
+          className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-[#e7000b]"
+          variants={labelVariants}
+        >
           <FormattedMessage id="pass_game.game_in_progress" defaultMessage="Game In Progress" />
-        </p>
+        </motion.p>
 
         {/* Main title: Pass + Countdown */}
-        <div className="flex items-baseline gap-2">
+        <motion.div className="flex items-baseline gap-2" variants={titleVariants}>
           <span className="font-bricolage font-bold text-[128px] md:text-[160px] lg:text-[96px] leading-[0.85] text-black">
             <FormattedMessage id="pass_game.pass" defaultMessage="Pass" />
           </span>
-          <span className="font-bricolage font-light text-[80px] md:text-[100px] lg:text-[104px] leading-[0.85] text-black">
-            {countdown}
-          </span>
-        </div>
+          <AnimatedDigits
+            value={countdown}
+            minDigits={2}
+            className="font-bricolage font-light text-[80px] md:text-[100px] lg:text-[104px] leading-[0.85] text-black"
+          />
+        </motion.div>
 
         {/* Subtitle */}
-        <p className="font-space text-sm font-normal leading-5 tracking-[0.7px] uppercase text-[#4a5565]">
+        <motion.p
+          className="font-space text-sm font-normal leading-5 tracking-[0.7px] uppercase text-[#4a5565]"
+          variants={subtitleVariants}
+        >
           <FormattedMessage id="pass_game.your_turn_to_pass" defaultMessage="Your turn to pass" />
-        </p>
+        </motion.p>
       </div>
 
       {/* Right section: Language toggle, Round, sound toggle, and host badge */}
-      <div className="flex flex-col items-end gap-6">
+      <motion.div className="flex flex-col items-end gap-6" variants={rightSectionVariants}>
         {/* Top row: Language toggle, Round indicator and sound toggle */}
         <div className="flex gap-2.5 items-center">
           {/* Language toggle button */}
           <LanguageToggleButton />
 
           {/* Round indicator */}
-          <div className="border-2 border-[#e7000b] flex items-center justify-center px-[18px] py-[10px] h-10">
+          <motion.div
+            className="border-2 border-[#e7000b] flex items-center justify-center px-[18px] py-[10px] h-10"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring" as const, stiffness: 120, damping: 15, delay: 0.3 }}
+          >
             <p className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-[#e7000b] whitespace-nowrap">
               <FormattedMessage id="pass_game.round" defaultMessage="Round {number}" values={{ number: round }} />
             </p>
-          </div>
+          </motion.div>
 
           {/* Sound toggle button */}
-          <button
-            type="button"
-            onClick={onToggleMute}
-            className="bg-custom-light-orange p-2 rounded-lg flex items-center justify-center"
-            aria-label={
-              isMuted
-                ? intl.formatMessage({ id: "waiting_room.aria.unmute", defaultMessage: "Unmute sound" })
-                : intl.formatMessage({ id: "waiting_room.aria.mute", defaultMessage: "Mute sound" })
-            }
-          >
-            {isMuted ? <VolumeX className="size-6 text-white" /> : <Volume2 className="size-6 text-white" />}
-          </button>
+          <SoundButton variant="dark" />
         </div>
 
         {/* Host badge */}
-        <GameHostBadge host={host} />
-      </div>
-    </div>
+        <motion.div variants={hostBadgeVariants}>
+          <GameHostBadge host={host} />
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 }

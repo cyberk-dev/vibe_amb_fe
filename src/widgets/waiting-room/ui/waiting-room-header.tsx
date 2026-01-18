@@ -1,9 +1,56 @@
 "use client";
 
 import * as React from "react";
-import { Volume2, VolumeX } from "lucide-react";
-import { useIntl, FormattedMessage } from "react-intl";
+import { motion } from "framer-motion";
+import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
+import { SoundButton } from "@/shared/ui/sound-button";
+
+// ========================================
+// Animation Variants
+// ========================================
+
+const labelVariants = {
+  hidden: { opacity: 0, x: -30 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 15,
+    },
+  },
+};
+
+const titleVariants = {
+  hidden: { opacity: 0, x: -80, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 70,
+      damping: 15,
+      delay: 0.1,
+    },
+  },
+};
+
+const playerCountVariants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 120,
+      damping: 15,
+      delay: 0.2,
+    },
+  },
+};
 
 interface WaitingRoomHeaderProps {
   /**
@@ -14,14 +61,6 @@ interface WaitingRoomHeaderProps {
    * Maximum seats available
    */
   maxSeats: number;
-  /**
-   * Whether sound is muted
-   */
-  isMuted: boolean;
-  /**
-   * Callback when sound toggle is clicked
-   */
-  onToggleMute: () => void;
   /**
    * Additional classes for container
    */
@@ -36,56 +75,46 @@ interface WaitingRoomHeaderProps {
  * - Player count indicator (e.g., "1 / 20")
  * - Sound toggle button
  */
-export function WaitingRoomHeader({
-  connectedPlayers,
-  maxSeats,
-  isMuted,
-  onToggleMute,
-  className,
-}: WaitingRoomHeaderProps) {
-  const intl = useIntl();
-
+export function WaitingRoomHeader({ connectedPlayers, maxSeats, className }: WaitingRoomHeaderProps) {
   return (
-    <div className={cn("relative", className)}>
+    <motion.div className={cn("relative", className)} initial="hidden" animate="visible">
       <div className="flex items-start justify-between">
         {/* Left section: Title */}
         <div className="flex flex-col gap-2">
           {/* Matchmaking label */}
-          <p className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-custom-vivid-orange">
+          <motion.p
+            className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-custom-vivid-orange"
+            variants={labelVariants}
+          >
             <FormattedMessage id="waiting_room.matchmaking" defaultMessage="Matchmaking" />
-          </p>
+          </motion.p>
           {/* Main title */}
-          <div className="font-bricolage font-bold text-[80px] md:text-[100px] lg:text-[128px] leading-[0.94] text-black">
+          <motion.div
+            className="font-bricolage font-bold text-[80px] md:text-[100px] lg:text-[128px] leading-[0.94] text-black"
+            variants={titleVariants}
+          >
             <p>
               <FormattedMessage id="waiting_room.title" defaultMessage="Waiting Room" />
             </p>
-          </div>
+          </motion.div>
         </div>
 
         {/* Right section: Player count and sound toggle */}
         <div className="flex gap-4 items-start">
           {/* Player count indicator */}
-          <div className="border-2 border-custom-vivid-orange flex items-center justify-center px-[18px] py-[10px] h-10">
+          <motion.div
+            className="border-2 border-custom-vivid-orange flex items-center justify-center px-[18px] py-[10px] h-10"
+            variants={playerCountVariants}
+          >
             <p className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-custom-vivid-orange whitespace-nowrap">
               {connectedPlayers} / {maxSeats}
             </p>
-          </div>
+          </motion.div>
 
-          {/* Sound toggle button */}
-          <button
-            type="button"
-            onClick={onToggleMute}
-            className="bg-custom-light-orange p-2 rounded-lg flex items-center justify-center"
-            aria-label={
-              isMuted
-                ? intl.formatMessage({ id: "waiting_room.aria.unmute", defaultMessage: "Unmute sound" })
-                : intl.formatMessage({ id: "waiting_room.aria.mute", defaultMessage: "Mute sound" })
-            }
-          >
-            {isMuted ? <VolumeX className="size-6 text-white" /> : <Volume2 className="size-6 text-white" />}
-          </button>
+          {/* Sound toggle button - uses global store */}
+          <SoundButton variant="dark" />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

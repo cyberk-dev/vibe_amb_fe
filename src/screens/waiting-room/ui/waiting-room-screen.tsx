@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import type { PlayerSeat } from "@/entities/player-seat";
 import { WaitingRoom } from "@/widgets/waiting-room";
-import { useSoundToggle } from "@/shared/lib/stores";
 
 /** Constants for the waiting room */
 const MAX_SEATS = 20;
@@ -86,7 +85,6 @@ function addPlayerToSeats(seats: PlayerSeat[], playerIndex: number): PlayerSeat[
  */
 export function WaitingRoomScreen() {
   const router = useRouter();
-  const { isMuted, toggleMute } = useSoundToggle();
   const [seats, setSeats] = useState<PlayerSeat[]>(generateInitialSeats);
   const [countdown, setCountdown] = useState(INITIAL_COUNTDOWN);
   const playerIndexRef = useRef(0);
@@ -133,14 +131,5 @@ export function WaitingRoomScreen() {
     return () => clearInterval(interval);
   }, [isRoomFull, router]);
 
-  return (
-    <WaitingRoom
-      seats={seats}
-      maxSeats={MAX_SEATS}
-      countdown={countdown}
-      isCountdownActive={isRoomFull}
-      isMuted={isMuted}
-      onToggleMute={toggleMute}
-    />
-  );
+  return <WaitingRoom seats={seats} maxSeats={MAX_SEATS} countdown={countdown} isCountdownActive={isRoomFull} />;
 }
