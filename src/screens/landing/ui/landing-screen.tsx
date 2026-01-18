@@ -27,23 +27,10 @@ export function LandingScreen() {
   const intl = useIntl();
   const [isMuted, setIsMuted] = useState(false);
 
-  const { state, playerName, isJoining, handleJoinMatchmaking, playersCount } = useLandingFlow();
+  const { playerName, isJoining, handleJoinMatchmaking, playersCount } = useLandingFlow();
 
   const displayName = playerName?.trim() || intl.formatMessage({ id: "landing.defaults.player_name" });
   const illustrationAlt = intl.formatMessage({ id: "landing.illustration_alt" });
-
-  // Show loading state while checking registration
-  if (state === "loading" || state === "no_registration") {
-    return (
-      <div className="h-full bg-[#fff7ed] flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-[#f54900] text-xl font-space animate-pulse">
-            <FormattedMessage id="landing.loading" defaultMessage="Loading..." />
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="h-full bg-[#fff7ed] p-2">

@@ -1,5 +1,6 @@
 "use client";
 
+import { RegistrationGuard } from "@/shared";
 import { LandingScreen } from "@/screens/landing";
 
 /**
@@ -21,5 +22,9 @@ import { LandingScreen } from "@/screens/landing";
  * @see docs/prd.md for complete game flow
  */
 export default function LandingPage() {
-  return <LandingScreen />;
+  return (
+    <RegistrationGuard>
+      <LandingScreen />
+    </RegistrationGuard>
+  );
 }

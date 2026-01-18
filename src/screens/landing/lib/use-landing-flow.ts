@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useQuery } from "@tanstack/react-query";
@@ -6,35 +6,25 @@ import { usePlayerRegistration, useClearPlayerRegistration } from "@/entities/pl
 import { gameQueries } from "@/entities/game";
 import { useJoinGame } from "@/features/join-game";
 
-export type LandingFlowState = "loading" | "no_registration" | "ready" | "joining" | "error";
+export type LandingFlowState = "ready" | "joining" | "error";
 
 export function useLandingFlow() {
   const router = useRouter();
-  const { connected, account } = useWallet();
+  const { account } = useWallet();
   const registration = usePlayerRegistration();
   const clearRegistration = useClearPlayerRegistration();
 
   const { mutateAsync: joinGame, isPending: isJoining, error } = useJoinGame();
 
-  // Check if user has valid registration
+  // Check if user has valid registration (guard already handles redirect)
   const hasValidRegistration = Boolean(
     registration?.inviteCode &&
       registration?.displayName &&
       registration.walletAddress === account?.address?.toString(),
   );
 
-  // Redirect if no registration
-  useEffect(() => {
-    if (!connected) return;
-    if (!hasValidRegistration) {
-      router.push("/invite-code");
-    }
-  }, [connected, hasValidRegistration, router]);
-
   // Determine state
   const getState = (): LandingFlowState => {
-    if (!connected) return "loading";
-    if (!hasValidRegistration) return "no_registration";
     if (isJoining) return "joining";
     if (error) return "error";
     return "ready";
@@ -45,7 +35,7 @@ export function useLandingFlow() {
   // Fetch players count with polling (10s interval from gameQueries.status())
   const { data: gameStatus } = useQuery({
     ...gameQueries.status(),
-    enabled: state !== "loading",
+    enabled: hasValidRegistration,
   });
 
   const handleJoinMatchmaking = useCallback(async () => {
