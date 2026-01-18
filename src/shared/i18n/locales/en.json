@@ -44,8 +44,10 @@
       "connect_wallet": "Connect Wallet",
       "connecting": "Connecting...",
       "registering": "Registering...",
+      "failed": "Retry",
       "continue": "Continue",
-      "enter_name": "Enter Name"
+      "enter_name": "Enter Name",
+      "name_hint": "Name must be at least 2 characters"
     },
     "errors": {
       "invalid_code": "Please enter a valid 6-digit code",
