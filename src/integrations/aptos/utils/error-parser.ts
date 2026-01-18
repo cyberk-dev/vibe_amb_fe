@@ -18,6 +18,7 @@ const GAME_ERRORS: Record<number, string> = {
   2017: "Target player is not active in this game",
   2018: "You must register in whitelist first",
   2019: "Invalid invite code",
+  2020: "Please set your display name first",
 };
 
 const VAULT_ERRORS: Record<number, string> = {

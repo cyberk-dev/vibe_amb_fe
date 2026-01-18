@@ -83,6 +83,28 @@ class GameViewService {
     return hasJoined;
   }
 
+  async hasPendingName(playerAddress: string): Promise<boolean> {
+    const [has] = await this.aptos.view<[boolean]>({
+      payload: {
+        function: `${GAME_MODULE}::has_pending_name`,
+        typeArguments: [],
+        functionArguments: [playerAddress],
+      },
+    });
+    return has;
+  }
+
+  async getPendingName(playerAddress: string): Promise<string> {
+    const [name] = await this.aptos.view<[string]>({
+      payload: {
+        function: `${GAME_MODULE}::get_pending_name`,
+        typeArguments: [],
+        functionArguments: [playerAddress],
+      },
+    });
+    return name;
+  }
+
   async getVotingState(): Promise<VotingStateDto> {
     const result = await this.aptos.view<[string, string, string]>({
       payload: {

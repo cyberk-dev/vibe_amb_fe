@@ -4,41 +4,36 @@ import { toast } from "sonner";
 import { buildFunctionPath, parseContractError, getAptosClient } from "@/integrations/aptos";
 import { gameQueries } from "@/entities/game";
 
-interface JoinGameParams {
+interface SetDisplayNameParams {
   code: string;
+  name: string;
 }
 
-export function useJoinGame() {
+export function useSetDisplayName() {
   const { signAndSubmitTransaction, account } = useWallet();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ code }: JoinGameParams) => {
-      if (!account?.address) {
-        throw new Error("Wallet not connected");
-      }
+    mutationFn: async ({ code, name }: SetDisplayNameParams) => {
+      if (!account?.address) throw new Error("Wallet not connected");
 
       const response = await signAndSubmitTransaction({
         sender: account.address.toString(),
         data: {
-          function: buildFunctionPath("game", "join_game"),
+          function: buildFunctionPath("game", "set_display_name"),
           typeArguments: [],
-          functionArguments: [code],
+          functionArguments: [code, name],
         },
       });
 
       const aptos = getAptosClient();
-      const result = await aptos.waitForTransaction({ transactionHash: response.hash });
-
-      if (!result.success) {
-        throw new Error(result.vm_status || "Failed to join game");
-      }
+      await aptos.waitForTransaction({ transactionHash: response.hash });
 
       return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: gameQueries.all() });
-      toast.success("Welcome to the game!");
+      toast.success("Name saved!");
     },
     onError: (error) => {
       toast.error(parseContractError(error));
