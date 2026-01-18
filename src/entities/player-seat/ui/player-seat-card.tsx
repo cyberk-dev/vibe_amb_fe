@@ -102,9 +102,9 @@ export function PlayerSeatCard({ seat, className }: PlayerSeatCardProps) {
       )}
       layout
     >
-      <div className="flex h-full md:h-12 items-center justify-between">
+      <div className="flex h-full md:h-12 items-center gap-2">
         {/* Left section: Seat number + Player info */}
-        <div className="flex gap-2 md:gap-4 items-center">
+        <div className="flex gap-2 md:gap-4 items-center min-w-0 flex-1">
           {/* Seat number badge */}
           <motion.div
             className="size-8 md:size-12 flex items-center justify-center shrink-0"
@@ -122,7 +122,7 @@ export function PlayerSeatCard({ seat, className }: PlayerSeatCardProps) {
           </motion.div>
 
           {/* Player info or waiting text */}
-          <div className="flex flex-col overflow-hidden">
+          <div className="flex flex-col overflow-hidden min-w-0">
             <AnimatePresence mode="wait">
               {isOccupied && player ? (
                 <motion.div
@@ -131,9 +131,10 @@ export function PlayerSeatCard({ seat, className }: PlayerSeatCardProps) {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
+                  className="min-w-0"
                 >
                   {/* Player name */}
-                  <p className="font-space text-sm md:text-[18px] font-bold leading-5 md:leading-7 text-black">
+                  <p className="font-space text-sm md:text-[18px] font-bold leading-5 md:leading-7 text-black truncate">
                     {player.name}
                   </p>
                   {/* Player role */}
@@ -167,7 +168,7 @@ export function PlayerSeatCard({ seat, className }: PlayerSeatCardProps) {
         <AnimatePresence>
           {isOccupied && isReady && (
             <motion.div
-              className="size-2 rounded-full bg-custom-ready-green shrink-0"
+              className="size-2 rounded-full bg-custom-ready-green shrink-0 ml-2"
               variants={readyIndicatorVariants}
               initial="hidden"
               animate="visible"

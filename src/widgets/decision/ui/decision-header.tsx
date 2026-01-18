@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
-import { SoundButton } from "@/shared/ui/sound-button";
 
 // ========================================
 // Animation Variants
@@ -97,9 +96,6 @@ export function DecisionHeader({ totalPlayers, className }: DecisionHeaderProps)
             <FormattedMessage id="decision.header.players" values={{ count: totalPlayers }} />
           </span>
         </motion.div>
-
-        {/* Sound toggle button */}
-        <SoundButton variant="dark" />
       </motion.div>
     </motion.div>
   );

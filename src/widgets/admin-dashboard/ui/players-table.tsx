@@ -2,13 +2,14 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { gameQueries, PlayerListItem } from "@/entities/game";
+import { InlineLoader } from "@/shared/ui";
 
 export function PlayersTable() {
   const { data: players = [], isLoading } = useQuery(gameQueries.players());
   const { data: victims = [] } = useQuery(gameQueries.victims());
 
   if (isLoading) {
-    return <div className="py-8 text-center">Loading players...</div>;
+    return <InlineLoader />;
   }
 
   if (players.length === 0) {

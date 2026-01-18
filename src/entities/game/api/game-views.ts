@@ -7,6 +7,7 @@ import type {
   VictimsWithNamesDto,
   VictimsWithSeatsDto,
   AllPlayersWithSeatsDto,
+  AllPlayersWithVotesDto,
 } from "./dto/game.dto";
 
 class GameViewService {
@@ -78,6 +79,17 @@ class GameViewService {
       },
     });
     return { 0: result[0], 1: result[1], 2: result[2], 3: result[3] };
+  }
+
+  async getAllPlayersWithVotes(): Promise<AllPlayersWithVotesDto> {
+    const result = await this.aptos.view<[string[], string[], string[], boolean[], string]>({
+      payload: {
+        function: `${GAME_MODULE}::get_all_players_with_votes`,
+        typeArguments: [],
+        functionArguments: [],
+      },
+    });
+    return { 0: result[0], 1: result[1], 2: result[2], 3: result[3], 4: result[4] };
   }
 
   async hasSelected(playerAddress: string): Promise<boolean> {

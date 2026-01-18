@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
-import { AnimatedDigits, SoundButton } from "@/shared/ui";
+import { AnimatedDigits } from "@/shared/ui";
 
 // ========================================
 // Animation Variants
@@ -103,14 +103,14 @@ export function PassGameHeader({ round, countdown, className }: PassGameHeaderPr
         </motion.p>
 
         {/* Main title: Pass + Countdown */}
-        <motion.div className="flex items-baseline gap-2" variants={titleVariants}>
-          <span className="font-bricolage font-bold text-[80px] md:text-[128px] lg:text-[160px] leading-[0.85] text-black">
+        <motion.div className="flex items-baseline gap-4 md:gap-8" variants={titleVariants}>
+          <span className="font-bricolage font-bold text-[56px] md:text-[80px] lg:text-[128px] xl:text-[160px] leading-[0.85] text-[#e7000b]">
             <FormattedMessage id="pass_game.pass" defaultMessage="Pass" />
           </span>
           <AnimatedDigits
             value={countdown}
             minDigits={2}
-            className="font-bricolage font-light text-[60px] md:text-[80px] lg:text-[104px] leading-[0.85] text-black"
+            className="font-bricolage font-light text-[40px] md:text-[60px] lg:text-[80px] xl:text-[104px] leading-[0.85] text-black"
           />
         </motion.div>
 
@@ -123,11 +123,11 @@ export function PassGameHeader({ round, countdown, className }: PassGameHeaderPr
         </motion.p>
       </div>
 
-      {/* Right section: Round indicator and sound toggle */}
+      {/* Right section: Round indicator */}
       <motion.div className="flex gap-2.5 items-center" variants={rightSectionVariants}>
         {/* Round indicator */}
         <motion.div
-          className="border-2 border-[#e7000b] flex items-center justify-center px-[18px] py-[10px] h-10"
+          className="border-2 border-[#e7000b] flex items-center justify-center px-[12px] py-[6px] lg:px-[18px] lg:py-[10px] h-10"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ type: "spring" as const, stiffness: 120, damping: 15, delay: 0.3 }}
@@ -136,9 +136,6 @@ export function PassGameHeader({ round, countdown, className }: PassGameHeaderPr
             <FormattedMessage id="pass_game.round" defaultMessage="Round {number}" values={{ number: round }} />
           </p>
         </motion.div>
-
-        {/* Sound toggle button */}
-        <SoundButton variant="dark" />
       </motion.div>
     </motion.div>
   );

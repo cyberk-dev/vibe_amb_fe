@@ -4,7 +4,6 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
-import { SoundButton } from "@/shared/ui/sound-button";
 
 // ========================================
 // Animation Variants
@@ -103,7 +102,7 @@ export function WaitingRoomHeader({ connectedPlayers, maxSeats, className }: Wai
           </motion.div>
         </div>
 
-        {/* Right section: Player count and sound toggle */}
+        {/* Right section: Player count */}
         <div className="flex gap-4 items-start">
           {/* Player count indicator */}
           <motion.div
@@ -114,9 +113,6 @@ export function WaitingRoomHeader({ connectedPlayers, maxSeats, className }: Wai
               {connectedPlayers} / {maxSeats}
             </p>
           </motion.div>
-
-          {/* Sound toggle button - uses global store */}
-          <SoundButton variant="dark" />
         </div>
       </div>
 
@@ -145,9 +141,6 @@ export function WaitingRoomHeader({ connectedPlayers, maxSeats, className }: Wai
               {connectedPlayers} / {maxSeats}
             </p>
           </div>
-
-          {/* Sound toggle button */}
-          <SoundButton variant="dark" />
         </motion.div>
       </div>
     </motion.div>

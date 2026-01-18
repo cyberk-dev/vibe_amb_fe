@@ -64,7 +64,7 @@ async function verifyMessage({ message, signature }: SIWEVerifyMessageArgs) {
     } else {
       return false;
     }
-  } catch (error) {
+  } catch {
     return false;
   }
 }

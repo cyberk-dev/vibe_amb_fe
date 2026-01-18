@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
+import { PageHeader } from "@/shared/ui/page-header";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DecisionHeader } from "./decision-header";
 import { EliminatedPlayerCard } from "./eliminated-player-card";
@@ -91,9 +92,9 @@ export interface DecisionWidgetProps {
   /** Remaining active players */
   remainingPlayers: DecisionPlayer[];
   /** Prize per player if sharing */
-  prizePerPlayer: number;
+  prizePerPlayer: string;
   /** Total prize pool */
-  totalPool: number;
+  totalPool: string;
   /** Next round pool (if continuing) */
   nextRoundPool: number;
   /** Vote counts for each option */
@@ -159,20 +160,25 @@ export function DecisionWidget({
   return (
     <div
       className={cn(
-        "h-full w-full overflow-auto",
+        "min-h-screen w-full overflow-auto",
         "bg-gradient-to-br from-[#fff7ed] via-white to-[#fef2f2]",
         className,
       )}
     >
       {/* Border frame - teal */}
       <motion.div
-        className="relative border-8 border-custom-teal min-h-full w-full"
+        className="relative border-8 border-custom-teal min-h-screen w-full"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        {/* Main content container with padding */}
-        <div className="relative z-10 flex flex-col gap-12 min-h-full p-[72px] pb-0">
+        {/* Main content container with max-width and padding */}
+        <div className="mx-auto max-w-[1440px] relative z-10 flex flex-col gap-12 min-h-screen px-4 py-8 md:px-16 md:py-12 pb-0">
+          {/* Page header */}
+          <div className="flex justify-end">
+            <PageHeader variant="dark" />
+          </div>
+
           {/* Header section */}
           <DecisionHeader totalPlayers={totalPlayers} />
 

@@ -110,8 +110,8 @@
   },
   "pass_game": {
     "game_in_progress": "Trò chơi đang diễn ra",
-    "pass": "Pass",
-    "your_turn_to_pass": "Đến lượt bạn chuyền",
+    "pass": "Lì xì",
+    "your_turn_to_pass": "Chọn 1 người có mối liên hệ đặc biệt với bạn",
     "your_packet": "Phong bao của bạn",
     "pass_to_player": "Chuyền cho người chơi",
     "confirm_pass": "Xác nhận chuyền",
@@ -125,12 +125,12 @@
   },
   "reveal_game": {
     "moment_of_truth": "Khoảnh khắc sự thật",
-    "reveal": "Mở ra",
+    "reveal": "Trúng hay hụt",
     "revealing_packets": "Đang mở phong bao",
     "proceeding_to_next_phase": "→ Tiến tới giai đoạn tiếp theo...",
     "revealed_count": "{revealed} / {total}",
-    "boom": "BOOM!",
-    "trolled_by": "Bị troll bởi {name}",
+    "boom": "TOANG!",
+    "trolled_by": "{name} gửi tặng 💀",
     "player_label": "Người chơi {number}"
   },
   "game_over": {
@@ -143,7 +143,7 @@
     "final_standings": "BẢNG XẾP HẠNG CUỐI CÙNG",
     "out": "BỊ LOẠI",
     "footer": "TRÒ CHƠI BỞI VIBE AMBASSADOR · 2026",
-    "back_to_home": "Về trang chủ"
+    "back_to_home": "Về nhà ăn Tết"
   },
   "decision": {
     "header": {

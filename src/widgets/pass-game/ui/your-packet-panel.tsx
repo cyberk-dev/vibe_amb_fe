@@ -39,8 +39,19 @@ const packetVariants = {
   },
 };
 
+// Desktop: vertical float animation
 const floatAnimation = {
   y: [0, -10, 0],
+  transition: {
+    duration: 3,
+    repeat: Infinity,
+    ease: "easeInOut" as const,
+  },
+};
+
+// Mobile: horizontal float animation
+const mobileFloatAnimation = {
+  x: [-5, 5, -5],
   transition: {
     duration: 3,
     repeat: Infinity,
@@ -67,8 +78,22 @@ interface YourPacketPanelProps {
  * - Red packet illustration card
  */
 export function YourPacketPanel({ packet, className }: YourPacketPanelProps) {
+  // Check if mobile (client-side only)
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   return (
-    <motion.div className={cn("flex flex-col gap-4", className)} initial="hidden" animate="visible">
+    <motion.div
+      className={cn("flex flex-col gap-4 items-center md:items-start", className)}
+      initial="hidden"
+      animate="visible"
+    >
       {/* Label */}
       <motion.p
         className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-custom-dark-grayish-blue"
@@ -78,7 +103,7 @@ export function YourPacketPanel({ packet, className }: YourPacketPanelProps) {
       </motion.p>
 
       {/* Red packet card */}
-      <motion.div variants={packetVariants} whileInView={floatAnimation}>
+      <motion.div variants={packetVariants} whileInView={isMobile ? mobileFloatAnimation : floatAnimation}>
         <RedPacketCard packet={packet} />
       </motion.div>
     </motion.div>
