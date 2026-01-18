@@ -189,5 +189,17 @@
       "next_round_pool": "Next round pool:",
       "make_your_choice": "Make Your Choice"
     }
+  },
+  "popup_warning": {
+    "title": "Pop-ups Required",
+    "description": "Google sign-in requires pop-ups to be enabled in your browser.",
+    "instructions": {
+      "title": "How to enable pop-ups:",
+      "chrome": "Chrome: Click the pop-up blocked icon in the address bar → Allow pop-ups",
+      "safari": "Safari: Preferences → Websites → Pop-up Windows → Allow",
+      "general": "Or disable your browser's pop-up blocker for this site"
+    },
+    "dont_show_again": "Don't show this again",
+    "proceed": "I Understand, Proceed"
   }
 }

@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { SoundButton } from "@/shared/ui/sound-button";
 import { GameFormField } from "@/shared/ui/form-field";
 import { useInviteCodeFlow, type FlowState } from "../lib/use-invite-code-flow";
-import { LanguageToggleButton } from "@/shared/ui";
+import { LanguageToggleButton, PopupBlockerWarningDialog } from "@/shared/ui";
 
 /**
  * Invite Code Screen - Whitelist Registration
@@ -143,8 +143,18 @@ function getButtonTextId(flowState: FlowState, canContinue: boolean): string {
 export function InviteCodeScreen() {
   const intl = useIntl();
 
-  const { flowState, inviteCode, displayName, setDisplayName, handleConnect, handleContinue, canContinue } =
-    useInviteCodeFlow();
+  const {
+    flowState,
+    inviteCode,
+    displayName,
+    setDisplayName,
+    handleConnect,
+    handleContinue,
+    canContinue,
+    showPopupWarning,
+    closePopupWarning,
+    proceedWithConnect,
+  } = useInviteCodeFlow();
 
   const codePlaceholder = intl.formatMessage({ id: "invite_code.form.code_placeholder" });
   const namePlaceholder = intl.formatMessage({ id: "invite_code.form.name_placeholder" });
@@ -176,150 +186,171 @@ export function InviteCodeScreen() {
   };
 
   return (
-    <div className="h-full bg-custom-vivid-red overflow-hidden relative">
-      {/* Decorative circles with entrance animations */}
-      <motion.div
-        className="absolute w-[524.658px] h-[524.658px] rounded-full bg-custom-light-orange top-[354px] left-[639px] will-change-transform"
-        variants={circleVariants}
-        initial="initial"
-        animate="animate"
-        custom={0}
-        whileInView={floatAnimation}
-      />
-      <motion.div
-        className="absolute w-[431.213px] h-[431.213px] rounded-full bg-custom-very-dark-blue top-[360.37px] left-[965.68px] will-change-transform"
-        variants={circleVariants}
-        initial="initial"
-        animate="animate"
-        custom={1}
-        whileInView={floatAnimation}
+    <>
+      {/* Popup blocker warning dialog */}
+      <PopupBlockerWarningDialog
+        open={showPopupWarning}
+        onOpenChange={closePopupWarning}
+        onProceed={proceedWithConnect}
       />
 
-      {/* Top right controls: Language toggle and Sound button */}
-      <div className="absolute top-6 right-6 flex items-center gap-3 z-20">
-        <LanguageToggleButton />
-        <SoundButton variant="dark" />
-      </div>
+      <div className="h-full bg-custom-vivid-red overflow-hidden relative">
+        {/* Decorative circles with entrance animations */}
+        <motion.div
+          className="absolute rounded-full bg-custom-light-orange will-change-transform
+          w-[280px] h-[280px] bottom-[120px] right-[-80px]
+          md:w-[524.658px] md:h-[524.658px] md:top-[354px] md:left-[639px] md:bottom-auto md:right-auto"
+          variants={circleVariants}
+          initial="initial"
+          animate="animate"
+          custom={0}
+          whileInView={floatAnimation}
+        />
+        <motion.div
+          className="absolute rounded-full bg-custom-very-dark-blue will-change-transform
+          w-[220px] h-[220px] bottom-[40px] right-[-40px]
+          md:w-[431.213px] md:h-[431.213px] md:top-[360.37px] md:left-[965.68px] md:bottom-auto md:right-auto"
+          variants={circleVariants}
+          initial="initial"
+          animate="animate"
+          custom={1}
+          whileInView={floatAnimation}
+        />
 
-      {/* Main content */}
-      <div className="h-full flex flex-col justify-between p-6 md:p-12 relative z-10">
-        {/* Hero title */}
-        <div className="flex-1 flex items-center">
-          <div className="w-full max-w-[1027px]">
-            <motion.div variants={titleContainerVariants} initial="hidden" animate="visible">
-              <h1 className="font-bold leading-[0.9] text-white font-bricolage text-[160px] [font-variation-settings:'opsz'_14,'wdth'_100]">
-                <motion.span className="block whitespace-nowrap" variants={wordVariants}>
-                  <FormattedMessage
-                    id="invite_code.hero.line1"
-                    values={{
-                      money: (chunks: ReactNode) => <span className="text-custom-light-orange">{chunks}</span>,
-                    }}
-                  />
-                </motion.span>
-                <motion.span className="block whitespace-nowrap" variants={wordVariants}>
-                  <FormattedMessage
-                    id="invite_code.hero.line2"
-                    values={{
-                      battle: (chunks: ReactNode) => <span className="text-custom-very-dark-blue">{chunks}</span>,
-                    }}
-                  />
-                </motion.span>
-              </h1>
-              <motion.p
-                className="text-white text-[20px] uppercase tracking-[1.2px] mt-6 font-space"
-                variants={bylineVariants}
-              >
-                <FormattedMessage id="invite_code.hero.byline" />
-              </motion.p>
-            </motion.div>
-          </div>
+        {/* Top right controls: Language toggle and Sound button */}
+        <div className="absolute top-6 right-6 flex items-center gap-3 z-20">
+          <LanguageToggleButton />
+          <SoundButton variant="dark" />
         </div>
 
-        {/* Bottom section with form */}
-        <motion.div
-          className="w-full max-w-[576px]"
-          variants={formContainerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          <div className="border-2 border-[rgba(255,228,220,0.5)] p-8 md:p-9 bg-white/10 backdrop-blur-sm">
-            <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Code Input - Readonly, auto-filled after registration */}
-              <GameFormField>
-                <GameFormField.Label variant="game">
-                  <FormattedMessage id="invite_code.form.code_label" />
-                </GameFormField.Label>
-                <GameFormField.Input
-                  variant="game-code"
-                  type="text"
-                  value={inviteCode}
-                  readOnly
-                  placeholder={isCodeReady ? "" : codePlaceholder}
-                  disabled={!isCodeReady}
-                  className={isCodeReady ? "bg-white/20" : ""}
-                />
-              </GameFormField>
-
-              {/* Name Input */}
-              <GameFormField>
-                <GameFormField.Label variant="game">
-                  <FormattedMessage id="invite_code.form.name_label" />
-                </GameFormField.Label>
-                <GameFormField.Input
-                  variant="game-text"
-                  type="text"
-                  value={displayName}
-                  onChange={handleNameChange}
-                  placeholder={namePlaceholder}
-                  disabled={!isCodeReady}
-                  maxLength={20}
-                />
-              </GameFormField>
-
-              {/* Helper text for name validation */}
-              {isCodeReady && displayName.length > 0 && displayName.length < 2 && (
-                <p className="text-white/60 text-sm font-space">
-                  <FormattedMessage
-                    id="invite_code.form.name_hint"
-                    defaultMessage="Name must be at least 2 characters"
-                  />
-                </p>
-              )}
-
-              {/* Submit button */}
-              <motion.button
-                type="submit"
-                disabled={isLoading || (flowState === "ready" && !canContinue)}
-                className="group flex items-center gap-3 text-white text-xl font-medium hover:text-yellow-200 transition-colors pt-2 disabled:opacity-50 disabled:cursor-not-allowed font-space cursor-pointer"
-                variants={buttonVariants}
-                initial="hidden"
-                animate="visible"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span className="uppercase tracking-wider">
-                  <FormattedMessage id={getButtonTextId(flowState, canContinue)} />
-                </span>
-                {isLoading ? (
-                  <span className="animate-spin">⏳</span>
-                ) : (
-                  <motion.span
-                    className="text-xl"
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    →
+        {/* Main content */}
+        <div className="h-auto lg:h-full flex flex-col justify-between gap-8 md:gap-0 px-6 mt-24 md:mt-0 md:p-12 relative z-10">
+          {/* Hero title */}
+          <div className="flex-1 flex items-center">
+            <div className="w-full max-w-[1027px]">
+              <motion.div variants={titleContainerVariants} initial="hidden" animate="visible">
+                <h1 className="font-bold leading-[0.9] text-white font-bricolage text-[48px] lg:text-[160px] [font-variation-settings:'opsz'_14,'wdth'_100]">
+                  <motion.span className="block whitespace-nowrap" variants={wordVariants}>
+                    <FormattedMessage
+                      id="invite_code.hero.line1"
+                      values={{
+                        money: (chunks: ReactNode) => (
+                          <span key="money" className="text-custom-light-orange">
+                            {chunks}
+                          </span>
+                        ),
+                      }}
+                    />
                   </motion.span>
-                )}
-              </motion.button>
-            </form>
+                  <motion.span className="block whitespace-nowrap" variants={wordVariants}>
+                    <FormattedMessage
+                      id="invite_code.hero.line2"
+                      values={{
+                        battle: (chunks: ReactNode) => (
+                          <span key="battle" className="text-custom-very-dark-blue">
+                            {chunks}
+                          </span>
+                        ),
+                      }}
+                    />
+                  </motion.span>
+                </h1>
+                <motion.p
+                  className="text-white text-[20px] uppercase tracking-[1.2px] mt-6 font-space"
+                  variants={bylineVariants}
+                >
+                  <FormattedMessage id="invite_code.hero.byline" />
+                </motion.p>
+              </motion.div>
+            </div>
           </div>
-        </motion.div>
+
+          {/* Bottom section with form */}
+          <motion.div
+            className="w-full max-w-[576px]"
+            variants={formContainerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <div className="border-2 border-[rgba(255,228,220,0.5)] p-8 md:p-9 bg-white/10 backdrop-blur-sm">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Code Input - Readonly, auto-filled after registration */}
+                <GameFormField>
+                  <GameFormField.Label variant="game">
+                    <FormattedMessage id="invite_code.form.code_label" />
+                  </GameFormField.Label>
+                  <GameFormField.Input
+                    variant="game-code"
+                    type="text"
+                    value={inviteCode}
+                    readOnly
+                    placeholder={isCodeReady ? "" : codePlaceholder}
+                    disabled={!isCodeReady}
+                    className={isCodeReady ? "bg-white/20" : ""}
+                  />
+                </GameFormField>
+
+                {/* Name Input */}
+                <GameFormField>
+                  <GameFormField.Label variant="game">
+                    <FormattedMessage id="invite_code.form.name_label" />
+                  </GameFormField.Label>
+                  <GameFormField.Input
+                    variant="game-text"
+                    type="text"
+                    value={displayName}
+                    onChange={handleNameChange}
+                    placeholder={namePlaceholder}
+                    disabled={!isCodeReady}
+                    maxLength={20}
+                  />
+                </GameFormField>
+
+                {/* Helper text for name validation */}
+                {isCodeReady && displayName.length > 0 && displayName.length < 2 && (
+                  <p className="text-white/60 text-sm font-space">
+                    <FormattedMessage
+                      id="invite_code.form.name_hint"
+                      defaultMessage="Name must be at least 2 characters"
+                    />
+                  </p>
+                )}
+
+                {/* Submit button */}
+                <motion.button
+                  type="submit"
+                  disabled={isLoading || (flowState === "ready" && !canContinue)}
+                  className="group flex items-center gap-3 text-white text-xl font-medium hover:text-yellow-200 transition-colors pt-2 disabled:opacity-50 disabled:cursor-not-allowed font-space cursor-pointer"
+                  variants={buttonVariants}
+                  initial="hidden"
+                  animate="visible"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span className="uppercase tracking-wider">
+                    <FormattedMessage id={getButtonTextId(flowState, canContinue)} />
+                  </span>
+                  {isLoading ? (
+                    <span className="animate-spin">⏳</span>
+                  ) : (
+                    <motion.span
+                      className="text-xl"
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      →
+                    </motion.span>
+                  )}
+                </motion.button>
+              </form>
+            </div>
+          </motion.div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

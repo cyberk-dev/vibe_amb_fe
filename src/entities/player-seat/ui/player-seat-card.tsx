@@ -114,7 +114,7 @@ export function PlayerSeatCard({ seat, className }: PlayerSeatCardProps) {
             <p
               className={cn(
                 "font-space text-sm md:text-[20px] font-bold leading-7 transition-colors duration-200",
-                isOccupied ? "text-white" : "text-custom-dark-grayish-blue",
+                isOccupied ? "text-white" : "text-custom-light-grayish-blue",
               )}
             >
               {seatNumber}
@@ -137,7 +137,7 @@ export function PlayerSeatCard({ seat, className }: PlayerSeatCardProps) {
                     {player.name}
                   </p>
                   {/* Player role */}
-                  <p className="font-space text-[10px] md:text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-[#6a7282]">
+                  <p className="font-space text-[10px] md:text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-custom-dark-grayish-blue">
                     {player.role}
                   </p>
                 </motion.div>
@@ -150,11 +150,11 @@ export function PlayerSeatCard({ seat, className }: PlayerSeatCardProps) {
                   exit="exit"
                 >
                   {/* Waiting text */}
-                  <p className="font-space text-sm md:text-[18px] font-bold leading-5 md:leading-7 text-custom-dark-grayish-blue">
+                  <p className="font-space text-sm md:text-[18px] font-bold leading-5 md:leading-7 text-custom-light-grayish-blue">
                     Waiting...
                   </p>
                   {/* Empty slot label */}
-                  <p className="font-space text-[10px] md:text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-custom-dark-grayish-blue">
+                  <p className="font-space text-[10px] md:text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-custom-light-grayish-blue">
                     Empty slot
                   </p>
                 </motion.div>

@@ -189,5 +189,17 @@
       "next_round_pool": "Giải vòng tiếp theo:",
       "make_your_choice": "Đưa Ra Lựa Chọn"
     }
+  },
+  "popup_warning": {
+    "title": "Cần bật cửa sổ Pop-up",
+    "description": "Đăng nhập bằng Google yêu cầu bật cửa sổ pop-up trong trình duyệt của bạn.",
+    "instructions": {
+      "title": "Cách bật cửa sổ pop-up:",
+      "chrome": "Chrome: Nhấn vào biểu tượng chặn pop-up trên thanh địa chỉ → Cho phép pop-up",
+      "safari": "Safari: Tùy chọn → Trang web → Cửa sổ Pop-up → Cho phép",
+      "general": "Hoặc tắt trình chặn pop-up của trình duyệt cho trang này"
+    },
+    "dont_show_again": "Không hiển thị lại",
+    "proceed": "Tôi đã hiểu, Tiếp tục"
   }
 }
