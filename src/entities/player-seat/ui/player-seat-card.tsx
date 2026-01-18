@@ -91,7 +91,7 @@ export const PlayerSeatCard = React.forwardRef<HTMLDivElement, PlayerSeatCardPro
 
           {/* Right section: Ready indicator (only for occupied seats) */}
           {isOccupied && isReady && (
-            <div className="size-2 rounded-full bg-[#00c950] opacity-96 shrink-0" aria-label="Player ready" />
+            <div className="size-2 rounded-full bg-custom-ready-green opacity-96 shrink-0" aria-label="Player ready" />
           )}
         </div>
       </div>

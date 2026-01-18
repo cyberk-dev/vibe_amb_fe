@@ -27,5 +27,58 @@
       "balance_label": "Số dư",
       "disconnect_button": "Ngắt kết nối Ví"
     }
+  },
+  "invite_code": {
+    "hero": {
+      "line1": "Lucky <money>Money</money>",
+      "line2": "<battle>Battle</battle> Royale",
+      "byline": "bởi VIBE Ambassador"
+    },
+    "form": {
+      "code_label": "Nhập mã",
+      "code_placeholder": "000000",
+      "name_label": "Tên của bạn",
+      "name_placeholder": "Nhập tên của bạn",
+      "submit": "Tham gia trò chơi",
+      "submitting": "Đang xác minh..."
+    },
+    "errors": {
+      "invalid_code": "Vui lòng nhập mã 6 chữ số hợp lệ",
+      "missing_name": "Vui lòng nhập tên của bạn"
+    }
+  },
+  "landing": {
+    "hero": {
+      "title": "Cốt truyện",
+      "greeting": "Xin chào {playerName}, hãy để chúng tôi giới thiệu với bạn"
+    },
+    "description": {
+      "first": "Một trò chơi cạnh tranh với chủ đề CNY đầy kịch tính. Chuyền lì xì cho đến khi ai cũng có một phong bao, rồi mở ra. Một phong bao nổ sẽ loại một người chơi.",
+      "second": "Người bị loại nhận $1-3. Những người còn lại quyết định: chia $28 hoặc tiếp tục để nhận <highlight>phần lớn hơn</highlight>."
+    },
+    "illustration_alt": "Hình minh họa trò chơi",
+    "footer": "VIBE Ambassador - 2026",
+    "players_required": "Cần đủ người chơi",
+    "actions": {
+      "join_matchmaking": "tham gia ghép trận",
+      "view_demo": "Xem demo trò chơi",
+      "view_wallet": "tiền của bạn ở đây"
+    },
+    "defaults": {
+      "player_name": "Người chơi"
+    }
+  },
+  "waiting_room": {
+    "title": "Phòng chờ",
+    "matchmaking": "Ghép trận",
+    "connected_players": "Người chơi kết nối",
+    "status": {
+      "starting_soon": "Trò chơi sẽ sớm bắt đầu",
+      "waiting": "Đang chờ người chơi..."
+    },
+    "aria": {
+      "mute": "Tắt âm thanh",
+      "unmute": "Bật âm thanh"
+    }
   }
 }
