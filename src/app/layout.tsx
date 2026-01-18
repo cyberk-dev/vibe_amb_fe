@@ -3,6 +3,7 @@ import "./globals.css";
 import { Web3AppProvider } from "@/providers/web3-app-provider";
 import { fonts } from "@/shared/assets/fonts";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { BackgroundMusic } from "@/shared/ui";
 
 export const metadata: Metadata = {
   title: "Cyberk Nextjs Boilerplate",
@@ -45,7 +46,10 @@ export default function RootLayout({
       >
         <div className="w-full h-screen overflow-hidden">
           <Web3AppProvider>
-            <NuqsAdapter>{children}</NuqsAdapter>
+            <NuqsAdapter>
+              <BackgroundMusic />
+              {children}
+            </NuqsAdapter>
           </Web3AppProvider>
         </div>
       </body>
