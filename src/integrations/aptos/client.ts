@@ -1,7 +1,7 @@
 import { Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
 import { GasStationClient, GasStationTransactionSubmitter } from "@aptos-labs/gas-station-client";
 
-const NETWORK = process.env.NEXT_PUBLIC_ENVIRONMENT === "production" ? Network.MAINNET : Network.TESTNET;
+const NETWORK = process.env.NEXT_PUBLIC_APTOS_NETWORK === "mainnet" ? Network.MAINNET : Network.TESTNET;
 
 // API key for rate limit bypass
 const API_KEY = process.env.NEXT_PUBLIC_APTOS_API_KEY;

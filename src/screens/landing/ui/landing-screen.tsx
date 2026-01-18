@@ -6,6 +6,9 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { SoundButton } from "@/shared/ui/sound-button";
 import { useLandingFlow } from "../lib/use-landing-flow";
 
+/** Number of players required to start a game */
+const REQUIRED_PLAYERS = 20;
+
 /**
  * Landing Screen - Game Introduction
  *
@@ -27,7 +30,7 @@ export function LandingScreen() {
   const intl = useIntl();
   const [isMuted, setIsMuted] = useState(false);
 
-  const { playerName, isJoining, handleJoinMatchmaking, playersCount } = useLandingFlow();
+  const { playerName, isJoining, handleJoinMatchmaking } = useLandingFlow();
 
   const displayName = playerName?.trim() || intl.formatMessage({ id: "landing.defaults.player_name" });
   const illustrationAlt = intl.formatMessage({ id: "landing.illustration_alt" });
@@ -112,7 +115,7 @@ export function LandingScreen() {
               {/* Player count display */}
               <div className="text-center space-y-4">
                 <h2 className="font-bold text-[180px] md:text-[210px] lg:text-[240px] leading-none text-white/80 font-bricolage">
-                  {playersCount}
+                  {REQUIRED_PLAYERS}
                 </h2>
                 <p className="text-white text-xl tracking-wider uppercase font-space">
                   <FormattedMessage id="landing.players_required" />

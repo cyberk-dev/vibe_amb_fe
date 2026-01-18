@@ -15,7 +15,7 @@
     "dev:prod": "dotenv -e .env.production -- next dev --turbopack",
     "build:prod": "dotenv -e .env.production -- next build",
     "start:prod": "dotenv -e .env.production -- next start",
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
