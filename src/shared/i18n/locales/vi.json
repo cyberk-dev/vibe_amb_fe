@@ -30,8 +30,8 @@
   },
   "invite_code": {
     "hero": {
-      "line1": "Lucky <money>Money</money>",
-      "line2": "<battle>Battle</battle> Royale",
+      "line1": "Con <money>Ngựa</money>",
+      "line2": "<battle>của</battle> năm",
       "byline": "bởi VIBE Ambassador"
     },
     "form": {
@@ -40,7 +40,12 @@
       "name_label": "Tên của bạn",
       "name_placeholder": "Nhập tên của bạn",
       "submit": "Tham gia trò chơi",
-      "submitting": "Đang xác minh..."
+      "submitting": "Đang xác minh...",
+      "connect_wallet": "Kết nối Ví",
+      "connecting": "Đang kết nối...",
+      "registering": "Đang đăng ký...",
+      "continue": "Tiếp tục",
+      "enter_name": "Nhập tên"
     },
     "errors": {
       "invalid_code": "Vui lòng nhập mã 6 chữ số hợp lệ",
@@ -130,5 +135,59 @@
     "out": "BỊ LOẠI",
     "footer": "TRÒ CHƠI BỞI VIBE AMBASSADOR · 2026",
     "back_to_home": "Về trang chủ"
+  },
+  "decision": {
+    "header": {
+      "critical_decision": "Quyết Định Quan Trọng",
+      "critical_choice": "Lựa Chọn Quan Trọng",
+      "title": "Quyết Định",
+      "players": "{count} Người Chơi",
+      "players_remaining": "{count} người chơi còn lại"
+    },
+    "cards": {
+      "option_a": "Lựa Chọn A",
+      "option_b": "Lựa Chọn B",
+      "share_prize": "Chia Giải",
+      "share_prize_line1": "Chia",
+      "share_prize_line2": "Giải",
+      "keep_playing": "Tiếp Tục Chơi",
+      "keep_playing_line1": "Tiếp",
+      "keep_playing_line2": "Tục Chơi",
+      "share_now": "Chia Ngay",
+      "share_now_line1": "Chia",
+      "share_now_line2": "Ngay",
+      "keep_going": "Tiếp Tục",
+      "keep_going_line1": "Tiếp",
+      "keep_going_line2": "Tục",
+      "share_description": "Kết thúc trò chơi ngay và chia đều",
+      "continue_description": "Loại bỏ thêm người chơi để có phần lớn hơn",
+      "per_player": "Mỗi Người Chơi",
+      "total_pool": "Tổng Giải",
+      "voted": "Đã Bỏ Phiếu",
+      "continue_playing": "Tiếp Tục Chơi",
+      "you_voted_share": "Anh em mình cứ thế thôi hẹ hẹ",
+      "you_voted_continue": "99% con bạc dùng lại trước khi thắng lớn",
+      "split_equally": "Chia đều ${amount}",
+      "risk_for": "Rủi ro cho ${amount}"
+    },
+    "widget": {
+      "vote_share": "Bỏ Phiếu Chia",
+      "vote_continue": "Bỏ Phiếu Tiếp Tục",
+      "footer": "tôi biết bạn tham mà"
+    },
+    "eliminated": {
+      "eliminated_this_round": "Bị Loại Vòng Này",
+      "eliminated_count": "Bị Loại ({count})"
+    },
+    "remaining_players": {
+      "label": "Người Chơi Còn Lại"
+    },
+    "mobile": {
+      "current_prize_pool": "Giải Thưởng Hiện Tại",
+      "if_shared_now": "Nếu chia ngay:",
+      "each": "mỗi người",
+      "next_round_pool": "Giải vòng tiếp theo:",
+      "make_your_choice": "Đưa Ra Lựa Chọn"
+    }
   }
 }
