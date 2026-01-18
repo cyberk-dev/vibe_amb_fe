@@ -213,15 +213,15 @@ export function LandingScreen() {
   };
 
   return (
-    <div className="min-h-full lg:h-full bg-[#fff7ed]">
+    <div className="h-screen bg-[#fff7ed]">
       {/* Border frame */}
-      <div className="min-h-full lg:h-full border-8 border-[#f54900] relative overflow-y-auto lg:overflow-hidden">
+      <div className="h-full border-8 border-[#f54900] relative overflow-y-auto lg:overflow-hidden">
         {/* Main content - split layout */}
-        <div className="min-h-full lg:h-full flex flex-col lg:flex-row">
+        <div className="h-full flex flex-col lg:flex-row">
           {/* Left side - Game lore and description */}
           <motion.div
             ref={leftPanelRef}
-            className="w-full lg:w-[63%] min-h-screen lg:min-h-full lg:h-full flex flex-col justify-between p-4 md:p-8 lg:p-12 lg:p-16 lg:overflow-hidden relative"
+            className="w-full lg:w-[63%] min-h-screen lg:h-full flex flex-col justify-between p-4 md:p-8 lg:p-12 lg:p-16 lg:overflow-hidden relative"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
