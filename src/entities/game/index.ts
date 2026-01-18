@@ -2,7 +2,16 @@
 // Export only the types and components that should be used by other layers
 
 // Types
-export type { GamePlayer, GameHost, RedPacket, GameState, GamePhase, PassSelection } from "./model/types";
+export type {
+  GamePlayer,
+  GameHost,
+  RedPacket,
+  GameState,
+  GamePhase,
+  PassSelection,
+  PackRevealState,
+  RevealPackData,
+} from "./model/types";
 
 // UI Components
 export { GamePlayerCard } from "./ui/game-player-card";
@@ -13,3 +22,6 @@ export type { RedPacketCardProps } from "./ui/red-packet-card";
 
 export { GameHostBadge } from "./ui/game-host-badge";
 export type { GameHostBadgeProps } from "./ui/game-host-badge";
+
+export { RevealPackCard } from "./ui/reveal-pack-card";
+export type { RevealPackCardProps } from "./ui/reveal-pack-card";

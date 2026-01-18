@@ -77,7 +77,7 @@ export function LandingScreen({ playerName, onJoinMatchmaking, onViewDemo, onVie
                 <div className="flex-1 min-h-0 w-auto max-w-3xl">
                   <div className="border-2 border-custom-light-orange rounded-[10px] overflow-hidden h-full w-fit relative">
                     <Image
-                      src="/mai-dell-thanh-cong.png"
+                      src="/mai-dell-thanh-cong.webp"
                       alt={illustrationAlt}
                       width={0}
                       height={0}
