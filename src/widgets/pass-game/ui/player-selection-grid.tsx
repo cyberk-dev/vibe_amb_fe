@@ -53,7 +53,7 @@ export function PlayerSelectionGrid({
   return (
     <div className={cn("flex flex-col gap-4", className)}>
       {/* Label */}
-      <p className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-[#6a7282]">
+      <p className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-custom-dark-grayish-blue">
         <FormattedMessage id="pass_game.pass_to_player" defaultMessage="Pass To Player" />
       </p>
 

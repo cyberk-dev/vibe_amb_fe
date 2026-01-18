@@ -58,7 +58,7 @@ export const PlayerSeatCard = React.forwardRef<HTMLDivElement, PlayerSeatCardPro
               <p
                 className={cn(
                   "font-space text-[20px] font-bold leading-7",
-                  isOccupied ? "text-white" : "text-custom-dark-grayish-blue",
+                  isOccupied ? "text-white" : "text-custom-light-grayish-blue",
                 )}
               >
                 {seatNumber}
@@ -72,16 +72,18 @@ export const PlayerSeatCard = React.forwardRef<HTMLDivElement, PlayerSeatCardPro
                   {/* Player name */}
                   <p className="font-space text-[18px] font-bold leading-7 text-black">{player.name}</p>
                   {/* Player role */}
-                  <p className="font-space text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-[#6a7282]">
+                  <p className="font-space text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-custom-dark-grayish-blue">
                     {player.role}
                   </p>
                 </>
               ) : (
                 <>
                   {/* Waiting text */}
-                  <p className="font-space text-[18px] font-bold leading-7 text-custom-dark-grayish-blue">Waiting...</p>
+                  <p className="font-space text-[18px] font-bold leading-7 text-custom-light-grayish-blue">
+                    Waiting...
+                  </p>
                   {/* Empty slot label */}
-                  <p className="font-space text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-custom-dark-grayish-blue">
+                  <p className="font-space text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-custom-light-grayish-blue">
                     Empty slot
                   </p>
                 </>

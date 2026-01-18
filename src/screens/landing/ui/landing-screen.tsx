@@ -91,7 +91,7 @@ export function LandingScreen({ playerName, onJoinMatchmaking, onViewDemo, onVie
 
             {/* Bottom footer */}
             <div className="mt-4 pt-2 flex-shrink-0 font-space">
-              <p className="text-custom-dark-grayish-blue text-base tracking-[1.2px] uppercase">
+              <p className="text-custom-light-grayish-blue text-base tracking-[1.2px] uppercase">
                 <FormattedMessage id="landing.footer" />
               </p>
             </div>

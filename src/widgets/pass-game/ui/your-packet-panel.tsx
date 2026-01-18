@@ -32,7 +32,7 @@ export function YourPacketPanel({ packet, imageUrl, className }: YourPacketPanel
   return (
     <div className={cn("flex flex-col gap-4", className)}>
       {/* Label */}
-      <p className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-[#6a7282]">
+      <p className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-custom-dark-grayish-blue">
         <FormattedMessage id="pass_game.your_packet" defaultMessage="Your Packet" />
       </p>
 
