@@ -1,8 +1,9 @@
 // Raw response types from contract view functions
 
-export interface PlayerStatusesDto {
-  0: string[]; // vector<address> - players
-  1: boolean[]; // vector<bool> - hasActed statuses
+export interface AllPlayersDto {
+  0: string[]; // vector<address> - addresses
+  1: string[]; // vector<String> - names (NEW in v5)
+  2: boolean[]; // vector<bool> - hasActed statuses
 }
 
 export interface VotingStateDto {

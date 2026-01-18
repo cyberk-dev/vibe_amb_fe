@@ -1,3 +1,6 @@
+"use client";
+
+import { RegistrationGuard } from "@/shared";
 import { WaitingRoomScreen } from "@/screens/waiting-room";
 
 /**
@@ -9,5 +12,9 @@ import { WaitingRoomScreen } from "@/screens/waiting-room";
  * to fill before the game starts. Includes a 60s countdown when full.
  */
 export default function WaitingRoomPage() {
-  return <WaitingRoomScreen />;
+  return (
+    <RegistrationGuard>
+      <WaitingRoomScreen />
+    </RegistrationGuard>
+  );
 }
