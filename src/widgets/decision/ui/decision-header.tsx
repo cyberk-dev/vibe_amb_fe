@@ -1,13 +1,58 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import { cn } from "@/shared/lib/utils";
-import { Volume2, VolumeX } from "lucide-react";
+import { SoundButton } from "@/shared/ui/sound-button";
+
+// ========================================
+// Animation Variants
+// ========================================
+
+const labelVariants = {
+  hidden: { opacity: 0, x: -30 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 15,
+    },
+  },
+};
+
+const titleVariants = {
+  hidden: { opacity: 0, x: -80, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 70,
+      damping: 15,
+      delay: 0.1,
+    },
+  },
+};
+
+const controlsVariants = {
+  hidden: { opacity: 0, x: 50 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 80,
+      damping: 15,
+      delay: 0.2,
+    },
+  },
+};
 
 interface DecisionHeaderProps {
   totalPlayers: number;
-  isMuted: boolean;
-  onToggleMute: () => void;
   className?: string;
 }
 
@@ -20,32 +65,40 @@ interface DecisionHeaderProps {
  * - Player count badge
  * - Sound toggle button
  */
-export function DecisionHeader({ totalPlayers, isMuted, onToggleMute, className }: DecisionHeaderProps) {
+export function DecisionHeader({ totalPlayers, className }: DecisionHeaderProps) {
   return (
-    <div className={cn("flex items-start justify-between", className)}>
+    <motion.div className={cn("flex items-start justify-between", className)} initial="hidden" animate="visible">
       {/* Left side - Title */}
       <div className="flex flex-col gap-4">
-        <p className="font-space text-xs font-normal uppercase tracking-[3.6px] text-custom-teal">Critical Decision</p>
-        <h1 className="font-bricolage text-[80px] md:text-[192px] font-bold leading-[0.85] text-black">Decision</h1>
+        <motion.p
+          className="font-space text-xs font-normal uppercase tracking-[3.6px] text-custom-teal"
+          variants={labelVariants}
+        >
+          Critical Decision
+        </motion.p>
+        <motion.h1
+          className="font-bricolage text-[80px] md:text-[192px] font-bold leading-[0.85] text-black"
+          variants={titleVariants}
+        >
+          Decision
+        </motion.h1>
       </div>
 
       {/* Right side - Controls */}
-      <div className="flex items-center gap-4">
+      <motion.div className="flex items-center gap-4" variants={controlsVariants}>
         {/* Player count badge */}
-        <div className="h-12 border-2 border-custom-teal px-6 flex items-center">
+        <motion.div
+          className="h-12 border-2 border-custom-teal px-6 flex items-center"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: "spring" as const, stiffness: 120, damping: 15, delay: 0.3 }}
+        >
           <span className="font-space text-sm font-medium text-custom-teal">{totalPlayers} Players</span>
-        </div>
+        </motion.div>
 
         {/* Sound toggle button */}
-        <button
-          type="button"
-          onClick={onToggleMute}
-          className="size-12 bg-custom-light-orange flex items-center justify-center hover:opacity-90 transition-opacity"
-          aria-label={isMuted ? "Unmute" : "Mute"}
-        >
-          {isMuted ? <VolumeX className="size-6 text-white" /> : <Volume2 className="size-6 text-white" />}
-        </button>
-      </div>
-    </div>
+        <SoundButton variant="dark" />
+      </motion.div>
+    </motion.div>
   );
 }

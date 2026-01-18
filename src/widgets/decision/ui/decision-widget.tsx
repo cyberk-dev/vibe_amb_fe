@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import { cn } from "@/shared/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DecisionHeader } from "./decision-header";
@@ -8,6 +9,60 @@ import { EliminatedPlayerCard } from "./eliminated-player-card";
 import { RemainingPlayersGrid } from "./remaining-players-grid";
 import { DecisionCards } from "./decision-cards";
 import { MobileDecisionLayout } from "./mobile-decision-layout";
+
+// ========================================
+// Animation Variants
+// ========================================
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.3,
+      staggerChildren: 0.1,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const sectionVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 80,
+      damping: 15,
+    },
+  },
+};
+
+const voteCardVariants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 15,
+    },
+  },
+};
+
+const footerVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: 0.6,
+      duration: 0.4,
+    },
+  },
+};
 
 export interface DecisionPlayer {
   id: string;
@@ -43,10 +98,6 @@ export interface DecisionWidgetProps {
   nextRoundPool: number;
   /** Vote counts for each option */
   voteCounts: VoteCounts;
-  /** Whether sound is muted */
-  isMuted: boolean;
-  /** Callback when sound toggle is clicked */
-  onToggleMute: () => void;
   /** Callback when Share Prize is clicked */
   onSharePrize: () => void;
   /** Callback when Continue Playing is clicked */
@@ -78,8 +129,6 @@ export function DecisionWidget({
   totalPool,
   nextRoundPool,
   voteCounts,
-  isMuted,
-  onToggleMute,
   onSharePrize,
   onContinuePlaying,
   isVoting = false,
@@ -97,8 +146,6 @@ export function DecisionWidget({
         prizePerPlayer={prizePerPlayer}
         totalPool={totalPool}
         nextRoundPool={nextRoundPool}
-        isMuted={isMuted}
-        onToggleMute={onToggleMute}
         onSharePrize={onSharePrize}
         onContinuePlaying={onContinuePlaying}
         isVoting={isVoting}
@@ -118,43 +165,60 @@ export function DecisionWidget({
       )}
     >
       {/* Border frame - teal */}
-      <div className="relative border-8 border-custom-teal min-h-full w-full">
+      <motion.div
+        className="relative border-8 border-custom-teal min-h-full w-full"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         {/* Main content container with padding */}
         <div className="relative z-10 flex flex-col gap-12 min-h-full p-[72px] pb-0">
           {/* Header section */}
-          <DecisionHeader totalPlayers={totalPlayers} isMuted={isMuted} onToggleMute={onToggleMute} />
+          <DecisionHeader totalPlayers={totalPlayers} />
 
           {/* Vote count cards */}
-          <div className="flex gap-4">
+          <motion.div className="flex gap-4" variants={sectionVariants}>
             {/* Share votes card */}
-            <div className="flex items-center gap-3 border-2 border-custom-teal bg-custom-teal/10 px-6 py-3">
+            <motion.div
+              className="flex items-center gap-3 border-2 border-custom-teal bg-custom-teal/10 px-6 py-3"
+              variants={voteCardVariants}
+              whileHover={{ scale: 1.02 }}
+            >
               <div className="size-10 bg-custom-teal flex items-center justify-center">
                 <span className="font-space text-lg font-bold text-white">{voteCounts.share}</span>
               </div>
               <span className="font-space text-sm font-medium text-custom-teal uppercase tracking-wider">
                 Vote Share
               </span>
-            </div>
+            </motion.div>
 
             {/* Continue votes card */}
-            <div className="flex items-center gap-3 border-2 border-custom-vivid-red bg-custom-vivid-red/10 px-6 py-3">
+            <motion.div
+              className="flex items-center gap-3 border-2 border-custom-vivid-red bg-custom-vivid-red/10 px-6 py-3"
+              variants={voteCardVariants}
+              whileHover={{ scale: 1.02 }}
+            >
               <div className="size-10 bg-custom-vivid-red flex items-center justify-center">
                 <span className="font-space text-lg font-bold text-white">{voteCounts.continue}</span>
               </div>
               <span className="font-space text-sm font-medium text-custom-vivid-red uppercase tracking-wider">
                 Vote Continue
               </span>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Eliminated player card */}
-          <EliminatedPlayerCard player={eliminatedPlayer} />
+          <motion.div variants={sectionVariants}>
+            <EliminatedPlayerCard player={eliminatedPlayer} />
+          </motion.div>
 
           {/* Remaining players section */}
-          <RemainingPlayersGrid players={remainingPlayers} />
+          <motion.div variants={sectionVariants}>
+            <RemainingPlayersGrid players={remainingPlayers} />
+          </motion.div>
 
           {/* Decision cards - flex-1 to push footer down */}
-          <div className="flex-1 flex flex-col">
+          <motion.div className="flex-1 flex flex-col" variants={sectionVariants}>
             <DecisionCards
               prizePerPlayer={prizePerPlayer}
               totalPool={totalPool}
@@ -163,14 +227,14 @@ export function DecisionWidget({
               isVoting={isVoting}
               currentUserVote={currentUserVote}
             />
-          </div>
+          </motion.div>
 
           {/* Footer */}
-          <div className="border-t-2 border-black/10 py-8">
+          <motion.div className="border-t-2 border-black/10 py-8" variants={footerVariants}>
             <p className="font-space text-xs uppercase tracking-[1.6px] text-black/40">we know you are ambitious</p>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

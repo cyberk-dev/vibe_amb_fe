@@ -1,8 +1,17 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import { cn } from "@/shared/lib/utils";
 import type { EliminatedPlayer } from "./decision-widget";
+
+const shakeAnimation = {
+  x: [0, -5, 5, -5, 5, 0],
+  transition: {
+    duration: 0.5,
+    delay: 0.5,
+  },
+};
 
 interface EliminatedPlayerCardProps {
   player: EliminatedPlayer;
@@ -20,20 +29,29 @@ interface EliminatedPlayerCardProps {
  */
 export function EliminatedPlayerCard({ player, className }: EliminatedPlayerCardProps) {
   return (
-    <div
+    <motion.div
       className={cn(
         "bg-white border-2 border-destructive",
         "px-6 py-6",
         "flex items-center justify-between",
         className,
       )}
+      initial={{ opacity: 0, scale: 0.95, x: -20 }}
+      animate={{ opacity: 1, scale: 1, x: 0 }}
+      transition={{ type: "spring" as const, stiffness: 100, damping: 15 }}
+      whileInView={shakeAnimation}
     >
       {/* Left side - Player info */}
       <div className="flex items-center gap-4">
         {/* Seat number badge */}
-        <div className="size-12 bg-destructive flex items-center justify-center">
+        <motion.div
+          className="size-12 bg-destructive flex items-center justify-center"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring" as const, stiffness: 200, damping: 15, delay: 0.2 }}
+        >
           <span className="font-space text-xl font-bold text-white">{player.seatNumber}</span>
-        </div>
+        </motion.div>
 
         {/* Player details */}
         <div className="flex flex-col">
@@ -45,9 +63,14 @@ export function EliminatedPlayerCard({ player, className }: EliminatedPlayerCard
       </div>
 
       {/* Right side - Consolation prize */}
-      <div className="h-[52px] border-2 border-destructive bg-white px-6 flex items-center">
+      <motion.div
+        className="h-[52px] border-2 border-destructive bg-white px-6 flex items-center"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ type: "spring" as const, stiffness: 100, damping: 15, delay: 0.3 }}
+      >
         <span className="font-space text-base font-bold text-black">+${player.consolationPrize}</span>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

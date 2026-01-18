@@ -1,10 +1,10 @@
 "use client";
 
-import * as React from "react";
+import { motion } from "framer-motion";
 import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
 
-interface ConfirmPassButtonProps extends React.ComponentPropsWithoutRef<"button"> {
+interface ConfirmPassButtonProps {
   /**
    * Whether a player is selected (enables the button)
    */
@@ -13,6 +13,18 @@ interface ConfirmPassButtonProps extends React.ComponentPropsWithoutRef<"button"
    * Whether the pass action is in progress
    */
   isPending?: boolean;
+  /**
+   * Click handler
+   */
+  onClick?: () => void;
+  /**
+   * Whether the button is disabled
+   */
+  disabled?: boolean;
+  /**
+   * Additional classes
+   */
+  className?: string;
 }
 
 /**
@@ -24,31 +36,33 @@ interface ConfirmPassButtonProps extends React.ComponentPropsWithoutRef<"button"
 export function ConfirmPassButton({
   hasSelection,
   isPending = false,
+  onClick,
   disabled,
   className,
-  ...props
 }: ConfirmPassButtonProps) {
   const isDisabled = disabled || !hasSelection || isPending;
 
   return (
-    <button
+    <motion.button
       type="button"
+      onClick={onClick}
       disabled={isDisabled}
       className={cn(
-        "w-[203px] h-[60px] bg-black text-white",
+        "w-[203px] h-[60px] bg-black text-white cursor-pointer",
         "font-space text-sm font-bold leading-5 tracking-[0.7px] uppercase",
         "transition-all",
         "hover:bg-gray-900",
         "disabled:bg-gray-400 disabled:cursor-not-allowed",
         className,
       )}
-      {...props}
+      whileHover={!isDisabled ? { scale: 1.03 } : undefined}
+      whileTap={!isDisabled ? { scale: 0.97 } : undefined}
     >
       {isPending ? (
         <span className="animate-pulse">...</span>
       ) : (
         <FormattedMessage id="pass_game.confirm_pass" defaultMessage="Confirm Pass" />
       )}
-    </button>
+    </motion.button>
   );
 }

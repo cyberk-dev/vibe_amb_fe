@@ -89,7 +89,6 @@ export function PassScreen() {
   // Game state
   const [players] = useState<GamePlayer[]>(generateFakePlayers);
   const [countdown, setCountdown] = useState(INITIAL_COUNTDOWN);
-  const [isMuted, setIsMuted] = useState(false);
   const [round] = useState(1);
   const countdownRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -163,11 +162,6 @@ export function PassScreen() {
     }
   }, [selectedPlayerId, isConfirmed, isPassing, isPending, passToPlayer]);
 
-  // Handle sound toggle
-  const handleToggleMute = useCallback(() => {
-    setIsMuted((prev) => !prev);
-  }, []);
-
   return (
     <PassGame
       round={round}
@@ -180,8 +174,6 @@ export function PassScreen() {
       onPlayerSelect={handlePlayerSelect}
       onConfirmPass={handleConfirmPass}
       isPassing={isPassing || isPending}
-      isMuted={isMuted}
-      onToggleMute={handleToggleMute}
     />
   );
 }

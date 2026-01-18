@@ -1,8 +1,38 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import { cn } from "@/shared/lib/utils";
 import type { DecisionPlayer } from "./decision-widget";
+
+// ========================================
+// Animation Variants
+// ========================================
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.02,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const chipVariants = {
+  hidden: { opacity: 0, scale: 0.8, y: 10 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 12,
+    },
+  },
+};
 
 interface RemainingPlayersGridProps {
   players: DecisionPlayer[];
@@ -31,7 +61,12 @@ function PlayerChip({ player }: PlayerChipProps) {
   };
 
   return (
-    <div className={cn("h-[60px] border-2 px-6 py-2", "flex items-center gap-3", chipStyles[voteStatus])}>
+    <motion.div
+      className={cn("h-[60px] border-2 px-6 py-2", "flex items-center gap-3", chipStyles[voteStatus])}
+      variants={chipVariants}
+      whileHover={{ scale: 1.02 }}
+      layout
+    >
       {/* Seat number badge */}
       <div className="size-8 bg-black flex items-center justify-center flex-shrink-0">
         <span className="font-space text-sm font-bold text-white">{player.seatNumber}</span>
@@ -39,7 +74,7 @@ function PlayerChip({ player }: PlayerChipProps) {
 
       {/* Player name */}
       <span className="font-space text-sm font-bold text-black truncate">{player.name}</span>
-    </div>
+    </motion.div>
   );
 }
 
@@ -55,14 +90,21 @@ export function RemainingPlayersGrid({ players, className }: RemainingPlayersGri
   return (
     <div className={cn("flex flex-col gap-4", className)}>
       {/* Section label */}
-      <p className="font-space text-xs font-normal uppercase tracking-[3.6px] text-black/40">Remaining Players</p>
+      <motion.p
+        className="font-space text-xs font-normal uppercase tracking-[3.6px] text-black/40"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring" as const, stiffness: 100, damping: 15 }}
+      >
+        Remaining Players
+      </motion.p>
 
       {/* Players grid - wrapping flex */}
-      <div className="flex flex-wrap gap-3">
+      <motion.div className="flex flex-wrap gap-3" variants={containerVariants} initial="hidden" animate="visible">
         {players.map((player) => (
           <PlayerChip key={player.id} player={player} />
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 }
