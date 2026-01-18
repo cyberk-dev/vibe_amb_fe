@@ -6,9 +6,9 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { BackgroundMusic } from "@/shared/ui";
 
 export const metadata: Metadata = {
-  title: "VIBE Ambassador",
-  applicationName: "VIBE Ambassador",
-  description: "Web3 frontend for VIBE Ambassador",
+  title: "H.O.T.Y",
+  applicationName: "H.O.T.Y",
+  description: "Web3 frontend for H.O.T.Y",
   manifest: "/manifest.json",
   icons: {
     icon: [
@@ -22,19 +22,19 @@ export const metadata: Metadata = {
     "Horse of the Year": "H.O.T.Y",
   },
   openGraph: {
-    title: "VIBE Ambassador",
-    description: "Web3 frontend for VIBE Ambassador",
+    title: "H.O.T.Y",
+    description: "Web3 frontend for H.O.T.Y",
     url: "",
-    siteName: "VIBE Ambassador",
+    siteName: "H.O.T.Y",
     images: [`${process.env.NEXT_PUBLIC_APP_URL}/thumbnail.png`],
     type: "website",
     locale: "en_US",
   },
   twitter: {
-    title: "VIBE Ambassador",
+    title: "H.O.T.Y",
     card: "summary_large_image",
     images: [`${process.env.NEXT_PUBLIC_APP_URL}/thumbnail.png`],
-    description: "Web3 frontend for VIBE Ambassador",
+    description: "Web3 frontend for H.O.T.Y",
   },
 };
 

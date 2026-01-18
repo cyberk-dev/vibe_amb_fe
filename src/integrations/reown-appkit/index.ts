@@ -9,8 +9,8 @@ import { cookieStorage, createStorage } from "wagmi";
 export const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!;
 
 export const metadata = {
-  name: "VIBE Ambassador",
-  description: "Web3 wallet connection for VIBE Ambassador",
+  name: "H.O.T.Y",
+  description: "Web3 wallet connection for H.O.T.Y",
   url: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
