@@ -65,12 +65,12 @@ interface CountdownPanelProps {
 export function CountdownPanel({ countdown, isActive, className }: CountdownPanelProps) {
   return (
     <motion.div
-      className={cn("flex flex-col items-center", "lg:justify-between lg:h-full", className)}
+      className={cn("flex flex-col items-center justify-between", className)}
       initial="hidden"
       animate="visible"
     >
       {/* Countdown number */}
-      <motion.div className="flex items-center justify-center py-4 lg:py-0 lg:flex-1" variants={countdownVariants}>
+      <motion.div className="flex items-center justify-center py-4 lg:py-0" variants={countdownVariants}>
         <AnimatedDigits
           value={countdown}
           minDigits={2}

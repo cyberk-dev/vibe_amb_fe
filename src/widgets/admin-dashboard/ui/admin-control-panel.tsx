@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { gameQueries, ADMIN_ACTIONS_BY_STATUS, GameStatus } from "@/entities/game";
+import { gameQueries, ADMIN_ACTIONS_BY_STATUS } from "@/entities/game";
 import {
   StartGameButton,
   FinalizeSelectionButton,
