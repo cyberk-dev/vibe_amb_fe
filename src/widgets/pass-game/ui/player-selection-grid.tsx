@@ -24,6 +24,10 @@ const labelVariants = {
   },
 };
 
+// NOTE: Variants below are kept for reference but not used
+// Direct animation props are used instead to avoid nested context conflicts
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const gridContainerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -35,6 +39,7 @@ const gridContainerVariants = {
   },
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const playerCardVariants = {
   hidden: { opacity: 0, scale: 0.8, y: 15 },
   visible: {
@@ -109,36 +114,55 @@ export function PlayerSelectionGrid({
         style={{
           gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
         }}
-        variants={gridContainerVariants}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
       >
-        {players.map((player) => {
+        {players.map((player, index) => {
           const isCurrentUser = player.id === currentUserId;
           const isSelected = player.id === selectedPlayerId;
 
           // Determine variant based on state
-          let variant: "default" | "selected" | "currentUser" = "default";
-          if (isCurrentUser) {
-            variant = "currentUser";
+          // Priority: acted current user > currentUser > selected > acted > default
+          let variant: "default" | "selected" | "currentUser" | "acted" = "default";
+          if (isCurrentUser && player.hasActed) {
+            variant = "acted"; // Current user who has acted shows orange
+          } else if (isCurrentUser) {
+            variant = "currentUser"; // Current user who hasn't acted shows black
           } else if (isSelected) {
             variant = "selected";
+          } else if (player.hasActed) {
+            variant = "acted";
           }
 
           // Determine secondary label
           let secondaryLabel: string;
-          if (isCurrentUser) {
+          if (isCurrentUser && player.hasActed) {
+            secondaryLabel = "Đã chọn"; // Show "Đã chọn" instead of "You"
+          } else if (isCurrentUser) {
             secondaryLabel = "You";
           } else {
             secondaryLabel = `Player ${player.seatNumber}`;
           }
 
           return (
-            <motion.div key={player.id} variants={playerCardVariants}>
+            <motion.div
+              key={player.id}
+              initial={{ opacity: 0, scale: 0.8, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 100,
+                damping: 12,
+                delay: index * 0.02,
+              }}
+            >
               <GamePlayerCard
                 player={player}
                 variant={variant}
                 secondaryLabel={secondaryLabel}
-                onClick={() => !isCurrentUser && onPlayerClick(player.id)}
-                disabled={disabled || isCurrentUser}
+                onClick={() => !isCurrentUser && !player.hasActed && onPlayerClick(player.id)}
+                disabled={disabled || isCurrentUser || player.hasActed}
               />
             </motion.div>
           );

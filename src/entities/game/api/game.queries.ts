@@ -5,11 +5,10 @@ import type { AdminGameState, Player, VotingState, RoundPrizes, GameOverview } f
 import { GameStatus } from "@/integrations/aptos";
 
 // Staggered polling to avoid thundering herd with 20 concurrent users
-const getPlayersPollingInterval = () => {
-  const BASE_INTERVAL = 5000; // 5s base
-  const JITTER = 1500; // ±1.5s random
-  return BASE_INTERVAL + (Math.random() * JITTER * 2 - JITTER);
-};
+// Returns a fixed interval with jitter (3-6s range)
+const POLLING_BASE = 3000;
+const POLLING_JITTER = 1500;
+const pollingInterval = POLLING_BASE + Math.floor(Math.random() * POLLING_JITTER * 2 - POLLING_JITTER);
 
 export const gameQueries = {
   // Base key
@@ -32,7 +31,7 @@ export const gameQueries = {
       refetchInterval: 5_000, // Auto-refresh every 10s
     }),
 
-  // Player list with staggered polling for waiting room
+  // Player list with polling for waiting room and pass screen
   players: () =>
     queryOptions({
       queryKey: [...gameQueries.all(), "players"],
@@ -41,7 +40,7 @@ export const gameQueries = {
         return mapAllPlayers(dto);
       },
       staleTime: 3_000, // Consider fresh for 3s (prevents rapid refetches)
-      refetchInterval: getPlayersPollingInterval, // 3.5-6.5s random interval
+      refetchInterval: pollingInterval, // 1.5-4.5s jittered interval
       placeholderData: keepPreviousData,
     }),
 
@@ -110,6 +109,32 @@ export const gameQueries = {
       },
       enabled: !!address,
       retry: false,
+    }),
+
+  // Check if player has selected (acted) this round
+  hasSelected: (address: string) =>
+    queryOptions({
+      queryKey: [...gameQueries.all(), "hasSelected", address],
+      queryFn: () => {
+        if (!address) throw new Error("Address required");
+        return gameViewService.hasSelected(address);
+      },
+      enabled: !!address,
+      staleTime: 3_000,
+    }),
+
+  // Selection progress (how many players have chosen)
+  selectionProgress: () =>
+    queryOptions({
+      queryKey: [...gameQueries.all(), "selectionProgress"],
+      queryFn: async (): Promise<{ selected: number; total: number }> => {
+        const dto = await gameViewService.getAllPlayers();
+        const players = mapAllPlayers(dto);
+        const selected = players.filter((p) => p.hasActed).length;
+        return { selected, total: players.length };
+      },
+      staleTime: 3_000,
+      refetchInterval: pollingInterval, // Jittered polling
     }),
 
   // Full overview (for dashboard)

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, useRef, Children, type ReactNode } from "react";
 import Image from "next/image";
 import { FormattedMessage, useIntl } from "react-intl";
 import { motion } from "framer-motion";
 import { SoundButton } from "@/shared/ui/sound-button";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { useLandingFlow } from "../lib/use-landing-flow";
 import { HowToPlayDialog } from "./how-to-play-dialog";
 
@@ -193,6 +194,16 @@ export function LandingScreen() {
   const intl = useIntl();
   const { playerName, isJoining, handleJoinMatchmaking } = useLandingFlow();
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
+  const rightPanelRef = useRef<HTMLDivElement>(null);
+  const leftPanelRef = useRef<HTMLDivElement>(null);
+
+  const handleScrollToMatchmaking = () => {
+    rightPanelRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleScrollToLeft = () => {
+    leftPanelRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const displayName = playerName?.trim() || intl.formatMessage({ id: "landing.defaults.player_name" });
   const illustrationAlt = intl.formatMessage({ id: "landing.illustration_alt" });
@@ -202,14 +213,15 @@ export function LandingScreen() {
   };
 
   return (
-    <div className="h-full bg-[#fff7ed]">
+    <div className="h-screen bg-[#fff7ed]">
       {/* Border frame */}
-      <div className="h-full border-8 border-[#f54900] relative overflow-hidden">
+      <div className="h-full border-8 border-[#f54900] relative overflow-y-auto lg:overflow-hidden">
         {/* Main content - split layout */}
         <div className="h-full flex flex-col lg:flex-row">
           {/* Left side - Game lore and description */}
           <motion.div
-            className="w-full lg:w-[63%] h-full flex flex-col justify-between p-8 md:p-12 lg:p-16 overflow-hidden"
+            ref={leftPanelRef}
+            className="w-full lg:w-[63%] min-h-screen lg:h-full flex flex-col justify-between p-4 md:p-8 lg:p-12 lg:p-16 lg:overflow-hidden relative"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -220,7 +232,7 @@ export function LandingScreen() {
                 {/* Main title */}
                 <div className="space-y-4 flex-shrink-0 font-bricolage">
                   <motion.h1
-                    className="font-bold text-[80px] md:text-[96px] lg:text-[128px] leading-[0.9] text-[#f54900]"
+                    className="font-bold text-[64px] md:text-[96px] lg:text-[128px] leading-[0.9] text-[#f54900]"
                     variants={titleVariants}
                   >
                     <FormattedMessage id="landing.hero.title" />
@@ -230,9 +242,13 @@ export function LandingScreen() {
                       id="landing.hero.greeting"
                       values={{
                         playerName: displayName,
-                        strikethrough: (chunks: ReactNode) => <del className="line-through">{chunks}</del>,
+                        strikethrough: (chunks: ReactNode) => (
+                          <del className="line-through">{Children.toArray(chunks)}</del>
+                        ),
                       }}
-                    />
+                    >
+                      {(chunks) => <>{Children.toArray(chunks)}</>}
+                    </FormattedMessage>
                   </motion.p>
                 </div>
 
@@ -254,10 +270,12 @@ export function LandingScreen() {
                       id="landing.description.second"
                       values={{
                         highlight: (chunks: ReactNode) => (
-                          <span className="font-bold text-custom-light-orange text-xl">{chunks}</span>
+                          <span className="font-bold text-custom-light-orange text-xl">{Children.toArray(chunks)}</span>
                         ),
                       }}
-                    />
+                    >
+                      {(chunks) => <>{Children.toArray(chunks)}</>}
+                    </FormattedMessage>
                   </motion.p>
                 </div>
 
@@ -277,21 +295,48 @@ export function LandingScreen() {
               </div>
             </div>
 
-            {/* Bottom footer */}
-            <motion.div className="mt-4 pt-2 flex-shrink-0 font-space" variants={footerVariants}>
-              <p className="text-custom-light-grayish-blue text-base tracking-[1.2px] uppercase">
+            {/* Bottom footer with mobile scroll indicator */}
+            <motion.div
+              className="mt-4 pt-2 flex-shrink-0 font-space flex flex-col items-center lg:items-start gap-4"
+              variants={footerVariants}
+            >
+              <p className="text-custom-light-grayish-blue text-base tracking-[1.2px] uppercase text-center lg:text-left">
                 <FormattedMessage id="landing.footer" />
               </p>
+
+              {/* Mobile scroll indicator - only visible on mobile */}
+              <motion.button
+                type="button"
+                className="lg:hidden cursor-pointer"
+                onClick={handleScrollToMatchmaking}
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                aria-label="Scroll to matchmaking"
+              >
+                <ChevronDown size={32} className="text-[#f54900]" />
+              </motion.button>
             </motion.div>
           </motion.div>
 
           {/* Right side - Matchmaking controls */}
           <motion.div
-            className="w-full lg:w-[37%] relative flex items-center justify-center p-8 md:p-12 lg:p-16 min-h-[600px] lg:h-full bg-gradient-to-br from-[#E7000B] to-[#F54900]"
+            ref={rightPanelRef}
+            className="w-full lg:w-[37%] relative flex items-start pt-16 lg:pt-0 lg:items-center justify-center p-8 md:p-12 lg:p-16 min-h-screen lg:h-full bg-gradient-to-br from-[#E7000B] to-[#F54900]"
             variants={rightPanelVariants}
             initial="hidden"
             animate="visible"
           >
+            {/* Mobile scroll-up indicator */}
+            <motion.button
+              type="button"
+              className="absolute top-4 left-1/2 -translate-x-1/2 lg:hidden cursor-pointer z-20"
+              onClick={handleScrollToLeft}
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              aria-label="Scroll to top"
+            >
+              <ChevronUp size={32} className="text-white/80" />
+            </motion.button>
             {/* Decorative circle overlay */}
             <motion.div
               className="absolute rounded-full bg-[rgba(255,137,4,0.2)] w-[300px] h-[300px] md:w-[350px] md:h-[350px] lg:w-[406px] lg:h-[406px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"

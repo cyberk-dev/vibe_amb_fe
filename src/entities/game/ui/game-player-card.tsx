@@ -5,7 +5,7 @@ import { Check } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import type { GamePlayer } from "../model/types";
 
-export type GamePlayerCardVariant = "default" | "selected" | "currentUser";
+export type GamePlayerCardVariant = "default" | "selected" | "currentUser" | "acted";
 
 export interface GamePlayerCardProps extends React.ComponentPropsWithoutRef<"button"> {
   /**
@@ -17,6 +17,7 @@ export interface GamePlayerCardProps extends React.ComponentPropsWithoutRef<"but
    * - default: Black seat badge, white background
    * - selected: Orange seat badge with check icon, light orange background
    * - currentUser: Black seat badge with number, white background (cannot be selected)
+   * - acted: Orange badge with check icon, light orange background (already chose, disabled)
    */
   variant?: GamePlayerCardVariant;
   /**
@@ -61,21 +62,25 @@ export const GamePlayerCard = React.forwardRef<HTMLButtonElement, GamePlayerCard
     // Determine if this is the current user card
     const isCurrentUserCard = variant === "currentUser" || isCurrentUser;
     const isSelected = variant === "selected";
+    const isActed = variant === "acted";
 
     return (
       <button
         ref={ref}
         type="button"
-        disabled={disabled || isCurrentUserCard}
+        disabled={disabled || isCurrentUserCard || isActed}
         className={cn(
           "w-[178px] h-[100px] flex items-center px-6 py-6 transition-all",
           // Background and border based on variant
           isSelected
             ? "bg-[#ffefe4] border-4 border-custom-light-orange"
-            : "bg-white border-2 border-black hover:border-custom-light-orange",
-          // Disabled state for current user
-          isCurrentUserCard && "cursor-default hover:border-black",
-          !isCurrentUserCard && !isSelected && "cursor-pointer hover:bg-[#fffcfa]",
+            : isActed
+              ? "bg-[#fff7ed] border-2 border-custom-light-orange"
+              : "bg-white border-2 border-black hover:border-custom-light-orange",
+          // Disabled state for current user or acted
+          (isCurrentUserCard || isActed) && "cursor-default",
+          isCurrentUserCard && "hover:border-black",
+          !isCurrentUserCard && !isSelected && !isActed && "cursor-pointer hover:bg-[#fffcfa]",
           className,
         )}
         {...props}
@@ -85,10 +90,10 @@ export const GamePlayerCard = React.forwardRef<HTMLButtonElement, GamePlayerCard
           <div
             className={cn(
               "size-12 flex items-center justify-center shrink-0",
-              isSelected ? "bg-custom-light-orange" : "bg-black",
+              isSelected || isActed ? "bg-custom-light-orange" : "bg-black",
             )}
           >
-            {isSelected ? (
+            {isSelected || isActed ? (
               <Check className="size-6 text-white" strokeWidth={3} />
             ) : (
               <span className="font-space text-[20px] font-bold leading-7 text-white">
@@ -104,7 +109,7 @@ export const GamePlayerCard = React.forwardRef<HTMLButtonElement, GamePlayerCard
             {/* Secondary label */}
             {secondaryLabel && (
               <p className="font-space text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-custom-dark-grayish-blue">
-                {secondaryLabel}
+                {isActed ? "Đã chọn" : secondaryLabel}
               </p>
             )}
           </div>
