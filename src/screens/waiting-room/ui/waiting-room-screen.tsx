@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import type { PlayerSeat } from "@/entities/player-seat";
 import { WaitingRoom } from "@/widgets/waiting-room";
+import { useSoundToggle } from "@/shared/lib/stores";
 
 /** Constants for the waiting room */
 const MAX_SEATS = 20;
@@ -85,9 +86,9 @@ function addPlayerToSeats(seats: PlayerSeat[], playerIndex: number): PlayerSeat[
  */
 export function WaitingRoomScreen() {
   const router = useRouter();
+  const { isMuted, toggleMute } = useSoundToggle();
   const [seats, setSeats] = useState<PlayerSeat[]>(generateInitialSeats);
   const [countdown, setCountdown] = useState(INITIAL_COUNTDOWN);
-  const [isMuted, setIsMuted] = useState(false);
   const playerIndexRef = useRef(0);
 
   // Count connected players
@@ -132,11 +133,6 @@ export function WaitingRoomScreen() {
     return () => clearInterval(interval);
   }, [isRoomFull, router]);
 
-  // Handle mute toggle
-  const handleToggleMute = useCallback(() => {
-    setIsMuted((prev) => !prev);
-  }, []);
-
   return (
     <WaitingRoom
       seats={seats}
@@ -144,7 +140,7 @@ export function WaitingRoomScreen() {
       countdown={countdown}
       isCountdownActive={isRoomFull}
       isMuted={isMuted}
-      onToggleMute={handleToggleMute}
+      onToggleMute={toggleMute}
     />
   );
 }
