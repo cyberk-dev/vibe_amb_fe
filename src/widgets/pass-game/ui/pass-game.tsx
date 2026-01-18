@@ -163,7 +163,7 @@ export function PassGame({
           </div>
 
           {/* Main content: Packet panel + Player grid */}
-          <motion.div className="flex flex-col lg:flex-row gap-12" variants={mainContentVariants}>
+          <motion.div className="flex flex-col lg:flex-row gap-4 lg:gap-12" variants={mainContentVariants}>
             {/* Left panel: Your packet */}
             <div className="w-full lg:w-auto lg:shrink-0">
               <YourPacketPanel packet={packet} />

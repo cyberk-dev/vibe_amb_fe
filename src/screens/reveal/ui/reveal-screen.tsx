@@ -1,78 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { FormattedMessage } from "react-intl";
 import { PageHeader } from "@/shared/ui/page-header";
+import { FullScreenLoader } from "@/shared/ui/full-screen-loader";
 import type { RevealPackData } from "@/entities/game";
 import { RevealPackCard } from "@/entities/game";
-
-/** Constants for the reveal phase */
-const REVEAL_INTERVAL_MS = 800;
-const TOTAL_PLAYERS = 20;
-
-/** Fake player names for simulation */
-const FAKE_PLAYER_NAMES = [
-  "Manh",
-  "Alice",
-  "Bob",
-  "Charlie",
-  "Diana",
-  "Eve",
-  "Frank",
-  "Grace",
-  "Henry",
-  "Ivy",
-  "Jack",
-  "Kate",
-  "Leo",
-  "Maya",
-  "Noah",
-  "Olivia",
-  "Peter",
-  "Quinn",
-  "Rose",
-  "Sam",
-];
-
-/** Default pack image URL */
-const DEFAULT_PACK_IMAGE = "/packet.png";
-
-/**
- * Generate initial mock packs for all players
- */
-function generateInitialPacks(): RevealPackData[] {
-  return FAKE_PLAYER_NAMES.slice(0, TOTAL_PLAYERS).map((name, index) => ({
-    id: `pack-${index + 1}`,
-    player: {
-      id: `player-${index + 1}`,
-      name,
-      seatNumber: index + 1,
-    },
-    revealState: "pending" as const,
-  }));
-}
-
-/**
- * Simulate reveal result for a pack
- * Note: Replace with actual on-chain result when API is ready
- */
-function simulateRevealResult(pack: RevealPackData, isExploded: boolean): RevealPackData {
-  if (isExploded) {
-    return {
-      ...pack,
-      revealState: "revealed-exploded",
-      consolationPrize: "+$1",
-      trolledBy: "Anderson",
-    };
-  }
-  return {
-    ...pack,
-    revealState: "revealed-safe",
-    packNumber: Math.floor(Math.random() * 9) + 1,
-    imageUrl: DEFAULT_PACK_IMAGE,
-  };
-}
+import { useRevealFlow } from "../lib/use-reveal-flow";
 
 // ============================================================================
 // Animation Variants
@@ -162,62 +96,30 @@ const footerVariants = {
  * RevealScreen - Screen for the reveal phase of the game
  *
  * Features:
- * - Grid of player packs that reveal one by one
+ * - Grid of player packs showing reveal results
  * - Header with title and reveal count
  * - Three pack states: pending, revealed-safe, revealed-exploded
  * - Footer showing "Proceeding to next phase..." when all revealed
  * - Full page animations with Framer Motion
  *
  * Flow:
- * - Packs start in "pending" state
- * - One by one, packs reveal their content
- * - Exploded packs show BOOM! with consolation prize
- * - Safe packs show pack illustration with number
- * - When all revealed, proceed to next phase
- *
- * Note: This screen uses fake data. Replace with actual game state
- * from contract/backend when API is ready.
+ * - Fetches survivors from get_all_players()
+ * - Fetches victim addresses from get_round_victims()
+ * - Fetches victim names from get_player_info()
+ * - Displays all packs with their reveal state
+ * - GameFlowGuard handles phase transitions
  */
 export function RevealScreen() {
-  // Game state
-  const [packs, setPacks] = useState<RevealPackData[]>(generateInitialPacks);
-  const revealIndexRef = useRef(0);
-  const revealIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const { packs, isLoading } = useRevealFlow();
 
-  // Calculate revealed count
-  const revealedCount = packs.filter((p) => p.revealState !== "pending").length;
+  // Show loading state
+  if (isLoading) {
+    return <FullScreenLoader />;
+  }
+
+  const revealedCount = packs.length;
   const totalCount = packs.length;
-  const allRevealed = revealedCount === totalCount;
-
-  // Auto-reveal packs one by one
-  useEffect(() => {
-    revealIntervalRef.current = setInterval(() => {
-      const currentIndex = revealIndexRef.current;
-      if (currentIndex >= TOTAL_PLAYERS) {
-        if (revealIntervalRef.current) {
-          clearInterval(revealIntervalRef.current);
-        }
-        return;
-      }
-
-      // Simulate: every 5th pack explodes (for demo)
-      const isExploded = (currentIndex + 1) % 5 === 3; // Pack 3, 8, 13, 18 explode
-
-      setPacks((prev) => {
-        const newPacks = [...prev];
-        newPacks[currentIndex] = simulateRevealResult(newPacks[currentIndex], isExploded);
-        return newPacks;
-      });
-
-      revealIndexRef.current += 1;
-    }, REVEAL_INTERVAL_MS);
-
-    return () => {
-      if (revealIntervalRef.current) {
-        clearInterval(revealIntervalRef.current);
-      }
-    };
-  }, []);
+  const allRevealed = true; // All are revealed at once in contract
 
   return (
     <div

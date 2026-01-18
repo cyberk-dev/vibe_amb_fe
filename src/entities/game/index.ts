@@ -21,6 +21,7 @@ export {
 
 // Utils
 export { formatAptAmount, truncateAddress } from "./lib/mappers";
+export type { Victim } from "./lib/mappers";
 
 // UI Components for admin
 export { GameStatusBadge } from "./ui/game-status-badge";

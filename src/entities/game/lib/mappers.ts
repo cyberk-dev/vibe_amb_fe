@@ -1,12 +1,34 @@
 import Decimal from "decimal.js";
-import type { AllPlayersDto, VotingStateDto, RoundPrizesDto } from "../api/dto/game.dto";
+import type {
+  AllPlayersDto,
+  VotingStateDto,
+  RoundPrizesDto,
+  VictimsWithNamesDto,
+  VictimsWithSeatsDto,
+  AllPlayersWithSeatsDto,
+} from "../api/dto/game.dto";
 import type { Player, VotingState, RoundPrizes } from "../model/types";
+
+export interface Victim {
+  address: string;
+  name: string;
+  seat: number;
+}
 
 export function mapAllPlayers(dto: AllPlayersDto): Player[] {
   return dto[0].map((address, index) => ({
     address,
     name: dto[1][index],
     hasActed: dto[2][index],
+  }));
+}
+
+export function mapAllPlayersWithSeats(dto: AllPlayersWithSeatsDto): Player[] {
+  return dto[0].map((address, index) => ({
+    address,
+    name: dto[1][index],
+    hasActed: dto[2][index],
+    seat: Number(dto[3][index]),
   }));
 }
 
@@ -28,6 +50,22 @@ export function mapRoundPrizes(dto: RoundPrizesDto): RoundPrizes {
     consolationPrize: BigInt(dto[0]),
     remainingPool: BigInt(dto[1]),
   };
+}
+
+export function mapVictimsWithNames(dto: VictimsWithNamesDto): Victim[] {
+  return dto[0].map((address, index) => ({
+    address,
+    name: dto[1][index],
+    seat: 0, // deprecated - use mapVictimsWithSeats
+  }));
+}
+
+export function mapVictimsWithSeats(dto: VictimsWithSeatsDto): Victim[] {
+  return dto[0].map((address, index) => ({
+    address,
+    name: dto[1][index],
+    seat: Number(dto[2][index]),
+  }));
 }
 
 // Format APT amount (8 decimals) for display

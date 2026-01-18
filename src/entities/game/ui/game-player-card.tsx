@@ -70,7 +70,8 @@ export const GamePlayerCard = React.forwardRef<HTMLButtonElement, GamePlayerCard
         type="button"
         disabled={disabled || isCurrentUserCard || isActed}
         className={cn(
-          "w-full h-[100px] flex items-center px-6 py-6 transition-all overflow-hidden",
+          // Responsive sizing: smaller on mobile, original on desktop
+          "w-full sm:w-[178px] h-[80px] sm:h-[100px] flex items-center px-3 py-3 sm:px-6 sm:py-6 transition-all overflow-hidden",
           // Background and border based on variant
           isSelected
             ? "bg-[#ffefe4] border-4 border-custom-light-orange"
@@ -85,18 +86,18 @@ export const GamePlayerCard = React.forwardRef<HTMLButtonElement, GamePlayerCard
         )}
         {...props}
       >
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-2 sm:gap-4 items-center">
           {/* Seat number badge */}
           <div
             className={cn(
-              "size-12 flex items-center justify-center shrink-0",
+              "size-9 sm:size-12 flex items-center justify-center shrink-0",
               isSelected || isActed ? "bg-custom-light-orange" : "bg-black",
             )}
           >
             {isSelected || isActed ? (
-              <Check className="size-6 text-white" strokeWidth={3} />
+              <Check className="size-5 sm:size-6 text-white" strokeWidth={3} />
             ) : (
-              <span className="font-space text-[20px] font-bold leading-7 text-white">
+              <span className="font-space text-[16px] sm:text-[20px] font-bold leading-7 text-white">
                 {isCurrentUserCard ? seatNumber : "x"}
               </span>
             )}
@@ -105,10 +106,12 @@ export const GamePlayerCard = React.forwardRef<HTMLButtonElement, GamePlayerCard
           {/* Player info */}
           <div className="flex flex-col items-start min-w-0 flex-1">
             {/* Player name */}
-            <p className="font-space text-[18px] font-bold leading-7 text-black truncate max-w-full">{name}</p>
+            <p className="font-space text-[14px] sm:text-[18px] font-bold leading-5 sm:leading-7 text-black truncate max-w-[80px] sm:max-w-none">
+              {name}
+            </p>
             {/* Secondary label */}
             {secondaryLabel && (
-              <p className="font-space text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-custom-dark-grayish-blue">
+              <p className="font-space text-[10px] sm:text-[12px] font-normal leading-3 sm:leading-4 tracking-[0.6px] uppercase text-custom-dark-grayish-blue">
                 {isActed ? "Đã chọn" : secondaryLabel}
               </p>
             )}
