@@ -21,3 +21,21 @@ export interface VoteDto {
   0: boolean; // hasVoted
   1: number; // vote (0 or 1)
 }
+
+export interface VictimsWithNamesDto {
+  0: string[]; // vector<address> - victim addresses
+  1: string[]; // vector<String> - victim names
+}
+
+export interface VictimsWithSeatsDto {
+  0: string[]; // vector<address> - victim addresses
+  1: string[]; // vector<String> - victim names
+  2: string[]; // vector<u64> - seat numbers (initial_bao_id)
+}
+
+export interface AllPlayersWithSeatsDto {
+  0: string[]; // vector<address> - addresses
+  1: string[]; // vector<String> - names
+  2: boolean[]; // vector<bool> - hasActed statuses
+  3: string[]; // vector<u64> - seat numbers (initial_bao_id)
+}

@@ -3,8 +3,9 @@ export enum GameStatus {
   PENDING = 0,
   SELECTION = 1,
   REVEALING = 2,
-  VOTING = 3,
-  ENDED = 4,
+  REVEALED = 3,
+  VOTING = 4,
+  ENDED = 5,
 }
 
 // Vote options

@@ -6,6 +6,7 @@ import {
   StartGameButton,
   FinalizeSelectionButton,
   RevealBombsButton,
+  StartVotingButton,
   FinalizeVotingButton,
   ResetGameButton,
 } from "@/features/admin-game-controls";
@@ -29,6 +30,8 @@ export function AdminControlPanel() {
         {availableActions.includes("finalize_selection") && <FinalizeSelectionButton currentStatus={state.status} />}
 
         {availableActions.includes("reveal_bombs") && <RevealBombsButton currentStatus={state.status} />}
+
+        {availableActions.includes("start_voting") && <StartVotingButton currentStatus={state.status} />}
 
         {availableActions.includes("finalize_voting") && <FinalizeVotingButton currentStatus={state.status} />}
 
