@@ -38,16 +38,16 @@ export const GameHostBadge = React.forwardRef<HTMLDivElement, GameHostBadgeProps
     return (
       <div ref={ref} className={cn("relative", className)} {...props}>
         {/* Speech bubble (if message exists) */}
-        {message && (
+        {/* {message && (
           <div className="absolute right-[100px] top-[20px] bg-white border-2 border-black rounded-tl-[10px] rounded-tr-[10px] rounded-bl-[10px] px-4 py-2 max-w-[168px]">
             <p className="font-space text-[12px] font-normal leading-4 tracking-[1.2px] uppercase text-black">
               {message}
             </p>
           </div>
-        )}
+        )} */}
 
         {/* Avatar and info container */}
-        <div className="flex flex-col items-end gap-2">
+        <div className="flex flex-col items-end gap-2 hidden">
           {/* Avatar */}
           <div className="size-[80px] rounded-full border-2 border-custom-light-orange overflow-hidden relative">
             <Image
