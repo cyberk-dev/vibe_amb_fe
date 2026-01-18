@@ -59,7 +59,7 @@ export function RevealScreen() {
     <div className="h-screen w-full bg-white overflow-hidden">
       {/* Main container with red border frame */}
       <div
-        className="h-full border-8 border-destructive flex flex-col gap-5 p-8 md:p-12"
+        className="h-full border-8 border-destructive flex flex-col gap-3 md:gap-5 p-4 md:p-8 lg:p-12"
         style={{
           background:
             "linear-gradient(134.72deg, rgba(255, 247, 237, 1) 0%, rgba(255, 255, 255, 1) 50%, rgba(254, 242, 242, 1) 100%)",
@@ -100,27 +100,19 @@ function RevealHeader({ revealedCount, totalCount, host, isMuted, onToggleMute }
   const intl = useIntl();
 
   return (
-    <div className="flex items-start justify-between w-full">
-      {/* Left: Title section */}
-      <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 w-full">
+      {/* Row 1: Truth label + Controls */}
+      <div className="flex items-center justify-between">
         {/* "Moment of Truth" label */}
         <p className="font-space text-xs font-normal leading-4 tracking-[3.6px] uppercase text-destructive">
           <FormattedMessage id="reveal_game.moment_of_truth" defaultMessage="Moment of Truth" />
         </p>
 
-        {/* "Reveal" title */}
-        <h1 className="font-bricolage font-bold text-[96px] md:text-[160px] lg:text-[104px] leading-[0.85] text-black">
-          <FormattedMessage id="reveal_game.reveal" defaultMessage="Reveal" />
-        </h1>
-      </div>
-
-      {/* Right: Controls + Host badge */}
-      <div className="flex flex-col items-end gap-5">
-        {/* Top row: Reveal count + Sound toggle */}
+        {/* Reveal count + Sound toggle */}
         <div className="flex gap-4 items-center">
           {/* Reveal count indicator */}
-          <div className="border-2 border-destructive flex items-center justify-center px-[26px] py-[14px] h-12">
-            <p className="font-space text-sm font-medium leading-5 text-destructive">
+          <div className="border-2 border-destructive flex items-center justify-center p-3 lg:px-[26px] lg:py-[14px] h-12">
+            <p className="font-space text-sm font-medium leading-5 text-destructive whitespace-nowrap">
               {revealedCount} / {totalCount}
             </p>
           </div>
@@ -145,8 +137,23 @@ function RevealHeader({ revealedCount, totalCount, host, isMuted, onToggleMute }
             {isMuted ? <VolumeX className="size-6 text-white" /> : <Volume2 className="size-6 text-white" />}
           </button>
         </div>
+      </div>
 
-        {/* Host badge with speech bubble */}
+      {/* Row 2: Reveal title + Host badge */}
+      <div className="flex items-end justify-between">
+        {/* "Reveal" title */}
+        <h1 className="font-bricolage font-bold text-[64px] md:text-[96px] lg:text-[104px] leading-[0.85] text-black">
+          <FormattedMessage id="reveal_game.reveal" defaultMessage="Reveal" />
+        </h1>
+
+        {/* Host badge with speech bubble - hidden on mobile */}
+        <div className="hidden md:block">
+          <GameHostBadge host={host} />
+        </div>
+      </div>
+
+      {/* Host badge - shown only on mobile */}
+      <div className="md:hidden">
         <GameHostBadge host={host} />
       </div>
     </div>
@@ -168,10 +175,12 @@ function RevealPackGrid({ packs }: RevealPackGridProps) {
       {/* Pack grid - scrollable container */}
       <div className="flex-1 overflow-y-auto min-h-0">
         <div
-          className="grid gap-[30px] pb-4"
-          style={{
-            gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
-          }}
+          className={cn(
+            "grid gap-x-[6px] gap-y-4 md:gap-y-5 lg:gap-[30px] pb-4",
+            // Mobile: 2 columns centered, Desktop: auto-fill
+            "grid-cols-2 justify-items-center md:justify-items-stretch",
+            "md:grid-cols-[repeat(auto-fill,minmax(160px,1fr))]",
+          )}
         >
           {packs.map((pack) => (
             <RevealPackCard key={pack.id} pack={pack} size="md" />
