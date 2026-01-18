@@ -206,7 +206,7 @@ export function InviteCodeScreen() {
         onProceed={proceedWithConnect}
       />
 
-      <div className="h-full bg-custom-vivid-red overflow-hidden relative">
+      <div className="min-h-screen bg-custom-vivid-red overflow-hidden relative">
         {/* Decorative circles with entrance animations */}
         <motion.div
           className="absolute rounded-full bg-custom-light-orange will-change-transform
@@ -236,7 +236,7 @@ export function InviteCodeScreen() {
         </div>
 
         {/* Main content */}
-        <div className="h-auto lg:h-full flex flex-col justify-between gap-8 md:gap-0 px-6 mt-24 md:mt-0 md:p-12 relative z-10">
+        <div className="h-full flex flex-col justify-between gap-8 md:gap-0 px-6 mt-24 md:mt-0 md:p-12 relative z-10">
           {/* Hero title */}
           <div className="flex-1 flex items-center">
             <div className="w-full max-w-[1027px]">
