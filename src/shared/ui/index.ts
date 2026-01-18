@@ -8,6 +8,7 @@ export * from "./confirm-dialog";
 export * from "./cta-button";
 export * from "./dialog";
 export * from "./form";
+export * from "./form-field";
 export * from "./global-confirm-dialog-container";
 export * from "./input";
 export * from "./label";
