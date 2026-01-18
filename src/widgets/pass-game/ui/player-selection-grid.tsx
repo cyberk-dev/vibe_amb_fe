@@ -108,12 +108,13 @@ export function PlayerSelectionGrid({
         <FormattedMessage id="pass_game.pass_to_player" defaultMessage="Pass To Player" />
       </motion.p>
 
-      {/* Player grid: auto-fit columns based on available width */}
+      {/* Player grid: 2 columns on mobile, auto-fit on desktop */}
       <motion.div
-        className="grid grid-cols-2 gap-4"
+        className="grid grid-cols-2 gap-2 sm:gap-4"
         style={{
-          gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+          gridTemplateColumns: "repeat(2, 1fr)",
         }}
+        // Use CSS media query for larger screens
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.2 }}
