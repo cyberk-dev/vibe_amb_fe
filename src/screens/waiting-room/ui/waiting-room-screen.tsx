@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import type { PlayerSeat } from "@/entities/player-seat";
 import { WaitingRoom } from "@/widgets/waiting-room";
 
@@ -83,6 +84,7 @@ function addPlayerToSeats(seats: PlayerSeat[], playerIndex: number): PlayerSeat[
  * - After countdown, game starts (navigation to game screen)
  */
 export function WaitingRoomScreen() {
+  const router = useRouter();
   const [seats, setSeats] = useState<PlayerSeat[]>(generateInitialSeats);
   const [countdown, setCountdown] = useState(INITIAL_COUNTDOWN);
   const [isMuted, setIsMuted] = useState(false);
@@ -118,8 +120,9 @@ export function WaitingRoomScreen() {
     const interval = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
-          // Game would start here - for now just reset the demo
           clearInterval(interval);
+          // Navigate to /pass page when countdown reaches 0
+          router.push("/pass");
           return 0;
         }
         return prev - 1;
@@ -127,7 +130,7 @@ export function WaitingRoomScreen() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isRoomFull]);
+  }, [isRoomFull, router]);
 
   // Handle mute toggle
   const handleToggleMute = useCallback(() => {
