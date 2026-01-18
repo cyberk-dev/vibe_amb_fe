@@ -4,13 +4,7 @@ import { useState, type ReactNode } from "react";
 import Image from "next/image";
 import { FormattedMessage, useIntl } from "react-intl";
 import { SoundButton } from "@/shared/ui/sound-button";
-
-interface LandingScreenProps {
-  playerName?: string;
-  onJoinMatchmaking?: () => void;
-  onViewDemo?: () => void;
-  onViewWallet?: () => void;
-}
+import { useLandingFlow } from "../lib/use-landing-flow";
 
 /**
  * Landing Screen - Game Introduction
@@ -24,16 +18,32 @@ interface LandingScreenProps {
  * - Fonts: Bricolage Grotesque (headlines), Space Grotesk (body)
  *
  * Flow:
- * - User arrives after successful authentication (wallet/Google)
- * - User can join matchmaking, view demo, or check wallet
+ * - User arrives from /invite-code with registration data in store
+ * - User clicks "Join Matchmaking" → join_game(code, displayName) → /pass
  *
  * @see docs/prd.md for game rules and flow
  */
-export function LandingScreen({ playerName, onJoinMatchmaking, onViewDemo, onViewWallet }: LandingScreenProps) {
+export function LandingScreen() {
   const intl = useIntl();
   const [isMuted, setIsMuted] = useState(false);
+
+  const { state, playerName, isJoining, handleJoinMatchmaking, playersCount } = useLandingFlow();
+
   const displayName = playerName?.trim() || intl.formatMessage({ id: "landing.defaults.player_name" });
   const illustrationAlt = intl.formatMessage({ id: "landing.illustration_alt" });
+
+  // Show loading state while checking registration
+  if (state === "loading" || state === "no_registration") {
+    return (
+      <div className="h-full bg-[#fff7ed] flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-[#f54900] text-xl font-space animate-pulse">
+            <FormattedMessage id="landing.loading" defaultMessage="Loading..." />
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full bg-[#fff7ed] p-2">
@@ -115,7 +125,7 @@ export function LandingScreen({ playerName, onJoinMatchmaking, onViewDemo, onVie
               {/* Player count display */}
               <div className="text-center space-y-4">
                 <h2 className="font-bold text-[180px] md:text-[210px] lg:text-[240px] leading-none text-white/80 font-bricolage">
-                  20
+                  {playersCount}
                 </h2>
                 <p className="text-white text-xl tracking-wider uppercase font-space">
                   <FormattedMessage id="landing.players_required" />
@@ -126,22 +136,30 @@ export function LandingScreen({ playerName, onJoinMatchmaking, onViewDemo, onVie
               <div className="space-y-4 font-space">
                 <button
                   type="button"
-                  onClick={onJoinMatchmaking}
-                  className="w-full bg-custom-very-dark-blue text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#154450] transition-colors"
+                  onClick={handleJoinMatchmaking}
+                  disabled={isJoining}
+                  className="w-full bg-custom-very-dark-blue text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#154450] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  <FormattedMessage id="landing.actions.join_matchmaking" />
+                  {isJoining ? (
+                    <>
+                      <span className="animate-spin">⏳</span>
+                      <FormattedMessage id="landing.actions.joining" defaultMessage="Joining..." />
+                    </>
+                  ) : (
+                    <FormattedMessage id="landing.actions.join_matchmaking" />
+                  )}
                 </button>
                 <button
                   type="button"
-                  onClick={onViewDemo}
-                  className="w-full bg-custom-light-orange border-2 border-white/40 text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#ff7a28] transition-colors"
+                  disabled={isJoining}
+                  className="w-full bg-custom-light-orange border-2 border-white/40 text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#ff7a28] transition-colors disabled:opacity-50"
                 >
                   <FormattedMessage id="landing.actions.view_demo" />
                 </button>
                 <button
                   type="button"
-                  onClick={onViewWallet}
-                  className="w-full bg-black text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-gray-900 transition-colors"
+                  disabled={isJoining}
+                  className="w-full bg-black text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-gray-900 transition-colors disabled:opacity-50"
                 >
                   <FormattedMessage id="landing.actions.view_wallet" />
                 </button>

@@ -4,6 +4,8 @@ export {
   CONTRACT_ADDRESS,
   GAME_MODULE,
   VAULT_MODULE,
+  WHITELIST_MODULE,
+  ROUTER_MODULE,
   PAYMENT_ASSET,
   buildFunctionPath,
 } from "./config";

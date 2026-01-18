@@ -1,15 +1,12 @@
 import Decimal from "decimal.js";
-import type {
-  PlayerStatusesDto,
-  VotingStateDto,
-  RoundPrizesDto,
-} from "../api/dto/game.dto";
+import type { AllPlayersDto, VotingStateDto, RoundPrizesDto } from "../api/dto/game.dto";
 import type { Player, VotingState, RoundPrizes } from "../model/types";
 
-export function mapPlayerStatuses(dto: PlayerStatusesDto): Player[] {
+export function mapAllPlayers(dto: AllPlayersDto): Player[] {
   return dto[0].map((address, index) => ({
     address,
-    hasActed: dto[1][index],
+    name: dto[1][index],
+    hasActed: dto[2][index],
   }));
 }
 
@@ -39,9 +36,7 @@ export function formatAptAmount(amount: bigint): string {
   const formatted = decimal.toFixed();
 
   // Remove trailing zeros after decimal point, but keep at least one decimal if needed
-  const cleaned = formatted.includes(".")
-    ? formatted.replace(/\.?0+$/, "")
-    : formatted;
+  const cleaned = formatted.includes(".") ? formatted.replace(/\.?0+$/, "") : formatted;
 
   return `${cleaned || "0"} APT`;
 }
