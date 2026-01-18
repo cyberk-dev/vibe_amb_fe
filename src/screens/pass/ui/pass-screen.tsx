@@ -1,65 +1,19 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import { useRouter } from "next/navigation";
-import type { GamePlayer } from "@/entities/game";
+import { useState, useEffect, useRef } from "react";
 import { PassGame } from "@/widgets/pass-game";
-import { usePassSelectionStore, usePassToPlayer } from "@/features/pass-to-player";
 import { PlayerAlreadySelectedDialog } from "@/features/pass-to-player/ui/player-already-selected-dialog";
-import { isTargetAlreadySelectedError } from "@/integrations/aptos/utils/error-parser";
-import { gameQueries, GameStatus } from "@/entities/game";
-import { useQuery } from "@tanstack/react-query";
+import { usePassFlow } from "../lib/use-pass-flow";
 
 /** Constants for the pass game */
 const INITIAL_COUNTDOWN = 60;
 const COUNTDOWN_INTERVAL_MS = 1000;
-const TOTAL_PLAYERS = 20;
-
-/** Fake player names for simulation */
-const FAKE_PLAYER_NAMES = [
-  "Manh",
-  "Alex",
-  "Sarah",
-  "John",
-  "Emily",
-  "David",
-  "Lisa",
-  "Mike",
-  "Anna",
-  "Chris",
-  "Emma",
-  "James",
-  "Olivia",
-  "Daniel",
-  "Sophia",
-  "William",
-  "Ava",
-  "Joseph",
-  "Mia",
-  "Thomas",
-];
-
-/** Current user ID (for demo purposes) */
-const CURRENT_USER_ID = "player-1";
-
-/**
- * Generate fake players for simulation
- */
-function generateFakePlayers(): GamePlayer[] {
-  return Array.from({ length: TOTAL_PLAYERS }, (_, index) => ({
-    id: `player-${index + 1}`,
-    name: FAKE_PLAYER_NAMES[index % FAKE_PLAYER_NAMES.length],
-    seatNumber: index + 1,
-    isCurrentUser: index === 0, // First player is current user
-    isEliminated: false,
-  }));
-}
 
 /**
  * PassScreen - Screen for the pass phase of the game
  *
  * Features:
- * - 20 player grid for selection
+ * - Player grid for selection
  * - Red packet display
  * - Countdown timer
  * - Player selection with confirmation
@@ -68,52 +22,35 @@ function generateFakePlayers(): GamePlayer[] {
  * - User sees their packet and all players
  * - User selects a player to pass to (or can keep for self by timeout)
  * - User confirms the pass
- * - After confirm or timeout, move to next phase
- *
- * Note: This screen uses fake data. Replace with actual game state
- * from contract/backend when API is ready.
+ * - GameFlowGuard handles phase transitions (reveal, vote, game-over)
  */
 export function PassScreen() {
-  const router = useRouter();
+  // Pass flow hook with contract integration
+  const {
+    players,
+    currentUserAddress,
+    round,
+    hasSelected,
+    selectedPlayerId,
+    togglePlayer,
+    confirmPass,
+    isConfirming,
+    showAlreadySelectedDialog,
+    setShowAlreadySelectedDialog,
+  } = usePassFlow();
 
-  // Game state
-  const [players] = useState<GamePlayer[]>(generateFakePlayers);
+  // Countdown state
   const [countdown, setCountdown] = useState(INITIAL_COUNTDOWN);
-  const [round] = useState(1);
   const countdownRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Selection state from store
-  const { selectedPlayerId, togglePlayer, isConfirmed, isPassing } = usePassSelectionStore();
-
-  // Pass mutation
-  const { mutateAsync: passToPlayer, isPending } = usePassToPlayer();
-
-  // Dialog state for player already selected error
-  const [showPlayerAlreadySelectedDialog, setShowPlayerAlreadySelectedDialog] = useState(false);
-
-  // Monitor game status - redirect to game-over when game ends
-  const { data: gameStatus } = useQuery(gameQueries.status());
-
-  useEffect(() => {
-    // When game status becomes ENDED, redirect to game-over screen
-    if (gameStatus?.status === GameStatus.ENDED) {
-      router.push("/game-over");
-    }
-  }, [gameStatus?.status, router]);
 
   // Countdown timer
   useEffect(() => {
     countdownRef.current = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
-          // Timer expired - redirect to game-over for testing
           if (countdownRef.current) {
             clearInterval(countdownRef.current);
           }
-          // Redirect to game-over screen after a short delay
-          setTimeout(() => {
-            router.push("/game-over");
-          }, 500);
           return 0;
         }
         return prev - 1;
@@ -125,40 +62,19 @@ export function PassScreen() {
         clearInterval(countdownRef.current);
       }
     };
-  }, [router]);
+  }, []);
 
   // Handle player selection
-  const handlePlayerSelect = useCallback(
-    (playerId: string) => {
-      if (isConfirmed || isPassing || isPending) return;
-      togglePlayer(playerId);
-    },
-    [isConfirmed, isPassing, isPending, togglePlayer],
-  );
+  const handlePlayerSelect = (playerId: string) => {
+    if (hasSelected || isConfirming) return;
+    togglePlayer(playerId);
+  };
 
   // Handle confirm pass
-  const handleConfirmPass = useCallback(async () => {
-    if (!selectedPlayerId || isConfirmed || isPassing || isPending) return;
-
-    try {
-      await passToPlayer({
-        gameId: "game-demo-1",
-        fromPlayerId: CURRENT_USER_ID,
-        toPlayerId: selectedPlayerId,
-      });
-
-      // In real implementation, game state would update via websocket/polling
-      // and screen would transition to reveal phase
-      console.log("[PassScreen] Pass confirmed successfully");
-    } catch (error) {
-      console.error("[PassScreen] Pass failed:", error);
-
-      // Check if error is about player already selected
-      if (isTargetAlreadySelectedError(error)) {
-        setShowPlayerAlreadySelectedDialog(true);
-      }
-    }
-  }, [selectedPlayerId, isConfirmed, isPassing, isPending, passToPlayer]);
+  const handleConfirmPass = async () => {
+    if (!selectedPlayerId || hasSelected || isConfirming) return;
+    await confirmPass();
+  };
 
   return (
     <>
@@ -166,17 +82,14 @@ export function PassScreen() {
         round={round}
         countdown={countdown}
         players={players}
-        currentUserId={CURRENT_USER_ID}
+        currentUserId={currentUserAddress ?? ""}
         selectedPlayerId={selectedPlayerId}
         onPlayerSelect={handlePlayerSelect}
         onConfirmPass={handleConfirmPass}
-        isPassing={isPassing || isPending}
+        isPassing={isConfirming}
       />
 
-      <PlayerAlreadySelectedDialog
-        open={showPlayerAlreadySelectedDialog}
-        onOpenChange={setShowPlayerAlreadySelectedDialog}
-      />
+      <PlayerAlreadySelectedDialog open={showAlreadySelectedDialog} onOpenChange={setShowAlreadySelectedDialog} />
     </>
   );
 }
