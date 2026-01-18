@@ -15,7 +15,7 @@ interface LocaleState {
 const useLocaleStore = create<LocaleState>()(
   persist(
     (set) => ({
-      locale: "en-US",
+      locale: "vi",
       actions: {
         setLocale: (locale) => set({ locale }),
       },

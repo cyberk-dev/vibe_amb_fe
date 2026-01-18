@@ -31,9 +31,7 @@ export function AdminDashboard() {
       <GameOverviewPanel />
       <AdminControlPanel />
 
-      {overview?.status === GameStatus.VOTING && (
-        <VotingStatusPanel />
-      )}
+      {overview?.status === GameStatus.VOTING && <VotingStatusPanel />}
 
       <PlayersTable />
     </div>

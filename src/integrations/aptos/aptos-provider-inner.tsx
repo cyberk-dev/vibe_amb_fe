@@ -1,23 +1,21 @@
 "use client";
 
 import { AptosWalletAdapterProvider } from "@aptos-labs/wallet-adapter-react";
-import { Network } from "@aptos-labs/ts-sdk";
-import { PropsWithChildren } from "react";
-
-const NETWORK = process.env.NEXT_PUBLIC_ENVIRONMENT === "production" ? Network.MAINNET : Network.TESTNET;
+import { PropsWithChildren, useMemo } from "react";
+import { aptosClient, NETWORK } from "./client";
 
 export function AptosProviderInner({ children }: PropsWithChildren) {
+  const dappConfig = useMemo(
+    () => ({
+      network: NETWORK,
+      aptosConnectDappId: process.env.NEXT_PUBLIC_APTOS_CONNECT_DAPP_ID,
+      transactionSubmitter: aptosClient.config.getTransactionSubmitter(),
+    }),
+    [],
+  );
+
   return (
-    <AptosWalletAdapterProvider
-      autoConnect={true}
-      dappConfig={{
-        network: NETWORK,
-        aptosConnectDappId: process.env.NEXT_PUBLIC_APTOS_CONNECT_DAPP_ID,
-      }}
-      onError={(error) => {
-        console.error("Aptos Wallet Error:", error);
-      }}
-    >
+    <AptosWalletAdapterProvider autoConnect={true} dappConfig={dappConfig} onError={console.error}>
       {children}
     </AptosWalletAdapterProvider>
   );

@@ -28,7 +28,16 @@ export { PlayerStatusIndicator } from "./ui/player-status-indicator";
 export { PlayerListItem } from "./ui/player-list-item";
 
 // === Game UI Types (for player-facing game) ===
-export type { GamePlayer, GameHost, RedPacket, GameState, GamePhase, PassSelection } from "./model/types";
+export type {
+  GamePlayer,
+  GameHost,
+  RedPacket,
+  GameState,
+  GamePhase,
+  PassSelection,
+  PackRevealState,
+  RevealPackData,
+} from "./model/types";
 
 // UI Components for game
 export { GamePlayerCard } from "./ui/game-player-card";
@@ -39,3 +48,6 @@ export type { RedPacketCardProps } from "./ui/red-packet-card";
 
 export { GameHostBadge } from "./ui/game-host-badge";
 export type { GameHostBadgeProps } from "./ui/game-host-badge";
+
+export { RevealPackCard } from "./ui/reveal-pack-card";
+export type { RevealPackCardProps } from "./ui/reveal-pack-card";

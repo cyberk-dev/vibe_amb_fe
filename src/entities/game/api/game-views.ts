@@ -1,10 +1,5 @@
 import { getAptosClient, GAME_MODULE, GameStatus } from "@/integrations/aptos";
-import type {
-  PlayerStatusesDto,
-  VotingStateDto,
-  RoundPrizesDto,
-  VoteDto,
-} from "./dto/game.dto";
+import type { AllPlayersDto, VotingStateDto, RoundPrizesDto, VoteDto } from "./dto/game.dto";
 
 class GameViewService {
   private get aptos() {
@@ -55,21 +50,21 @@ class GameViewService {
     return Number(count);
   }
 
-  async getPlayerStatuses(): Promise<PlayerStatusesDto> {
-    const result = await this.aptos.view<[string[], boolean[]]>({
+  async getAllPlayers(): Promise<AllPlayersDto> {
+    const result = await this.aptos.view<[string[], string[], boolean[]]>({
       payload: {
-        function: `${GAME_MODULE}::get_player_statuses`,
+        function: `${GAME_MODULE}::get_all_players`,
         typeArguments: [],
         functionArguments: [],
       },
     });
-    return { 0: result[0], 1: result[1] };
+    return { 0: result[0], 1: result[1], 2: result[2] };
   }
 
-  async getPlayerStatus(playerAddress: string): Promise<boolean> {
+  async hasSelected(playerAddress: string): Promise<boolean> {
     const [hasActed] = await this.aptos.view<[boolean]>({
       payload: {
-        function: `${GAME_MODULE}::get_player_status`,
+        function: `${GAME_MODULE}::has_selected`,
         typeArguments: [],
         functionArguments: [playerAddress],
       },

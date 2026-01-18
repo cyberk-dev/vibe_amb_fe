@@ -1,4 +1,4 @@
-// Error codes from docs/contract-integration.md Section 6
+// Error codes from docs/contract-integration.md Section 8
 
 const GAME_ERRORS: Record<number, string> = {
   2001: "Cannot join - game has already started",
@@ -16,6 +16,8 @@ const GAME_ERRORS: Record<number, string> = {
   2015: "Cannot change settings - game already started",
   2016: "Invalid payment asset",
   2017: "Target player is not active in this game",
+  2018: "You must register in whitelist first",
+  2019: "Invalid invite code",
 };
 
 const VAULT_ERRORS: Record<number, string> = {
@@ -23,6 +25,17 @@ const VAULT_ERRORS: Record<number, string> = {
   1002: "Claim amount is zero",
   1003: "Only admin can perform this action",
   1004: "This asset is not accepted for payment",
+};
+
+const WHITELIST_ERRORS: Record<number, string> = {
+  3001: "You are already registered",
+  3002: "You are not registered",
+  3003: "Only admin can perform this action",
+  3004: "Invalid invite code",
+};
+
+const ROUTER_ERRORS: Record<number, string> = {
+  4001: "Only admin can perform this action",
 };
 
 export function parseContractError(error: unknown): string {
@@ -33,6 +46,12 @@ export function parseContractError(error: unknown): string {
   if (codeMatch) {
     const code = parseInt(codeMatch[1], 10);
 
+    if (code >= 4000 && code < 5000) {
+      return ROUTER_ERRORS[code] || `Router error: ${code}`;
+    }
+    if (code >= 3000 && code < 4000) {
+      return WHITELIST_ERRORS[code] || `Whitelist error: ${code}`;
+    }
     if (code >= 2000 && code < 3000) {
       return GAME_ERRORS[code] || `Game error: ${code}`;
     }
@@ -51,9 +70,16 @@ export function parseContractError(error: unknown): string {
 
 export function isUserRejection(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
-  return (
-    message.includes("rejected") ||
-    message.includes("cancelled") ||
-    message.includes("denied")
-  );
+  return message.includes("rejected") || message.includes("cancelled") || message.includes("denied");
+}
+
+/** Error code for already registered - uses WHITELIST_ERRORS[3001] */
+export function isAlreadyRegisteredError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  const codeMatch = message.match(/Move abort.*?(\d{4})/);
+  if (codeMatch) {
+    const code = parseInt(codeMatch[1], 10);
+    return code === 3001; // WHITELIST_ERRORS: "You are already registered"
+  }
+  return false;
 }

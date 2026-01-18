@@ -5,10 +5,7 @@ class VaultViewService {
     return getAptosClient();
   }
 
-  async getClaimableBalance(
-    userAddress: string,
-    assetMetadata: string = PAYMENT_ASSET
-  ): Promise<bigint> {
+  async getClaimableBalance(userAddress: string, assetMetadata: string = PAYMENT_ASSET): Promise<bigint> {
     try {
       const [balance] = await this.aptos.view<[string]>({
         payload: {

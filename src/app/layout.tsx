@@ -3,18 +3,23 @@ import "./globals.css";
 import { Web3AppProvider } from "@/providers/web3-app-provider";
 import { fonts } from "@/shared/assets/fonts";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { BackgroundMusic } from "@/shared/ui";
 
 export const metadata: Metadata = {
   title: "Cyberk Nextjs Boilerplate",
   applicationName: "Cyberk Nextjs Boilerplate",
   description: "Web3 frontend framework base on Nextjs for Cyberk member",
+  manifest: "/manifest.json",
   icons: {
     icon: [
-      { url: "/favicon.png", type: "image/png" },
-      { url: "/logo.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon1.png", type: "image/png" },
+      { url: "/icon0.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "48x48" },
     ],
-    apple: "/favicon.png",
+    apple: "/apple-icon.png",
+  },
+  other: {
+    "Horse of the Year": "H.O.T.Y",
   },
   openGraph: {
     title: "Cyberk Nextjs Boilerplate",
@@ -43,9 +48,12 @@ export default function RootLayout({
       <body
         className={`${fonts.audiowide.variable} ${fonts.aeonik.variable} ${fonts.bricolageGrotesque.variable} ${fonts.spaceGrotesk.variable} antialiased`}
       >
-        <div className="mx-auto max-w-[1440px] max-h-[800px] h-screen overflow-hidden">
+        <div className="w-full h-screen overflow-hidden">
           <Web3AppProvider>
-            <NuqsAdapter>{children}</NuqsAdapter>
+            <NuqsAdapter>
+              <BackgroundMusic />
+              {children}
+            </NuqsAdapter>
           </Web3AppProvider>
         </div>
       </body>

@@ -1,0 +1,26 @@
+import { queryOptions } from "@tanstack/react-query";
+import { whitelistViewService } from "./whitelist-views";
+
+export const whitelistQueries = {
+  all: () => ["whitelist"] as const,
+
+  registration: (address: string) =>
+    queryOptions({
+      queryKey: [...whitelistQueries.all(), "registration", address],
+      queryFn: () => whitelistViewService.isRegistered(address),
+      enabled: !!address,
+    }),
+
+  inviteCode: (address: string) =>
+    queryOptions({
+      queryKey: [...whitelistQueries.all(), "inviteCode", address],
+      queryFn: () => whitelistViewService.getInviteCode(address),
+      enabled: !!address,
+    }),
+
+  registeredCount: () =>
+    queryOptions({
+      queryKey: [...whitelistQueries.all(), "registeredCount"],
+      queryFn: () => whitelistViewService.getRegisteredCount(),
+    }),
+};

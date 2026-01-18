@@ -1,6 +1,7 @@
 // UI Components
 export * from "./alert";
 export * from "./alert-dialog";
+export * from "./background-music";
 export * from "./badge";
 export * from "./button";
 export * from "./card";
@@ -20,6 +21,7 @@ export * from "./separator";
 export * from "./sheet";
 export * from "./show-for-role";
 export * from "./sonner";
+export * from "./sound-button";
 export * from "./table";
 export * from "./textarea";
 export * from "./theme-toggle-button";

@@ -1,191 +1,250 @@
 "use client";
 
-import { useCallback, useState, type ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import type { ReactNode } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { useVerifyInviteCode } from "@/features/verify-invite-code";
+import { motion } from "framer-motion";
 import { SoundButton } from "@/shared/ui/sound-button";
 import { GameFormField } from "@/shared/ui/form-field";
+import { useInviteCodeFlow, type FlowState } from "../lib/use-invite-code-flow";
+import { LanguageToggleButton } from "@/shared/ui";
 
 /**
- * Invite Code Screen - OTP Gate (Pre-Auth)
- *
- * This is the first step in the lobby flow as documented in docs/lobby/lobby.md
+ * Invite Code Screen - Whitelist Registration
  *
  * Flow:
- * 1. User enters 6-digit OTP code and name
- * 2. Client calls POST /lobby/verify-otp
- * 3. Server validates OTP (unused, not expired/revoked)
- * 4. Server atomically marks OTP as used and issues otpToken (short-lived)
- * 5. Client stores otpToken (sessionStorage for MVP, httpOnly cookie preferred)
- * 6. Client redirects to landing/auth page (wallet or Google login)
+ * 1. User connects wallet (Aptos Connect / Google)
+ * 2. Auto-register in whitelist → code is auto-generated
+ * 3. User enters display name
+ * 4. Continue → save to store → navigate to /landing
  *
  * Design: Based on Figma design at node 3:52
  * - Background: custom-vivid-red (#ef4523)
  * - Decorative circles with floating animations
- * - Form with OTP input (6 digits) and name input
+ * - Form with code display (readonly) and name input
  * - Fonts: Bricolage Grotesque (title), Space Grotesk (form)
- *
- * API Integration:
- * - Endpoint: POST /lobby/verify-otp
- * - Request: { otpCode: string }
- * - Response: { otpToken: string, expiresInSec: number }
- * - Errors: OTP_INVALID, OTP_ALREADY_USED_OR_REVOKED, OTP_EXPIRED
- *
- * @see docs/lobby/lobby.md for complete flow documentation
  */
 
 // ========================================
-// Constants - Hoisted for performance
+// Animation Variants
 // ========================================
 
-/** OTP code validation constants */
-const OTP_CODE_LENGTH = 6;
-const OTP_CODE_PATTERN = /^\d{6}$/;
-const NON_DIGIT_REGEX = /\D/g;
+const circleVariants = {
+  initial: { scale: 0, opacity: 0 },
+  animate: (i: number) => ({
+    scale: 1,
+    opacity: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 15,
+      delay: i * 0.2,
+    },
+  }),
+};
 
-/** Static decorative circles - hoisted to prevent re-creation on every render */
-const DECORATIVE_CIRCLES = (
-  <>
-    <div className="absolute w-[524.658px] h-[524.658px] rounded-full bg-custom-light-orange animate-float top-[354px] left-[639px] will-change-transform" />
-    <div className="absolute w-[431.213px] h-[431.213px] rounded-full bg-custom-very-dark-blue animate-float-delayed top-[360.37px] left-[965.68px] will-change-transform" />
-  </>
-);
+const floatAnimation = {
+  y: [0, -20, 0],
+  transition: {
+    duration: 4,
+    repeat: Infinity,
+    ease: "easeInOut" as const,
+  },
+};
+
+const titleContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.3,
+    },
+  },
+};
+
+const wordVariants = {
+  hidden: { opacity: 0, x: -100 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 15,
+    },
+  },
+};
+
+const bylineVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: 1.2,
+      duration: 0.6,
+      ease: "easeOut" as const,
+    },
+  },
+};
+
+const formContainerVariants = {
+  hidden: {
+    opacity: 0,
+    y: 100,
+    scale: 0.9,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 80,
+      damping: 15,
+      delay: 0.8,
+    },
+  },
+};
+
+const buttonVariants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      opacity: { delay: 1.4, duration: 0.3 },
+      scale: { type: "spring" as const, stiffness: 300, damping: 20 },
+    },
+  },
+};
+
+/** Get button text based on flow state */
+function getButtonTextId(flowState: FlowState, canContinue: boolean): string {
+  switch (flowState) {
+    case "not_connected":
+      return "invite_code.form.connect_wallet";
+    case "loading":
+    case "registering":
+      return "invite_code.form.registering";
+    case "failed":
+      return "invite_code.form.failed";
+    case "ready":
+      return canContinue ? "invite_code.form.continue" : "invite_code.form.enter_name";
+    default:
+      return "invite_code.form.continue";
+  }
+}
 
 // ========================================
 // Component
 // ========================================
 
 export function InviteCodeScreen() {
-  const router = useRouter();
   const intl = useIntl();
-  const [code, setCode] = useState("");
-  const [name, setName] = useState("");
-  const [errorId, setErrorId] = useState<"invite_code.errors.invalid_code" | "invite_code.errors.missing_name" | null>(
-    null,
-  );
-  const [isMuted, setIsMuted] = useState(false);
 
-  const verifyInviteCode = useVerifyInviteCode();
+  const { flowState, inviteCode, displayName, setDisplayName, handleConnect, handleContinue, canContinue } =
+    useInviteCodeFlow();
+
   const codePlaceholder = intl.formatMessage({ id: "invite_code.form.code_placeholder" });
   const namePlaceholder = intl.formatMessage({ id: "invite_code.form.name_placeholder" });
 
+  const isLoading = ["loading", "registering"].includes(flowState);
+  const isCodeReady = flowState === "ready";
+
   // ========================================
-  // Event Handlers - Memoized for performance
+  // Event Handlers
   // ========================================
 
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
-      setErrorId(null);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-      // Client-side validation
-      if (code.length !== OTP_CODE_LENGTH || !OTP_CODE_PATTERN.test(code)) {
-        setErrorId("invite_code.errors.invalid_code");
-        return;
-      }
-
-      if (!name.trim()) {
-        setErrorId("invite_code.errors.missing_name");
-        return;
-      }
-
-      // TODO: TEMPORARY LOGIC - Remove this when API is available
-      // Currently skipping API verification and navigating directly to landing page
-      // When ready, uncomment the API call below and remove this direct navigation
-      sessionStorage.setItem("otpCode", code);
-      sessionStorage.setItem("playerName", name.trim());
-      router.push("/landing");
+    if (flowState === "not_connected") {
+      handleConnect();
       return;
+    }
 
-      // TODO: Uncomment this block when API is ready
-      // try {
-      //   // Call verify OTP mutation
-      //   const response = await verifyInviteCode.mutateAsync({
-      //     otpCode: code,
-      //   });
+    if (flowState === "ready" && canContinue) {
+      handleContinue();
+    }
+  };
 
-      //   // Store otpToken for auth flow (temporary session)
-      //   // TODO: Store in secure storage (httpOnly cookie preferred, or sessionStorage for MVP)
-      //   sessionStorage.setItem("otpToken", response.otpToken);
-      //   sessionStorage.setItem("playerName", name.trim());
-
-      //   // Redirect to landing/auth page
-      //   // TODO: Replace with actual landing route once created
-      //   router.push("/wallet-connect");
-      // } catch (err: any) {
-      //   // Handle API errors as per docs/lobby/lobby.md
-      //   // TODO: Map API error codes to i18n keys and setErrorId(...) here.
-      //   setErrorId("invite_code.errors.invalid_code");
-      // }
-    },
-    [code, name, router],
-  );
-
-  const handleCodeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(NON_DIGIT_REGEX, "").slice(0, OTP_CODE_LENGTH);
-    setCode(value);
-    setErrorId(null);
-  }, []);
-
-  const handleNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-    setErrorId(null);
-  }, []);
-
-  const toggleMute = useCallback(() => {
-    setIsMuted((prev) => !prev);
-  }, []);
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Only allow alphanumeric and underscore
+    const value = e.target.value.replace(/[^a-zA-Z0-9_]/g, "").slice(0, 20);
+    setDisplayName(value);
+  };
 
   return (
     <div className="h-full bg-custom-vivid-red overflow-hidden relative">
-      {/* Decorative circles - static, hoisted for performance */}
-      {DECORATIVE_CIRCLES}
-
-      {/* Sound button */}
-      <SoundButton
-        isMuted={isMuted}
-        onToggle={toggleMute}
-        iconColor="text-custom-vivid-red"
-        className="absolute top-6 right-6"
+      {/* Decorative circles with entrance animations */}
+      <motion.div
+        className="absolute w-[524.658px] h-[524.658px] rounded-full bg-custom-light-orange top-[354px] left-[639px] will-change-transform"
+        variants={circleVariants}
+        initial="initial"
+        animate="animate"
+        custom={0}
+        whileInView={floatAnimation}
       />
+      <motion.div
+        className="absolute w-[431.213px] h-[431.213px] rounded-full bg-custom-very-dark-blue top-[360.37px] left-[965.68px] will-change-transform"
+        variants={circleVariants}
+        initial="initial"
+        animate="animate"
+        custom={1}
+        whileInView={floatAnimation}
+      />
+
+      {/* Top right controls: Language toggle and Sound button */}
+      <div className="absolute top-6 right-6 flex items-center gap-3 z-20">
+        <LanguageToggleButton />
+        <SoundButton variant="dark" />
+      </div>
 
       {/* Main content */}
       <div className="h-full flex flex-col justify-between p-6 md:p-12 relative z-10">
         {/* Hero title */}
         <div className="flex-1 flex items-center">
           <div className="w-full max-w-[1027px]">
-            <div className="animate-fade-in-left">
+            <motion.div variants={titleContainerVariants} initial="hidden" animate="visible">
               <h1 className="font-bold leading-[0.9] text-white font-bricolage text-[160px] [font-variation-settings:'opsz'_14,'wdth'_100]">
-                <span className="block whitespace-nowrap">
+                <motion.span className="block whitespace-nowrap" variants={wordVariants}>
                   <FormattedMessage
                     id="invite_code.hero.line1"
                     values={{
                       money: (chunks: ReactNode) => <span className="text-custom-light-orange">{chunks}</span>,
                     }}
                   />
-                </span>
-                <span className="block whitespace-nowrap">
+                </motion.span>
+                <motion.span className="block whitespace-nowrap" variants={wordVariants}>
                   <FormattedMessage
                     id="invite_code.hero.line2"
                     values={{
                       battle: (chunks: ReactNode) => <span className="text-custom-very-dark-blue">{chunks}</span>,
                     }}
                   />
-                </span>
+                </motion.span>
               </h1>
-              <p className="text-white/60 text-[20px] uppercase tracking-[1.2px] mt-6 font-normal font-space">
+              <motion.p
+                className="text-white text-[20px] uppercase tracking-[1.2px] mt-6 font-space"
+                variants={bylineVariants}
+              >
                 <FormattedMessage id="invite_code.hero.byline" />
-              </p>
-            </div>
+              </motion.p>
+            </motion.div>
           </div>
         </div>
 
         {/* Bottom section with form */}
-        <div className="w-full max-w-[576px]">
-          <div className="border-2 border-[rgba(255,228,220,0.5)] p-8 md:p-9 bg-white/10 backdrop-blur-sm animate-fade-in-up">
+        <motion.div
+          className="w-full max-w-[576px]"
+          variants={formContainerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <div className="border-2 border-[rgba(255,228,220,0.5)] p-8 md:p-9 bg-white/10 backdrop-blur-sm">
             <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Code Input */}
+              {/* Code Input - Readonly, auto-filled after registration */}
               <GameFormField>
                 <GameFormField.Label variant="game">
                   <FormattedMessage id="invite_code.form.code_label" />
@@ -193,11 +252,11 @@ export function InviteCodeScreen() {
                 <GameFormField.Input
                   variant="game-code"
                   type="text"
-                  value={code}
-                  onChange={handleCodeChange}
-                  placeholder={codePlaceholder}
-                  maxLength={6}
-                  disabled={verifyInviteCode.isPending}
+                  value={inviteCode}
+                  readOnly
+                  placeholder={isCodeReady ? "" : codePlaceholder}
+                  disabled={!isCodeReady}
+                  className={isCodeReady ? "bg-white/20" : ""}
                 />
               </GameFormField>
 
@@ -209,36 +268,57 @@ export function InviteCodeScreen() {
                 <GameFormField.Input
                   variant="game-text"
                   type="text"
-                  value={name}
+                  value={displayName}
                   onChange={handleNameChange}
                   placeholder={namePlaceholder}
-                  disabled={verifyInviteCode.isPending}
+                  disabled={!isCodeReady}
+                  maxLength={20}
                 />
               </GameFormField>
 
-              {/* Error message */}
-              {errorId && (
-                <p className="text-white text-sm animate-fade-in font-space">
-                  → <FormattedMessage id={errorId} />
+              {/* Helper text for name validation */}
+              {isCodeReady && displayName.length > 0 && displayName.length < 2 && (
+                <p className="text-white/60 text-sm font-space">
+                  <FormattedMessage
+                    id="invite_code.form.name_hint"
+                    defaultMessage="Name must be at least 2 characters"
+                  />
                 </p>
               )}
 
               {/* Submit button */}
-              <button
+              <motion.button
                 type="submit"
-                disabled={verifyInviteCode.isPending}
-                className="group flex items-center gap-3 text-white text-xl font-medium hover:text-yellow-200 transition-colors pt-2 disabled:opacity-50 disabled:cursor-not-allowed font-space"
+                disabled={isLoading || (flowState === "ready" && !canContinue)}
+                className="group flex items-center gap-3 text-white text-xl font-medium hover:text-yellow-200 transition-colors pt-2 disabled:opacity-50 disabled:cursor-not-allowed font-space cursor-pointer"
+                variants={buttonVariants}
+                initial="hidden"
+                animate="visible"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 <span className="uppercase tracking-wider">
-                  <FormattedMessage
-                    id={verifyInviteCode.isPending ? "invite_code.form.submitting" : "invite_code.form.submit"}
-                  />
+                  <FormattedMessage id={getButtonTextId(flowState, canContinue)} />
                 </span>
-                <span className="text-xl group-hover:translate-x-2 transition-transform">→</span>
-              </button>
+                {isLoading ? (
+                  <span className="animate-spin">⏳</span>
+                ) : (
+                  <motion.span
+                    className="text-xl"
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    →
+                  </motion.span>
+                )}
+              </motion.button>
             </form>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

@@ -24,10 +24,7 @@ export function VotingStatusPanel() {
             <span className="text-gray-400">{voting.stopCount} votes</span>
           </div>
           <div className="h-2 overflow-hidden rounded-full bg-gray-700">
-            <div
-              className="h-full bg-red-500 transition-all"
-              style={{ width: `${stopPercentage}%` }}
-            />
+            <div className="h-full bg-red-500 transition-all" style={{ width: `${stopPercentage}%` }} />
           </div>
         </div>
 
@@ -37,10 +34,7 @@ export function VotingStatusPanel() {
             <span className="text-gray-400">{voting.continueCount} votes</span>
           </div>
           <div className="h-2 overflow-hidden rounded-full bg-gray-700">
-            <div
-              className="h-full bg-green-500 transition-all"
-              style={{ width: `${continuePercentage}%` }}
-            />
+            <div className="h-full bg-green-500 transition-all" style={{ width: `${continuePercentage}%` }} />
           </div>
         </div>
 

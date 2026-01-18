@@ -30,8 +30,8 @@
   },
   "invite_code": {
     "hero": {
-      "line1": "Lucky <money>Money</money>",
-      "line2": "<battle>Battle</battle> Royale",
+      "line1": "Horse <money>Of</money>",
+      "line2": "<battle>The</battle> Year",
       "byline": "by VIBE Ambassador"
     },
     "form": {
@@ -40,7 +40,12 @@
       "name_label": "Your Name",
       "name_placeholder": "Enter your name",
       "submit": "Join Game",
-      "submitting": "Verifying..."
+      "submitting": "Verifying...",
+      "connect_wallet": "Connect Wallet",
+      "connecting": "Connecting...",
+      "registering": "Registering...",
+      "continue": "Continue",
+      "enter_name": "Enter Name"
     },
     "errors": {
       "invalid_code": "Please enter a valid 6-digit code",
@@ -50,7 +55,7 @@
   "landing": {
     "hero": {
       "title": "The lore",
-      "greeting": "Hello {playerName}, let us introduce to you"
+      "greeting": "Hello {playerName}, let us introduce to you <strikethrough>Year of the Horse</strikethrough> Horse of the Year"
     },
     "description": {
       "first": "A competitive game with a thrilling CNY theme. Pass red packets until everyone has one, then reveal. One explosive packet eliminates a player.",
@@ -60,9 +65,20 @@
     "footer": "VIBE Ambassador - 2026",
     "players_required": "Players Required",
     "actions": {
-      "join_matchmaking": "join match making",
-      "view_demo": "View Game Demo",
-      "view_wallet": "your money goes here"
+      "join_matchmaking": "Gacha time",
+      "view_demo": "How to play?",
+      "view_wallet": "Claim your money here"
+    },
+    "how_to_play": {
+      "title": "How to play",
+      "content": {
+        "intro": "Players will participate in \"Lucky Money\" game and squidgame to find the Horse of the Year.",
+        "rounds": "The game will take place in 4 rounds. In each round, there will be a number of lucky money packets = total remaining players. There will be bombs equal to 1/4 of the INITIAL total players (rounded down).",
+        "phase1": "Phase 1: Players have the right to give this packet to another player or to themselves.",
+        "phase2": "Phase 2: Moment of truth: open the lucky money packet. The \"lucky\" ones will receive a small amount of money and... a bomb. Farewell. (This consolation money also increases with each round)",
+        "phase3": "Phase 3: Surviving players will vote whether to continue playing or split the money. If they split the money, the reward pool will be divided equally among them, then everyone goes home.",
+        "continue": "As long as 1 horse wants to continue playing, the game will continue. Until only 1 horse remains alive, becoming the Horse of the Year and receiving all the money in the pool."
+      }
     },
     "defaults": {
       "player_name": "UserName"
@@ -97,5 +113,81 @@
     "you": "You",
     "player_label": "Player {number}",
     "admin": "Admin"
+  },
+  "reveal_game": {
+    "moment_of_truth": "Moment of Truth",
+    "reveal": "Reveal",
+    "revealing_packets": "Revealing Packets",
+    "proceeding_to_next_phase": "→ Proceeding to next phase...",
+    "revealed_count": "{revealed} / {total}",
+    "boom": "BOOM!",
+    "trolled_by": "Trolled by {name}",
+    "player_label": "Player {number}"
+  },
+  "game_over": {
+    "final_results": "FINAL RESULTS",
+    "game_over_line1": "Game",
+    "game_over_line2": "Over",
+    "complete": "Complete",
+    "winner": "WINNER",
+    "total_winnings": "Total Winnings",
+    "final_standings": "FINAL STANDINGS",
+    "out": "OUT",
+    "footer": "A GAME BY VIBE AMBASSADOR · 2026",
+    "back_to_home": "Back to home"
+  },
+  "decision": {
+    "header": {
+      "critical_decision": "Critical Decision",
+      "critical_choice": "Critical Choice",
+      "title": "Decision",
+      "players": "{count} Players",
+      "players_remaining": "{count} players remaining"
+    },
+    "cards": {
+      "option_a": "Option A",
+      "option_b": "Option B",
+      "share_prize": "Share Prize",
+      "share_prize_line1": "Share",
+      "share_prize_line2": "Prize",
+      "keep_playing": "Keep Playing",
+      "keep_playing_line1": "Keep",
+      "keep_playing_line2": "Playing",
+      "share_now": "Share Now",
+      "share_now_line1": "Share",
+      "share_now_line2": "Now",
+      "keep_going": "Keep Going",
+      "keep_going_line1": "Keep",
+      "keep_going_line2": "Going",
+      "share_description": "End the game now and split equally",
+      "continue_description": "Eliminate more players for bigger shares",
+      "per_player": "Per Player",
+      "total_pool": "Total Pool",
+      "voted": "Voted",
+      "continue_playing": "Continue Playing",
+      "you_voted_share": "You voted to share",
+      "you_voted_continue": "You voted to continue",
+      "split_equally": "Split ${amount} equally",
+      "risk_for": "Risk for ${amount}"
+    },
+    "widget": {
+      "vote_share": "Vote Share",
+      "vote_continue": "Vote Continue",
+      "footer": "we know you are ambitious"
+    },
+    "eliminated": {
+      "eliminated_this_round": "Eliminated This Round",
+      "eliminated_count": "Eliminated ({count})"
+    },
+    "remaining_players": {
+      "label": "Remaining Players"
+    },
+    "mobile": {
+      "current_prize_pool": "Current Prize Pool",
+      "if_shared_now": "If shared now:",
+      "each": "each",
+      "next_round_pool": "Next round pool:",
+      "make_your_choice": "Make Your Choice"
+    }
   }
 }

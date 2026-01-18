@@ -31,14 +31,10 @@ export function AdminActionButton({
       className={cn(
         "inline-flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors",
         // "disabled:cursor-not-allowed disabled:opacity-50",
-        variantClasses[variant]
+        variantClasses[variant],
       )}
     >
-      {isPending ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
-      ) : (
-        icon
-      )}
+      {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : icon}
       {children}
     </button>
   );

@@ -6,6 +6,7 @@ import { GameStatus, Vote } from "@/integrations/aptos";
 
 export interface Player {
   address: string;
+  name: string;
   hasActed: boolean;
 }
 
@@ -124,6 +125,35 @@ export interface GameState {
  * Game phases
  */
 export type GamePhase = "waiting" | "passing" | "revealing" | "elimination" | "ended";
+
+/**
+ * Reveal state of a pack in reveal phase
+ */
+export type PackRevealState = "pending" | "revealed-safe" | "revealed-exploded";
+
+/**
+ * Represents a player's pack during the reveal phase
+ */
+export interface RevealPackData {
+  /** Unique identifier */
+  id: string;
+  /** Player who owns this pack */
+  player: {
+    id: string;
+    name: string;
+    seatNumber: number;
+  };
+  /** Current reveal state */
+  revealState: PackRevealState;
+  /** Pack number (shown when revealed) */
+  packNumber?: number;
+  /** Consolation prize amount (only for exploded packs) */
+  consolationPrize?: string;
+  /** Name of the player who passed the bomb (only for exploded packs) */
+  trolledBy?: string;
+  /** Pack illustration URL (only for revealed-safe packs) */
+  imageUrl?: string;
+}
 
 /**
  * Selection state for pass target
