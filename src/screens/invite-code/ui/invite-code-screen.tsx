@@ -13,9 +13,10 @@ import { LanguageToggleButton, PopupBlockerWarningDialog } from "@/shared/ui";
  *
  * Flow:
  * 1. User connects wallet (Aptos Connect / Google)
- * 2. Auto-register in whitelist → code is auto-generated
+ * 2. User clicks "Claim Code" → calls register() → gets code
  * 3. User enters display name
- * 4. Continue → save to store → navigate to /landing
+ * 4. User clicks "Continue" → calls set_display_name on-chain
+ * 5. Guard detects hasPendingName → navigates to /landing
  *
  * Design: Based on Figma design at node 3:52
  * - Background: custom-vivid-red (#ef4523)
@@ -125,12 +126,17 @@ function getButtonTextId(flowState: FlowState, canContinue: boolean): string {
     case "not_connected":
       return "invite_code.form.connect_wallet";
     case "loading":
-    case "registering":
-      return "invite_code.form.registering";
+      return "invite_code.form.loading";
+    case "need_code":
+      return "invite_code.form.claim_code";
+    case "claiming":
+      return "invite_code.form.claiming";
+    case "need_name":
+      return canContinue ? "invite_code.form.continue" : "invite_code.form.enter_name";
+    case "saving":
+      return "invite_code.form.saving";
     case "failed":
       return "invite_code.form.failed";
-    case "ready":
-      return canContinue ? "invite_code.form.continue" : "invite_code.form.enter_name";
     default:
       return "invite_code.form.continue";
   }
@@ -149,6 +155,7 @@ export function InviteCodeScreen() {
     displayName,
     setDisplayName,
     handleConnect,
+    handleClaimCode,
     handleContinue,
     canContinue,
     showPopupWarning,
@@ -159,8 +166,8 @@ export function InviteCodeScreen() {
   const codePlaceholder = intl.formatMessage({ id: "invite_code.form.code_placeholder" });
   const namePlaceholder = intl.formatMessage({ id: "invite_code.form.name_placeholder" });
 
-  const isLoading = ["loading", "registering"].includes(flowState);
-  const isCodeReady = flowState === "ready";
+  const isLoading = ["loading", "claiming", "saving"].includes(flowState);
+  const isCodeReady = flowState === "need_name" || flowState === "saving";
 
   // ========================================
   // Event Handlers
@@ -174,7 +181,12 @@ export function InviteCodeScreen() {
       return;
     }
 
-    if (flowState === "ready" && canContinue) {
+    if (flowState === "need_code") {
+      handleClaimCode();
+      return;
+    }
+
+    if (flowState === "need_name" && canContinue) {
       handleContinue();
     }
   };
@@ -319,7 +331,7 @@ export function InviteCodeScreen() {
                 {/* Submit button */}
                 <motion.button
                   type="submit"
-                  disabled={isLoading || (flowState === "ready" && !canContinue)}
+                  disabled={isLoading || (flowState === "need_name" && !canContinue)}
                   className="group flex items-center gap-3 text-white text-xl font-medium hover:text-yellow-200 transition-colors pt-2 disabled:opacity-50 disabled:cursor-not-allowed font-space cursor-pointer"
                   variants={buttonVariants}
                   initial="hidden"
