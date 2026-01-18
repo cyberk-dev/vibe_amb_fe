@@ -21,9 +21,7 @@ export function PlayersTable() {
 
   return (
     <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-      <h2 className="mb-4 text-lg font-semibold">
-        Players ({players.length})
-      </h2>
+      <h2 className="mb-4 text-lg font-semibold">Players ({players.length})</h2>
       <div className="space-y-2">
         {players.map((player, index) => (
           <PlayerListItem

@@ -13,9 +13,7 @@ export function PlayerStatusIndicator({ hasActed, size = "md" }: PlayerStatusInd
     <span
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5",
-        hasActed
-          ? "bg-green-500/20 text-green-400"
-          : "bg-yellow-500/20 text-yellow-400"
+        hasActed ? "bg-green-500/20 text-green-400" : "bg-yellow-500/20 text-yellow-400",
       )}
     >
       {hasActed ? (

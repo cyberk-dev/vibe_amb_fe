@@ -1,13 +1,7 @@
 import { Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
-import {
-  GasStationClient,
-  GasStationTransactionSubmitter,
-} from "@aptos-labs/gas-station-client";
+import { GasStationClient, GasStationTransactionSubmitter } from "@aptos-labs/gas-station-client";
 
-const NETWORK =
-  process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
-    ? Network.MAINNET
-    : Network.TESTNET;
+const NETWORK = process.env.NEXT_PUBLIC_ENVIRONMENT === "production" ? Network.MAINNET : Network.TESTNET;
 
 function createAptosClient(): Aptos {
   const gasStationApiKey = process.env.NEXT_PUBLIC_APTOS_GAS_STATION_API_KEY;

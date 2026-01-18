@@ -30,11 +30,7 @@ const dotColorClasses: Record<string, string> = {
   gray: "bg-gray-400",
 };
 
-export function GameStatusBadge({
-  status,
-  size = "md",
-  showLabel = true,
-}: GameStatusBadgeProps) {
+export function GameStatusBadge({ status, size = "md", showLabel = true }: GameStatusBadgeProps) {
   const color = STATUS_COLORS[status];
   const label = STATUS_LABELS[status];
 
@@ -43,7 +39,7 @@ export function GameStatusBadge({
       className={cn(
         "inline-flex items-center gap-2 rounded-full border font-medium",
         sizeClasses[size],
-        colorClasses[color]
+        colorClasses[color],
       )}
     >
       <span className={cn("h-2 w-2 rounded-full", dotColorClasses[color])} />

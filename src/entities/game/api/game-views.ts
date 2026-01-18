@@ -1,10 +1,5 @@
 import { getAptosClient, GAME_MODULE, GameStatus } from "@/integrations/aptos";
-import type {
-  PlayerStatusesDto,
-  VotingStateDto,
-  RoundPrizesDto,
-  VoteDto,
-} from "./dto/game.dto";
+import type { PlayerStatusesDto, VotingStateDto, RoundPrizesDto, VoteDto } from "./dto/game.dto";
 
 class GameViewService {
   private get aptos() {

@@ -51,9 +51,5 @@ export function parseContractError(error: unknown): string {
 
 export function isUserRejection(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
-  return (
-    message.includes("rejected") ||
-    message.includes("cancelled") ||
-    message.includes("denied")
-  );
+  return message.includes("rejected") || message.includes("cancelled") || message.includes("denied");
 }

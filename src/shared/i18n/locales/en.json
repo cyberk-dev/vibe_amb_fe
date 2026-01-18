@@ -97,5 +97,15 @@
     "you": "You",
     "player_label": "Player {number}",
     "admin": "Admin"
+  },
+  "reveal_game": {
+    "moment_of_truth": "Moment of Truth",
+    "reveal": "Reveal",
+    "revealing_packets": "Revealing Packets",
+    "proceeding_to_next_phase": "→ Proceeding to next phase...",
+    "revealed_count": "{revealed} / {total}",
+    "boom": "BOOM!",
+    "trolled_by": "Trolled by {name}",
+    "player_label": "Player {number}"
   }
 }
