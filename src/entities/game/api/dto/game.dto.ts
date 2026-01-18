@@ -39,3 +39,11 @@ export interface AllPlayersWithSeatsDto {
   2: boolean[]; // vector<bool> - hasActed statuses
   3: string[]; // vector<u64> - seat numbers (initial_bao_id)
 }
+
+export interface AllPlayersWithVotesDto {
+  0: string[]; // vector<address> - addresses
+  1: string[]; // vector<String> - names
+  2: string[]; // vector<u64> - seats (initial_bao_id)
+  3: boolean[]; // vector<bool> - hasVoted
+  4: string; // vector<u8> as hex string - votes (0=STOP, 1=CONTINUE)
+}

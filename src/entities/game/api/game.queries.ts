@@ -3,13 +3,14 @@ import { gameViewService } from "./game-views";
 import {
   mapAllPlayers,
   mapAllPlayersWithSeats,
+  mapAllPlayersWithVotes,
   mapVotingState,
   mapRoundPrizes,
   mapVictimsWithSeats,
   type Victim,
 } from "../lib/mappers";
-import type { AdminGameState, Player, VotingState, RoundPrizes, GameOverview } from "../model/types";
-import { GameStatus } from "@/integrations/aptos";
+import type { AdminGameState, Player, PlayerWithVote, VotingState, RoundPrizes, GameOverview } from "../model/types";
+import { GameStatus, Vote } from "@/integrations/aptos";
 
 // Staggered polling to avoid thundering herd with 20 concurrent users
 // Returns a fixed interval with jitter (3-6s range)
@@ -62,6 +63,18 @@ export const gameQueries = {
       staleTime: 5_000,
     }),
 
+  // Player list with votes (for decision screen)
+  playersWithVotes: () =>
+    queryOptions({
+      queryKey: [...gameQueries.all(), "playersWithVotes"],
+      queryFn: async (): Promise<PlayerWithVote[]> => {
+        const dto = await gameViewService.getAllPlayersWithVotes();
+        return mapAllPlayersWithVotes(dto);
+      },
+      staleTime: 3_000,
+      refetchInterval: 5_000,
+    }),
+
   // Voting state (only relevant in VOTING phase)
   voting: () =>
     queryOptions({
@@ -71,6 +84,22 @@ export const gameQueries = {
         return mapVotingState(dto);
       },
       staleTime: 5_000,
+    }),
+
+  // Current user's vote
+  myVote: (address: string) =>
+    queryOptions({
+      queryKey: [...gameQueries.all(), "myVote", address],
+      queryFn: async () => {
+        const dto = await gameViewService.getVote(address);
+        return {
+          hasVoted: dto[0],
+          vote: dto[1] as Vote,
+        };
+      },
+      enabled: !!address,
+      staleTime: 3_000,
+      refetchInterval: 5_000,
     }),
 
   // Prize info
