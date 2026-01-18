@@ -1,24 +1,32 @@
 import { GlobalConfirmDialogContainer } from "@/shared/ui/global-confirm-dialog-container";
 import { LocalizationProvider } from "@/shared/i18n";
-import { WalletProvider } from "@/integrations/reown-appkit/appkit-provider";
+// COMMENTED: EVM Wallet Provider - app now uses Aptos
+// import { WalletProvider } from "@/integrations/reown-appkit/appkit-provider";
+import { AptosProvider } from "@/integrations/aptos";
 import { PersistQueryProvider } from "@/shared/api";
 import { ThemeProvider } from "@/providers/theme-provider";
-import { headers } from "next/headers";
+// COMMENTED: EVM cookie handling - not needed for Aptos
+// import { headers } from "next/headers";
 import { Toaster } from "sonner";
 
-export const Web3AppProvider = async ({ children }: { children: React.ReactNode }) => {
-  const headersObj = await headers();
-  const cookies = headersObj.get("cookie");
+// MODIFIED: Removed async - Aptos provider doesn't need server-side cookies
+export const Web3AppProvider = ({ children }: { children: React.ReactNode }) => {
+  // COMMENTED: EVM cookie handling
+  // const headersObj = await headers();
+  // const cookies = headersObj.get("cookie");
   return (
     <ThemeProvider>
       <PersistQueryProvider>
-        <WalletProvider cookies={cookies}>
+        {/* COMMENTED: EVM Wallet Provider - restore when needed */}
+        {/* <WalletProvider cookies={cookies}> */}
+        <AptosProvider>
           <LocalizationProvider>
             {children}
             <GlobalConfirmDialogContainer />
             <Toaster richColors position="bottom-right" />
           </LocalizationProvider>
-        </WalletProvider>
+        </AptosProvider>
+        {/* </WalletProvider> */}
       </PersistQueryProvider>
     </ThemeProvider>
   );

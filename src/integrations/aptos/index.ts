@@ -16,3 +16,6 @@ export {
   showTransactionSuccess,
   type TransactionResult,
 } from "./utils/transaction-helpers";
+
+// Provider
+export { AptosProvider } from "./aptos-provider";
