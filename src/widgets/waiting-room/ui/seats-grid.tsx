@@ -63,28 +63,28 @@ interface SeatsGridProps {
  * SeatsGrid - Grid display of all player seats
  *
  * Displays:
- * - "CONNECTED PLAYERS" label
- * - 5x4 grid of player seat cards
+ * - "CONNECTED PLAYERS" label (hidden on mobile, shown in parent)
+ * - 5x4 grid of player seat cards (2 columns on mobile)
  */
 export function SeatsGrid({ seats, className }: SeatsGridProps) {
   return (
-    <motion.div className={cn("flex flex-col gap-6", className)} initial="hidden" animate="visible">
-      {/* Connected players label */}
+    <motion.div className={cn("flex flex-col gap-4 md:gap-6", className)} initial="hidden" animate="visible">
+      {/* Connected players label - hidden on mobile, parent shows it */}
       <motion.p
-        className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-custom-dark-grayish-blue"
+        className="hidden md:block font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-custom-dark-grayish-blue"
         variants={labelVariants}
       >
         <FormattedMessage id="waiting_room.connected_players" defaultMessage="Connected Players" />
       </motion.p>
 
-      {/* 5x4 grid of seats */}
+      {/* Grid of seats - 2 cols mobile, scales up for larger screens */}
       <motion.div
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4"
         variants={gridContainerVariants}
       >
         {seats.map((seat) => (
           <motion.div key={seat.seatNumber} variants={seatCardVariants}>
-            <PlayerSeatCard seat={seat} className="w-full min-w-[180px] h-[100px]" />
+            <PlayerSeatCard seat={seat} className="w-full h-[80px] md:h-[100px]" />
           </motion.div>
         ))}
       </motion.div>
