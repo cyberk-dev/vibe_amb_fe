@@ -56,10 +56,6 @@ interface YourPacketPanelProps {
   /**
    * Image URL for the packet (overrides packet.imageUrl)
    */
-  imageUrl?: string;
-  /**
-   * Additional classes for container
-   */
   className?: string;
 }
 
@@ -70,7 +66,7 @@ interface YourPacketPanelProps {
  * - "YOUR PACKET" label
  * - Red packet illustration card
  */
-export function YourPacketPanel({ packet, imageUrl, className }: YourPacketPanelProps) {
+export function YourPacketPanel({ packet, className }: YourPacketPanelProps) {
   return (
     <motion.div className={cn("flex flex-col gap-4", className)} initial="hidden" animate="visible">
       {/* Label */}
@@ -83,7 +79,7 @@ export function YourPacketPanel({ packet, imageUrl, className }: YourPacketPanel
 
       {/* Red packet card */}
       <motion.div variants={packetVariants} whileInView={floatAnimation}>
-        <RedPacketCard packet={packet} imageUrl={imageUrl} />
+        <RedPacketCard packet={packet} />
       </motion.div>
     </motion.div>
   );

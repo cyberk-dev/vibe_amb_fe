@@ -130,10 +130,10 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
   };
 
   return (
-    <div className="h-screen w-full bg-gradient-to-br from-[#FFF7ED] via-white to-[#FEF2F2]">
+    <div className="min-h-screen w-full bg-gradient-to-br from-[#FFF7ED] via-white to-[#FEF2F2]">
       {/* Main border frame */}
       <motion.div
-        className="h-full border-4 md:border-8 border-[#FF8C42] flex flex-col px-4 py-6 md:p-[48px] lg:p-[64px]"
+        className="min-h-screen border-4 md:border-8 border-[#FF8C42] flex flex-col px-4 py-6 md:p-[48px] lg:p-[64px]"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -200,7 +200,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
 
         {/* Winner section */}
         <motion.div
-          className="mt-6 md:mt-8 p-4 md:px-[52px] md:pt-[52px] md:pb-[4px] bg-white border-2 md:border-4 border-[#FF8C42] w-full"
+          className="mt-6 md:mt-8 p-4 md:p-8 bg-white border-2 md:border-4 border-[#FF8C42] w-full"
           variants={winnerCardVariants}
         >
           <div className="flex flex-col md:flex-row md:justify-between items-center gap-4 md:gap-8">
@@ -244,8 +244,8 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
           </div>
         </motion.div>
 
-        {/* Final Standings section - scrollable on mobile */}
-        <div className="mt-6 md:mt-10 flex flex-col gap-3 md:gap-6 flex-1 min-h-0">
+        {/* Final Standings section */}
+        <div className="mt-6 md:mt-10 flex flex-col gap-3 md:gap-6">
           {/* Section header */}
           <motion.p
             className="font-space text-[10px] md:text-xs leading-[1.33] tracking-[2px] md:tracking-[3px] uppercase text-black/40"
@@ -254,74 +254,64 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
             <FormattedMessage id="game_over.final_standings" defaultMessage="FINAL STANDINGS" />
           </motion.p>
 
-          {/* Scrollable container with shadow indicator */}
-          <div className="relative flex-1 min-h-0">
-            <div className="h-full overflow-y-auto md:overflow-visible">
-              {/* Standings list - 2 columns on desktop, 1 column on mobile */}
-              <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full"
-                variants={standingsContainerVariants}
-              >
-                {standings.map((player) => {
-                  const isFirst = player.rank === 1;
-                  const isOut = player.isOut;
+          {/* Standings list - 2 columns on desktop, 1 column on mobile */}
+          <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full" variants={standingsContainerVariants}>
+            {standings.map((player) => {
+              const isFirst = player.rank === 1;
+              const isOut = player.isOut;
 
-                  // Determine border color based on player status
-                  const borderColor = isFirst ? "#000000" : isOut ? "rgba(220, 38, 38, 0.3)" : "#1B5E71";
+              // Determine border color based on player status
+              const borderColor = isFirst ? "#000000" : isOut ? "rgba(220, 38, 38, 0.3)" : "#1B5E71";
 
-                  return (
-                    <motion.div
-                      key={player.rank}
-                      className="flex justify-between items-center gap-4 px-3 md:px-6 py-0 bg-white border-2"
-                      style={{ borderColor }}
-                      variants={standingItemVariants}
+              return (
+                <motion.div
+                  key={player.rank}
+                  className="flex justify-between items-center gap-4 px-3 md:px-6 py-0 bg-white border-2"
+                  style={{ borderColor }}
+                  variants={standingItemVariants}
+                >
+                  {/* Left - Rank and player info */}
+                  <div className="flex items-center gap-2 md:gap-4 py-3">
+                    {/* Rank badge */}
+                    <div
+                      className={cn(
+                        "w-8 h-8 md:w-12 md:h-12 flex items-center justify-center shrink-0",
+                        isFirst ? "bg-[#FF8C42]" : "bg-black",
+                      )}
                     >
-                      {/* Left - Rank and player info */}
-                      <div className="flex items-center gap-2 md:gap-4 py-3">
-                        {/* Rank badge */}
-                        <div
-                          className={cn(
-                            "w-8 h-8 md:w-12 md:h-12 flex items-center justify-center shrink-0",
-                            isFirst ? "bg-[#FF8C42]" : "bg-black",
-                          )}
-                        >
-                          <span className="font-space font-bold text-xs md:text-lg leading-[1.56] text-white">
-                            {isFirst ? "1ST" : `#${player.rank}`}
+                      <span className="font-space font-bold text-xs md:text-lg leading-[1.56] text-white">
+                        {isFirst ? "1ST" : `#${player.rank}`}
+                      </span>
+                    </div>
+
+                    {/* Player name and label */}
+                    <div className="flex flex-col gap-0">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-space font-bold text-sm md:text-lg leading-[1.56] text-black">
+                          {player.name}
+                        </h3>
+                        {player.isOut && (
+                          <span className="px-1 py-0.5 md:px-[9px] md:py-[5px] text-[8px] md:text-[10px] leading-[1.5] tracking-[0.5px] uppercase text-[#DC2626] border border-[#DC2626]">
+                            <FormattedMessage id="game_over.out" defaultMessage="OUT" />
                           </span>
-                        </div>
-
-                        {/* Player name and label */}
-                        <div className="flex flex-col gap-0">
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-space font-bold text-sm md:text-lg leading-[1.56] text-black">
-                              {player.name}
-                            </h3>
-                            {player.isOut && (
-                              <span className="px-1 py-0.5 md:px-[9px] md:py-[5px] text-[8px] md:text-[10px] leading-[1.5] tracking-[0.5px] uppercase text-[#DC2626] border border-[#DC2626]">
-                                <FormattedMessage id="game_over.out" defaultMessage="OUT" />
-                              </span>
-                            )}
-                          </div>
-                          <p className="font-space text-[10px] md:text-xs leading-[1.33] tracking-[0.6px] uppercase text-black/50">
-                            {player.playerLabel}
-                          </p>
-                        </div>
+                        )}
                       </div>
+                      <p className="font-space text-[10px] md:text-xs leading-[1.33] tracking-[0.6px] uppercase text-black/50">
+                        {player.playerLabel}
+                      </p>
+                    </div>
+                  </div>
 
-                      {/* Right - Winnings */}
-                      <div className="px-2 md:px-[26px] pt-2 md:pt-[14px] pb-1 md:pb-[2px] border-2 border-black flex items-center shrink-0">
-                        <p className="font-space font-bold text-sm md:text-xl leading-[1.4] text-black">
-                          {formatCurrency(player.winnings)}
-                        </p>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
-            </div>
-            {/* Bottom shadow to indicate scrollable content - mobile only */}
-            <div className="md:hidden pointer-events-none absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#FFF7ED] to-transparent" />
-          </div>
+                  {/* Right - Winnings */}
+                  <div className="px-2 md:px-[26px] pt-2 md:pt-[14px] pb-1 md:pb-[2px] border-2 border-black flex items-center shrink-0">
+                    <p className="font-space font-bold text-sm md:text-xl leading-[1.4] text-black">
+                      {formatCurrency(player.winnings)}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </motion.div>
         </div>
 
         {/* Footer - Play Again button */}

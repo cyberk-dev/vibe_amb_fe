@@ -3,9 +3,7 @@
 import { motion } from "framer-motion";
 import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
-import type { GameHost } from "@/entities/game";
-import { GameHostBadge } from "@/entities/game";
-import { AnimatedDigits, LanguageToggleButton, SoundButton } from "@/shared/ui";
+import { AnimatedDigits, SoundButton } from "@/shared/ui";
 
 // ========================================
 // Animation Variants
@@ -67,21 +65,6 @@ const rightSectionVariants = {
   },
 };
 
-const hostBadgeVariants = {
-  hidden: { opacity: 0, scale: 0.8, y: 20 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: {
-      type: "spring" as const,
-      stiffness: 100,
-      damping: 15,
-      delay: 0.4,
-    },
-  },
-};
-
 interface PassGameHeaderProps {
   /**
    * Current round number
@@ -91,10 +74,6 @@ interface PassGameHeaderProps {
    * Countdown timer value in seconds
    */
   countdown: number;
-  /**
-   * Game host/admin info
-   */
-  host: GameHost;
   /**
    * Additional classes for container
    */
@@ -109,9 +88,8 @@ interface PassGameHeaderProps {
  * - "Pass" title with countdown
  * - "Your turn to pass" subtitle
  * - Round indicator and sound toggle (right side)
- * - Admin host badge (right side)
  */
-export function PassGameHeader({ round, countdown, host, className }: PassGameHeaderProps) {
+export function PassGameHeader({ round, countdown, className }: PassGameHeaderProps) {
   return (
     <motion.div className={cn("flex items-start justify-between", className)} initial="hidden" animate="visible">
       {/* Left section: Title */}
@@ -126,13 +104,13 @@ export function PassGameHeader({ round, countdown, host, className }: PassGameHe
 
         {/* Main title: Pass + Countdown */}
         <motion.div className="flex items-baseline gap-2" variants={titleVariants}>
-          <span className="font-bricolage font-bold text-[128px] md:text-[160px] lg:text-[96px] leading-[0.85] text-black">
+          <span className="font-bricolage font-bold text-[80px] md:text-[128px] lg:text-[160px] leading-[0.85] text-black">
             <FormattedMessage id="pass_game.pass" defaultMessage="Pass" />
           </span>
           <AnimatedDigits
             value={countdown}
             minDigits={2}
-            className="font-bricolage font-light text-[80px] md:text-[100px] lg:text-[104px] leading-[0.85] text-black"
+            className="font-bricolage font-light text-[60px] md:text-[80px] lg:text-[104px] leading-[0.85] text-black"
           />
         </motion.div>
 
@@ -145,33 +123,22 @@ export function PassGameHeader({ round, countdown, host, className }: PassGameHe
         </motion.p>
       </div>
 
-      {/* Right section: Language toggle, Round, sound toggle, and host badge */}
-      <motion.div className="flex flex-col items-end gap-6" variants={rightSectionVariants}>
-        {/* Top row: Language toggle, Round indicator and sound toggle */}
-        <div className="flex gap-2.5 items-center">
-          {/* Language toggle button */}
-          <LanguageToggleButton />
-
-          {/* Round indicator */}
-          <motion.div
-            className="border-2 border-[#e7000b] flex items-center justify-center px-[18px] py-[10px] h-10"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring" as const, stiffness: 120, damping: 15, delay: 0.3 }}
-          >
-            <p className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-[#e7000b] whitespace-nowrap">
-              <FormattedMessage id="pass_game.round" defaultMessage="Round {number}" values={{ number: round }} />
-            </p>
-          </motion.div>
-
-          {/* Sound toggle button */}
-          <SoundButton variant="dark" />
-        </div>
-
-        {/* Host badge */}
-        <motion.div variants={hostBadgeVariants}>
-          <GameHostBadge host={host} />
+      {/* Right section: Round indicator and sound toggle */}
+      <motion.div className="flex gap-2.5 items-center" variants={rightSectionVariants}>
+        {/* Round indicator */}
+        <motion.div
+          className="border-2 border-[#e7000b] flex items-center justify-center px-[18px] py-[10px] h-10"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: "spring" as const, stiffness: 120, damping: 15, delay: 0.3 }}
+        >
+          <p className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-[#e7000b] whitespace-nowrap">
+            <FormattedMessage id="pass_game.round" defaultMessage="Round {number}" values={{ number: round }} />
+          </p>
         </motion.div>
+
+        {/* Sound toggle button */}
+        <SoundButton variant="dark" />
       </motion.div>
     </motion.div>
   );

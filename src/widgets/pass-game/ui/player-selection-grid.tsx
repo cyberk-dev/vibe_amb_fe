@@ -103,9 +103,12 @@ export function PlayerSelectionGrid({
         <FormattedMessage id="pass_game.pass_to_player" defaultMessage="Pass To Player" />
       </motion.p>
 
-      {/* Player grid: 5 columns x 4 rows */}
+      {/* Player grid: auto-fit columns based on available width */}
       <motion.div
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+        className="grid grid-cols-2 gap-4"
+        style={{
+          gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+        }}
         variants={gridContainerVariants}
       >
         {players.map((player) => {

@@ -48,7 +48,7 @@ export default function RootLayout({
       <body
         className={`${fonts.audiowide.variable} ${fonts.aeonik.variable} ${fonts.bricolageGrotesque.variable} ${fonts.spaceGrotesk.variable} antialiased`}
       >
-        <div className="w-full h-screen overflow-hidden">
+        <div className="w-full min-h-screen overflow-auto">
           <Web3AppProvider>
             <NuqsAdapter>
               <BackgroundMusic />

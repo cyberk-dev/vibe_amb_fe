@@ -95,7 +95,7 @@ export function WaitingRoom({ seats, maxSeats, countdown, isCountdownActive, cla
     >
       {/* Border frame */}
       <motion.div
-        className="h-full border-4 md:border-8 border-custom-vivid-orange flex flex-col gap-4 md:gap-8 px-5 py-7 md:pl-[72px] md:pr-2 md:py-[48px]"
+        className="h-full border-4 md:border-8 border-custom-vivid-orange flex flex-col gap-4 md:gap-8 px-5 py-7 md:px-[64px] md:py-[48px]"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
