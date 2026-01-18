@@ -14,7 +14,10 @@ type PlayerState =
   | "name_required"
   | "registered"
   | "joined"
-  | "playing";
+  | "selection" // STATUS_SELECTION (1)
+  | "revealing" // STATUS_REVEALING (2)
+  | "voting" // STATUS_VOTING (3)
+  | "ended"; // STATUS_ENDED (4)
 
 /**
  * GameFlowGuard - Routes players based on their game state
@@ -25,7 +28,10 @@ type PlayerState =
  * - name_required → /invite-code (need to set display name)
  * - registered (not joined) → /landing (can join game)
  * - joined → /waiting-room (waiting for game to start)
- * - playing → /pass (game has started, selection phase)
+ * - selection → /pass (selection phase)
+ * - revealing → /reveal (bombs revealed)
+ * - voting → /decision (players voting continue/stop)
+ * - ended → /game-over (game finished)
  */
 export function GameFlowGuard({ children }: PropsWithChildren) {
   const router = useRouter();
@@ -67,7 +73,7 @@ export function GameFlowGuard({ children }: PropsWithChildren) {
   });
 
   // Determine player state
-  // Priority: playing > joined > registered > name_required > not_registered > not_connected
+  // Priority: game phase > joined > registered > name_required > not_registered > not_connected
   const getPlayerState = (): PlayerState => {
     if (walletLoading) return "loading";
     if (!connected) return "not_connected";
@@ -75,10 +81,20 @@ export function GameFlowGuard({ children }: PropsWithChildren) {
 
     // Check if already joined
     if (hasJoined === true) {
-      // Check if game has started (status > PENDING)
       if (statusLoading) return "loading";
-      if (gameState && gameState.status >= GameStatus.SELECTION) {
-        return "playing";
+      if (gameState) {
+        switch (gameState.status) {
+          case GameStatus.SELECTION:
+            return "selection";
+          case GameStatus.REVEALING:
+            return "revealing";
+          case GameStatus.VOTING:
+            return "voting";
+          case GameStatus.ENDED:
+            return "ended";
+          default:
+            return "joined"; // PENDING
+        }
       }
       return "joined";
     }
@@ -105,8 +121,14 @@ export function GameFlowGuard({ children }: PropsWithChildren) {
         return "/landing";
       case "joined":
         return "/waiting-room";
-      case "playing":
+      case "selection":
         return "/pass";
+      case "revealing":
+        return "/reveal";
+      case "voting":
+        return "/decision";
+      case "ended":
+        return "/game-over";
       default:
         return null; // loading
     }

@@ -67,6 +67,8 @@ export interface GamePlayer {
   isCurrentUser?: boolean;
   /** Whether this player is eliminated */
   isEliminated?: boolean;
+  /** Whether this player has acted (chosen bao) this round */
+  hasActed?: boolean;
 }
 
 /**
