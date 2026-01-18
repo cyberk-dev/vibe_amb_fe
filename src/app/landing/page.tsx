@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { LandingScreen } from "@/screens/landing";
 
 /**
@@ -17,12 +18,12 @@ import { LandingScreen } from "@/screens/landing";
  * @see docs/prd.md for complete game flow
  */
 export default function LandingPage() {
+  const router = useRouter();
   // TODO: Get playerName from auth context or sessionStorage
   const playerName = "UserName"; // Placeholder
 
   const handleJoinMatchmaking = () => {
-    // TODO: Navigate to lobby/queue
-    console.log("Join matchmaking clicked");
+    router.push("/waiting-room");
   };
 
   const handleViewDemo = () => {
