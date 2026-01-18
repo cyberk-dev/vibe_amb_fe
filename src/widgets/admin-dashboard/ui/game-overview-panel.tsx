@@ -1,13 +1,14 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { gameQueries, GameStatusBadge, GameStatus, formatAptAmount, STATUS_DESCRIPTIONS } from "@/entities/game";
+import { gameQueries, GameStatusBadge, formatAptAmount, STATUS_DESCRIPTIONS } from "@/entities/game";
+import { InlineLoader } from "@/shared/ui";
 
 export function GameOverviewPanel() {
   const { data: state } = useQuery(gameQueries.status());
   const { data: prizes } = useQuery(gameQueries.prizes());
 
-  if (!state) return <div>Loading...</div>;
+  if (!state) return <InlineLoader />;
 
   return (
     <div className="rounded-xl border border-white/10 bg-white/5 p-6">

@@ -33,7 +33,7 @@ const DEFAULT_AVATAR = "/images/avatar-placeholder.png";
  */
 export const GameHostBadge = React.forwardRef<HTMLDivElement, GameHostBadgeProps>(
   ({ host, className, ...props }, ref) => {
-    const { name, role, avatarUrl, message } = host;
+    const { name, role, avatarUrl } = host;
 
     return (
       <div ref={ref} className={cn("relative", className)} {...props}>

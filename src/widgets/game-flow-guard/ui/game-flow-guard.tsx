@@ -6,6 +6,7 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useQuery } from "@tanstack/react-query";
 import { whitelistQueries } from "@/entities/whitelist";
 import { gameQueries, GameStatus } from "@/entities/game";
+import { FullScreenLoader } from "@/shared/ui";
 
 type PlayerState =
   | "loading"
@@ -147,28 +148,14 @@ export function GameFlowGuard({ children }: PropsWithChildren) {
 
   // Show loading while determining state
   if (playerState === "loading") {
-    return (
-      <div className="h-full flex items-center justify-center bg-[#fff7ed]">
-        <div className="text-center">
-          <div className="animate-spin text-4xl mb-4">⏳</div>
-          <p className="text-[#f54900] text-lg font-space">Loading...</p>
-        </div>
-      </div>
-    );
+    return <FullScreenLoader />;
   }
 
   // Render children only if on correct route
   const targetRoute = getTargetRoute(playerState);
   if (targetRoute && pathname !== targetRoute) {
     // Redirecting...
-    return (
-      <div className="h-full flex items-center justify-center bg-[#fff7ed]">
-        <div className="text-center">
-          <div className="animate-spin text-4xl mb-4">⏳</div>
-          <p className="text-[#f54900] text-lg font-space">Redirecting...</p>
-        </div>
-      </div>
-    );
+    return <FullScreenLoader />;
   }
 
   return <>{children}</>;

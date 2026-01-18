@@ -24,36 +24,6 @@ const labelVariants = {
   },
 };
 
-// NOTE: Variants below are kept for reference but not used
-// Direct animation props are used instead to avoid nested context conflicts
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const gridContainerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.02,
-      delayChildren: 0.1,
-    },
-  },
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const playerCardVariants = {
-  hidden: { opacity: 0, scale: 0.8, y: 15 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: {
-      type: "spring" as const,
-      stiffness: 100,
-      damping: 12,
-    },
-  },
-};
-
 interface PlayerSelectionGridProps {
   /**
    * Array of all players in the game
@@ -86,7 +56,7 @@ interface PlayerSelectionGridProps {
  *
  * Displays:
  * - "PASS TO PLAYER" label
- * - 5x4 grid of player cards
+ * - Responsive grid of player cards (auto-fit)
  * - Current user card is marked and cannot be selected
  * - Selected player has orange highlight
  */
@@ -108,13 +78,12 @@ export function PlayerSelectionGrid({
         <FormattedMessage id="pass_game.pass_to_player" defaultMessage="Pass To Player" />
       </motion.p>
 
-      {/* Player grid: 2 columns on mobile, auto-fit on desktop */}
+      {/* Player grid: responsive with auto-fit */}
       <motion.div
-        className="grid grid-cols-2 gap-2 sm:gap-4"
+        className="grid gap-2 sm:gap-4"
         style={{
-          gridTemplateColumns: "repeat(2, 1fr)",
+          gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
         }}
-        // Use CSS media query for larger screens
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.2 }}

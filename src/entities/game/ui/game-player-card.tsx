@@ -71,7 +71,7 @@ export const GamePlayerCard = React.forwardRef<HTMLButtonElement, GamePlayerCard
         disabled={disabled || isCurrentUserCard || isActed}
         className={cn(
           // Responsive sizing: smaller on mobile, original on desktop
-          "w-full sm:w-[178px] h-[80px] sm:h-[100px] flex items-center px-3 py-3 sm:px-6 sm:py-6 transition-all",
+          "w-full sm:w-[178px] h-[80px] sm:h-[100px] flex items-center px-3 py-3 sm:px-6 sm:py-6 transition-all overflow-hidden",
           // Background and border based on variant
           isSelected
             ? "bg-[#ffefe4] border-4 border-custom-light-orange"
@@ -104,7 +104,7 @@ export const GamePlayerCard = React.forwardRef<HTMLButtonElement, GamePlayerCard
           </div>
 
           {/* Player info */}
-          <div className="flex flex-col items-start">
+          <div className="flex flex-col items-start min-w-0 flex-1">
             {/* Player name */}
             <p className="font-space text-[14px] sm:text-[18px] font-bold leading-5 sm:leading-7 text-black truncate max-w-[80px] sm:max-w-none">
               {name}

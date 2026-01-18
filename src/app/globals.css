@@ -139,6 +139,12 @@
   }
 }
 
+.container {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* Invite Code Page Animations */
 @keyframes float {
   0%,

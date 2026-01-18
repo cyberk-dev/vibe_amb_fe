@@ -4,7 +4,7 @@ import { useState, useRef, Children, type ReactNode } from "react";
 import Image from "next/image";
 import { FormattedMessage, useIntl } from "react-intl";
 import { motion } from "framer-motion";
-import { SoundButton } from "@/shared/ui/sound-button";
+import { PageHeader } from "@/shared/ui/page-header";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useLandingFlow } from "../lib/use-landing-flow";
 import { HowToPlayDialog } from "./how-to-play-dialog";
@@ -121,32 +121,6 @@ const circleVariants = {
   },
 };
 
-const playerCountVariants = {
-  hidden: { opacity: 0, scale: 0.5 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      type: "spring" as const,
-      stiffness: 100,
-      damping: 12,
-      delay: 0.7,
-    },
-  },
-};
-
-const playerLabelVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: 0.9,
-      duration: 0.4,
-    },
-  },
-};
-
 const buttonVariants = {
   hidden: { opacity: 0, y: 30, scale: 0.9 },
   visible: (i: number) => ({
@@ -213,15 +187,15 @@ export function LandingScreen() {
   };
 
   return (
-    <div className="h-screen bg-[#fff7ed]">
+    <div className="min-h-screen w-full bg-[#fff7ed]">
       {/* Border frame */}
-      <div className="h-full border-8 border-[#f54900] relative overflow-y-auto lg:overflow-hidden">
-        {/* Main content - split layout */}
-        <div className="h-full flex flex-col lg:flex-row">
+      <div className="min-h-screen border-8 border-[#f54900] relative overflow-y-auto lg:overflow-hidden">
+        {/* Main content - split layout with max-width */}
+        <div className="mx-auto max-w-[1440px] flex flex-col lg:flex-row min-h-[calc(100vh-16px)]">
           {/* Left side - Game lore and description */}
           <motion.div
             ref={leftPanelRef}
-            className="w-full lg:w-[63%] min-h-screen lg:h-full flex flex-col justify-between p-4 md:p-8 lg:p-12 lg:p-16 lg:overflow-hidden relative"
+            className="w-full lg:w-[63%] min-h-screen lg:min-h-0 lg:h-full flex flex-col p-4 md:p-8 lg:p-12 lg:p-16 lg:overflow-hidden relative"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -321,11 +295,16 @@ export function LandingScreen() {
           {/* Right side - Matchmaking controls */}
           <motion.div
             ref={rightPanelRef}
-            className="w-full lg:w-[37%] relative flex items-start pt-16 lg:pt-0 lg:items-center justify-center p-8 md:p-12 lg:p-16 min-h-screen lg:h-full bg-gradient-to-br from-[#E7000B] to-[#F54900]"
+            className="w-full lg:w-[37%] relative flex flex-col p-8 md:p-12 lg:p-16 min-h-screen lg:h-full bg-gradient-to-br from-[#E7000B] to-[#F54900]"
             variants={rightPanelVariants}
             initial="hidden"
             animate="visible"
           >
+            {/* Page header - positioned at top right of red panel */}
+            <div className="flex justify-end mb-6 md:mb-8">
+              <PageHeader variant="light" />
+            </div>
+
             {/* Mobile scroll-up indicator */}
             <motion.button
               type="button"
@@ -337,78 +316,79 @@ export function LandingScreen() {
             >
               <ChevronUp size={32} className="text-white/80" />
             </motion.button>
-            {/* Decorative circle overlay */}
-            <motion.div
-              className="absolute rounded-full bg-[rgba(255,137,4,0.2)] w-[300px] h-[300px] md:w-[350px] md:h-[350px] lg:w-[406px] lg:h-[406px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-              variants={circleVariants}
-              animate={pulseAnimation}
-            />
 
-            {/* Sound toggle button */}
-            <SoundButton variant="light" className="absolute top-4 right-4" />
+            {/* Main content area - centered */}
+            <div className="flex-1 flex items-center justify-center">
+              {/* Decorative circle overlay */}
+              <motion.div
+                className="absolute rounded-full bg-[rgba(255,137,4,0.2)] w-[300px] h-[300px] md:w-[350px] md:h-[350px] lg:w-[406px] lg:h-[406px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                variants={circleVariants}
+                animate={pulseAnimation}
+              />
 
-            {/* Center content */}
-            <div className="relative z-10 w-full max-w-[340px] space-y-12">
-              {/* Player count display */}
-              <div className="text-center space-y-4">
-                <h2 className="font-bold text-[180px] md:text-[210px] lg:text-[240px] leading-none text-white/80 font-bricolage">
-                  {REQUIRED_PLAYERS}
-                </h2>
-                <motion.p className="text-white text-xl tracking-wider uppercase font-space">
-                  <FormattedMessage id="landing.players_required" />
-                </motion.p>
-              </div>
+              {/* Center content */}
+              <div className="relative z-10 w-full max-w-[340px] space-y-12">
+                {/* Player count display */}
+                <div className="text-center space-y-4">
+                  <h2 className="font-bold text-[180px] md:text-[210px] lg:text-[240px] leading-none text-white/80 font-bricolage">
+                    {REQUIRED_PLAYERS}
+                  </h2>
+                  <motion.p className="text-white text-xl tracking-wider uppercase font-space">
+                    <FormattedMessage id="landing.players_required" />
+                  </motion.p>
+                </div>
 
-              {/* Action buttons */}
-              <div className="space-y-4 font-space">
-                <motion.button
-                  type="button"
-                  onClick={handleJoinMatchmaking}
-                  disabled={isJoining}
-                  className="w-full bg-custom-very-dark-blue text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#154450] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  variants={buttonVariants}
-                  initial="hidden"
-                  animate="visible"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  custom={0}
-                >
-                  {isJoining ? (
-                    <>
-                      <span className="animate-spin">⏳</span>
-                      <FormattedMessage id="landing.actions.joining" defaultMessage="Joining..." />
-                    </>
-                  ) : (
-                    <FormattedMessage id="landing.actions.join_matchmaking" />
-                  )}
-                </motion.button>
-                <motion.button
-                  type="button"
-                  disabled={isJoining}
-                  className="w-full bg-custom-light-orange border-2 border-white/40 text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#ff7a28] transition-colors cursor-pointer disabled:opacity-50"
-                  onClick={handleViewDemo}
-                  variants={buttonVariants}
-                  initial="hidden"
-                  animate="visible"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  custom={1}
-                >
-                  <FormattedMessage id="landing.actions.view_demo" />
-                </motion.button>
-                <motion.button
-                  type="button"
-                  disabled={isJoining}
-                  className="w-full bg-black text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-gray-900 transition-colors cursor-pointer disabled:opacity-50"
-                  variants={buttonVariants}
-                  initial="hidden"
-                  animate="visible"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  custom={2}
-                >
-                  <FormattedMessage id="landing.actions.view_wallet" />
-                </motion.button>
+                {/* Action buttons */}
+                <div className="space-y-4 font-space">
+                  <motion.button
+                    type="button"
+                    onClick={handleJoinMatchmaking}
+                    disabled={isJoining}
+                    className="w-full bg-custom-very-dark-blue text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#154450] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    variants={buttonVariants}
+                    initial="hidden"
+                    animate="visible"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    custom={0}
+                  >
+                    {isJoining ? (
+                      <>
+                        <span className="animate-spin">⏳</span>
+                        <FormattedMessage id="landing.actions.joining" defaultMessage="Joining..." />
+                      </>
+                    ) : (
+                      <FormattedMessage id="landing.actions.join_matchmaking" />
+                    )}
+                  </motion.button>
+                  <motion.button
+                    type="button"
+                    disabled={isJoining}
+                    className="w-full bg-custom-light-orange border-2 border-white/40 text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#ff7a28] transition-colors cursor-pointer disabled:opacity-50"
+                    onClick={handleViewDemo}
+                    variants={buttonVariants}
+                    initial="hidden"
+                    animate="visible"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    custom={1}
+                  >
+                    <FormattedMessage id="landing.actions.view_demo" />
+                  </motion.button>
+                  <motion.button
+                    type="button"
+                    disabled={isJoining}
+                    className="w-full bg-black text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-gray-900 transition-colors cursor-pointer disabled:opacity-50"
+                    variants={buttonVariants}
+                    initial="hidden"
+                    animate="visible"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    custom={2}
+                  >
+                    <FormattedMessage id="landing.actions.view_wallet" />
+                  </motion.button>
+                </div>
               </div>
             </div>
           </motion.div>

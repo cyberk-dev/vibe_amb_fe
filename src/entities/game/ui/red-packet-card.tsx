@@ -40,7 +40,11 @@ export const RedPacketCard = React.forwardRef<HTMLDivElement, RedPacketCardProps
     return (
       <div
         ref={ref}
-        className={cn("w-[200px] h-[340px] md:w-[302px] md:h-[508px] overflow-hidden relative", className)}
+        className={cn(
+          "w-[200px] h-[340px] md:w-[302px] md:h-[508px] overflow-hidden relative",
+          "border-4 border-custom-light-orange",
+          className,
+        )}
         {...props}
       >
         {/* Packet illustration - covers entire container */}
