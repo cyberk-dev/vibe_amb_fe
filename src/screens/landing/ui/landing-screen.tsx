@@ -4,6 +4,8 @@ import { useState, type ReactNode } from "react";
 import Image from "next/image";
 import { FormattedMessage, useIntl } from "react-intl";
 import { SoundButton } from "@/shared/ui/sound-button";
+import { useLandingFlow } from "../lib/use-landing-flow";
+import { HowToPlayDialog } from "./how-to-play-dialog";
 
 interface LandingScreenProps {
   playerName?: string;
@@ -24,16 +26,24 @@ interface LandingScreenProps {
  * - Fonts: Bricolage Grotesque (headlines), Space Grotesk (body)
  *
  * Flow:
- * - User arrives after successful authentication (wallet/Google)
- * - User can join matchmaking, view demo, or check wallet
+ * - User arrives from /invite-code with registration data in store
+ * - User clicks "Join Matchmaking" → join_game(code, displayName) → /pass
  *
  * @see docs/prd.md for game rules and flow
  */
-export function LandingScreen({ playerName, onJoinMatchmaking, onViewDemo, onViewWallet }: LandingScreenProps) {
+export function LandingScreen() {
   const intl = useIntl();
   const [isMuted, setIsMuted] = useState(false);
+
+  const { playerName, isJoining, handleJoinMatchmaking, playersCount } = useLandingFlow();
+
+  const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const displayName = playerName?.trim() || intl.formatMessage({ id: "landing.defaults.player_name" });
   const illustrationAlt = intl.formatMessage({ id: "landing.illustration_alt" });
+
+  const handleViewDemo = () => {
+    setIsHowToPlayOpen(true);
+  };
 
   return (
     <div className="h-full bg-[#fff7ed] p-2">
@@ -52,7 +62,13 @@ export function LandingScreen({ playerName, onJoinMatchmaking, onViewDemo, onVie
                     <FormattedMessage id="landing.hero.title" />
                   </h1>
                   <p className="text-custom-very-dark-blue text-base font-medium">
-                    <FormattedMessage id="landing.hero.greeting" values={{ playerName: displayName }} />
+                    <FormattedMessage
+                      id="landing.hero.greeting"
+                      values={{
+                        playerName: displayName,
+                        strikethrough: (chunks: ReactNode) => <del className="line-through">{chunks}</del>,
+                      }}
+                    />
                   </p>
                 </div>
 
@@ -115,7 +131,7 @@ export function LandingScreen({ playerName, onJoinMatchmaking, onViewDemo, onVie
               {/* Player count display */}
               <div className="text-center space-y-4">
                 <h2 className="font-bold text-[180px] md:text-[210px] lg:text-[240px] leading-none text-white/80 font-bricolage">
-                  20
+                  {playersCount}
                 </h2>
                 <p className="text-white text-xl tracking-wider uppercase font-space">
                   <FormattedMessage id="landing.players_required" />
@@ -126,22 +142,31 @@ export function LandingScreen({ playerName, onJoinMatchmaking, onViewDemo, onVie
               <div className="space-y-4 font-space">
                 <button
                   type="button"
-                  onClick={onJoinMatchmaking}
-                  className="w-full bg-custom-very-dark-blue text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#154450] transition-colors"
+                  onClick={handleJoinMatchmaking}
+                  disabled={isJoining}
+                  className="w-full bg-custom-very-dark-blue text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#154450] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  <FormattedMessage id="landing.actions.join_matchmaking" />
+                  {isJoining ? (
+                    <>
+                      <span className="animate-spin">⏳</span>
+                      <FormattedMessage id="landing.actions.joining" defaultMessage="Joining..." />
+                    </>
+                  ) : (
+                    <FormattedMessage id="landing.actions.join_matchmaking" />
+                  )}
                 </button>
                 <button
                   type="button"
-                  onClick={onViewDemo}
-                  className="w-full bg-custom-light-orange border-2 border-white/40 text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#ff7a28] transition-colors"
+                  disabled={isJoining}
+                  className="w-full bg-custom-light-orange border-2 border-white/40 text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#ff7a28] transition-colors disabled:opacity-50"
+                  onClick={handleViewDemo}
                 >
                   <FormattedMessage id="landing.actions.view_demo" />
                 </button>
                 <button
                   type="button"
-                  onClick={onViewWallet}
-                  className="w-full bg-black text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-gray-900 transition-colors"
+                  disabled={isJoining}
+                  className="w-full bg-black text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-gray-900 transition-colors disabled:opacity-50"
                 >
                   <FormattedMessage id="landing.actions.view_wallet" />
                 </button>
@@ -150,6 +175,9 @@ export function LandingScreen({ playerName, onJoinMatchmaking, onViewDemo, onVie
           </div>
         </div>
       </div>
+
+      {/* How to Play Dialog */}
+      <HowToPlayDialog open={isHowToPlayOpen} onOpenChange={setIsHowToPlayOpen} />
     </div>
   );
 }

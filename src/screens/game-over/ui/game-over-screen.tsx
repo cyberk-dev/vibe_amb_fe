@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft } from "lucide-react";
+import { useIntl, FormattedMessage } from "react-intl";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface PlayerStanding {
@@ -38,6 +39,7 @@ interface GameOverScreenProps {
  */
 export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome }: GameOverScreenProps) {
   const isMobile = useIsMobile();
+  const intl = useIntl();
   const formatCurrency = (value: number) => {
     return `$${value.toFixed(2)}`;
   };
@@ -56,15 +58,19 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
               <p
                 className={`font-space ${isMobile ? "text-[10px]" : "text-xs"} leading-[1.33] tracking-[3px] uppercase text-custom-light-orange`}
               >
-                FINAL RESULTS
+                <FormattedMessage id="game_over.final_results" defaultMessage="FINAL RESULTS" />
               </p>
               {/* "Game Over" heading */}
               <h1
                 className={`font-bricolage font-bold ${isMobile ? "text-4xl" : "text-[192px]"} leading-[0.85] text-black`}
               >
-                <span>Game</span>
+                <span>
+                  <FormattedMessage id="game_over.game_over_line1" defaultMessage="Game" />
+                </span>
                 <br />
-                <span>Over</span>
+                <span>
+                  <FormattedMessage id="game_over.game_over_line2" defaultMessage="Over" />
+                </span>
               </h1>
             </div>
 
@@ -76,7 +82,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
               <button
                 className={`${isMobile ? "w-full" : "px-[26px]"} border-2 border-custom-light-orange h-[48px] font-space text-sm font-medium text-custom-light-orange flex items-center justify-center ${isMobile ? "px-4" : ""}`}
               >
-                Complete
+                <FormattedMessage id="game_over.complete" defaultMessage="Complete" />
               </button>
               {/* Back arrow button */}
               {onBackToHome && (
@@ -114,7 +120,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
                   <p
                     className={`font-space ${isMobile ? "text-[10px]" : "text-xs"} leading-[1.33] tracking-[2.4px] uppercase text-custom-light-orange`}
                   >
-                    WINNER
+                    <FormattedMessage id="game_over.winner" defaultMessage="WINNER" />
                   </p>
                   <h2
                     className={`font-bricolage font-bold ${isMobile ? "text-xl" : "text-[48px]"} leading-[1] text-black`}
@@ -141,7 +147,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
                 <p
                   className={`font-space ${isMobile ? "text-[10px]" : "text-xs"} leading-[1.33] tracking-[0.6px] uppercase text-center text-black/60`}
                 >
-                  Total Winnings
+                  <FormattedMessage id="game_over.total_winnings" defaultMessage="Total Winnings" />
                 </p>
               </div>
             </div>
@@ -153,7 +159,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
             <p
               className={`font-space ${isMobile ? "text-[10px]" : "text-xs"} leading-[1.33] tracking-[3px] uppercase text-black/40`}
             >
-              FINAL STANDINGS
+              <FormattedMessage id="game_over.final_standings" defaultMessage="FINAL STANDINGS" />
             </p>
 
             {/* Standings list - 2 columns on desktop, 1 column on mobile */}
@@ -201,7 +207,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
                             <span
                               className={`${isMobile ? "px-1 py-0.5 text-[8px]" : "px-[9px] py-[5px] text-[10px]"} leading-[1.5] tracking-[0.5px] uppercase text-[#DC2626] border border-[#DC2626]`}
                             >
-                              OUT
+                              <FormattedMessage id="game_over.out" defaultMessage="OUT" />
                             </span>
                           )}
                         </div>
@@ -237,7 +243,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
             <p
               className={`font-space ${isMobile ? "text-[10px]" : "text-xs"} leading-[1.33] tracking-[2.4px] uppercase text-black/40 ${isMobile ? "text-center" : ""}`}
             >
-              A GAME BY VIBE AMBASSADOR · 2026
+              <FormattedMessage id="game_over.footer" defaultMessage="A GAME BY VIBE AMBASSADOR · 2026" />
             </p>
 
             {/* Back to home button */}
@@ -246,7 +252,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
                 onClick={onBackToHome}
                 className={`${isMobile ? "w-full" : "w-[200px]"} ${isMobile ? "h-[48px]" : "h-[60px]"} bg-black text-white font-space font-bold ${isMobile ? "text-xs" : "text-sm"} leading-[1.43] tracking-[2.8px] uppercase hover:bg-black/90 transition-colors`}
               >
-                Back to home
+                <FormattedMessage id="game_over.back_to_home" defaultMessage="Back to home" />
               </button>
             )}
           </div>

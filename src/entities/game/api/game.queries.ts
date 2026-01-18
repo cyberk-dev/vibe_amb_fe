@@ -1,6 +1,6 @@
 import { queryOptions, keepPreviousData } from "@tanstack/react-query";
 import { gameViewService } from "./game-views";
-import { mapPlayerStatuses, mapVotingState, mapRoundPrizes } from "../lib/mappers";
+import { mapAllPlayers, mapVotingState, mapRoundPrizes } from "../lib/mappers";
 import type { AdminGameState, Player, VotingState, RoundPrizes, GameOverview } from "../model/types";
 import { GameStatus } from "@/integrations/aptos";
 
@@ -30,8 +30,8 @@ export const gameQueries = {
     queryOptions({
       queryKey: [...gameQueries.all(), "players"],
       queryFn: async (): Promise<Player[]> => {
-        const dto = await gameViewService.getPlayerStatuses();
-        return mapPlayerStatuses(dto);
+        const dto = await gameViewService.getAllPlayers();
+        return mapAllPlayers(dto);
       },
       staleTime: 5_000,
       placeholderData: keepPreviousData,
@@ -79,7 +79,7 @@ export const gameQueries = {
           gameViewService.getRound(),
           gameViewService.getPlayersCount(),
           gameViewService.getEliminationCount(),
-          gameViewService.getPlayerStatuses(),
+          gameViewService.getAllPlayers(),
           gameViewService.getRoundPrizes(),
         ]);
 
@@ -88,7 +88,7 @@ export const gameQueries = {
           round,
           playersCount,
           eliminationCount,
-          players: mapPlayerStatuses(playersDto),
+          players: mapAllPlayers(playersDto),
           prizes: mapRoundPrizes(prizesDto),
         };
 

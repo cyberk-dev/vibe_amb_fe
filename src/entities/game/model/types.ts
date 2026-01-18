@@ -6,6 +6,7 @@ import { GameStatus, Vote } from "@/integrations/aptos";
 
 export interface Player {
   address: string;
+  name: string;
   hasActed: boolean;
 }
 
