@@ -6,9 +6,9 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { BackgroundMusic } from "@/shared/ui";
 
 export const metadata: Metadata = {
-  title: "Cyberk Nextjs Boilerplate",
-  applicationName: "Cyberk Nextjs Boilerplate",
-  description: "Web3 frontend framework base on Nextjs for Cyberk member",
+  title: "VIBE Ambassador",
+  applicationName: "VIBE Ambassador",
+  description: "Web3 frontend for VIBE Ambassador",
   manifest: "/manifest.json",
   icons: {
     icon: [
@@ -22,19 +22,19 @@ export const metadata: Metadata = {
     "Horse of the Year": "H.O.T.Y",
   },
   openGraph: {
-    title: "Cyberk Nextjs Boilerplate",
-    description: "Web3 frontend framework base on Nextjs for Cyberk member",
+    title: "VIBE Ambassador",
+    description: "Web3 frontend for VIBE Ambassador",
     url: "",
-    siteName: "Cyberk Nextjs Boilerplate",
+    siteName: "VIBE Ambassador",
     images: [`${process.env.NEXT_PUBLIC_APP_URL}/thumbnail.png`],
     type: "website",
     locale: "en_US",
   },
   twitter: {
-    title: "Cyberk Nextjs Boilerplate",
+    title: "VIBE Ambassador",
     card: "summary_large_image",
     images: [`${process.env.NEXT_PUBLIC_APP_URL}/thumbnail.png`],
-    description: "Web3 frontend framework base on Nextjs for Cyberk member",
+    description: "Web3 frontend for VIBE Ambassador",
   },
 };
 
