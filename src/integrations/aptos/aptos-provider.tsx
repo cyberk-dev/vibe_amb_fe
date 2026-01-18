@@ -1,27 +1,15 @@
 "use client";
 
-import { AptosWalletAdapterProvider } from "@aptos-labs/wallet-adapter-react";
-import { Network } from "@aptos-labs/ts-sdk";
+import dynamic from "next/dynamic";
 import { PropsWithChildren } from "react";
 
-const NETWORK =
-  process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
-    ? Network.MAINNET
-    : Network.TESTNET;
+// Dynamically import the actual provider with ssr: false to prevent
+// @aptos-labs/ts-sdk from being bundled in server components
+const AptosProviderInner = dynamic(() => import("./aptos-provider-inner").then((mod) => mod.AptosProviderInner), {
+  ssr: false,
+  loading: () => null,
+});
 
 export function AptosProvider({ children }: PropsWithChildren) {
-  return (
-    <AptosWalletAdapterProvider
-      autoConnect={true}
-      dappConfig={{
-        network: NETWORK,
-        aptosConnectDappId: process.env.NEXT_PUBLIC_APTOS_CONNECT_DAPP_ID,
-      }}
-      onError={(error) => {
-        console.error("Aptos Wallet Error:", error);
-      }}
-    >
-      {children}
-    </AptosWalletAdapterProvider>
-  );
+  return <AptosProviderInner>{children}</AptosProviderInner>;
 }
