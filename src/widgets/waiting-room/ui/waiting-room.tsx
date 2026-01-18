@@ -102,7 +102,7 @@ export function WaitingRoom({ seats, maxSeats, countdown, isCountdownActive, cla
         animate="visible"
       >
         {/* Content with max-width */}
-        <div className="mx-auto max-w-[1440px] flex flex-col gap-4 md:gap-8 px-5 py-7 md:px-16 md:py-12 min-h-screen">
+        <div className="mx-auto max-w-[1440px] flex flex-col gap-4 md:gap-8 px-5 py-7 md:px-16 md:py-12">
           {/* Page header */}
           <div className="flex justify-end">
             <PageHeader variant="dark" />
@@ -113,28 +113,21 @@ export function WaitingRoom({ seats, maxSeats, countdown, isCountdownActive, cla
 
           {/* Main content: Seats grid + Countdown panel */}
           <motion.div
-            className="flex-1 flex flex-col lg:flex-row gap-4 md:gap-8 lg:gap-4 min-h-0"
+            className="flex flex-col lg:flex-row lg:items-stretch gap-4 md:gap-8 lg:gap-4"
             variants={mainContentVariants}
           >
-            {/* Seats grid - scrollable on mobile */}
-            <div className="flex-1 lg:flex-[4] min-h-0 flex flex-col">
+            {/* Seats grid */}
+            <div className="flex-1 flex flex-col">
               {/* Connected Players label - mobile only */}
               <p className="md:hidden font-space text-[10px] font-normal uppercase tracking-[2px] text-black/40 mb-3">
                 <FormattedMessage id="waiting_room.connected_players" defaultMessage="Connected Players" />
               </p>
-              {/* Scrollable container with bottom shadow indicator */}
-              <div className="relative flex-1 min-h-0">
-                <div className="h-full overflow-y-auto">
-                  <SeatsGrid seats={seats} />
-                </div>
-                {/* Bottom shadow to indicate scrollable content - mobile only */}
-                <div className="md:hidden pointer-events-none absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#fff7ed] to-transparent" />
-              </div>
+              <SeatsGrid seats={seats} />
             </div>
 
             {/* Countdown panel - bottom on mobile, right side on desktop */}
             <div className="w-full lg:w-[200px] lg:flex-shrink-0 flex-shrink-0">
-              <CountdownPanel countdown={countdown} isActive={isCountdownActive} />
+              <CountdownPanel countdown={countdown} isActive={isCountdownActive} className="h-full" />
             </div>
           </motion.div>
         </div>

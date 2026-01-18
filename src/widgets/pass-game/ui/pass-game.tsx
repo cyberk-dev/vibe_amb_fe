@@ -157,8 +157,10 @@ export function PassGame({
             <PageHeader variant="dark" />
           </div>
 
-          {/* Header section */}
-          <PassGameHeader round={round} countdown={countdown} />
+          {/* Header section - add more spacing */}
+          <div className="mt-4 md:mt-8">
+            <PassGameHeader round={round} countdown={countdown} />
+          </div>
 
           {/* Main content: Packet panel + Player grid */}
           <motion.div className="flex flex-col lg:flex-row gap-12" variants={mainContentVariants}>

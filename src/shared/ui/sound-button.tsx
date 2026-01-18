@@ -69,7 +69,10 @@ export function SoundButton({
   const onToggle = controlledToggle ?? globalToggle;
 
   const iconColor = variant === "light" ? "text-white" : "text-custom-vivid-red";
-  const bgColor = variant === "light" ? "bg-white/20" : "bg-white/50";
+  const bgColor =
+    variant === "light"
+      ? "bg-white/20 border-2 border-white hover:bg-white/30"
+      : "bg-white border-2 border-custom-vivid-red/30 hover:border-custom-vivid-red/50";
 
   return (
     <motion.div

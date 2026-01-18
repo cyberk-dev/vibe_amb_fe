@@ -54,7 +54,10 @@ export const LanguageToggleButton: React.FC<LanguageToggleButtonProps> = ({ vari
   }, [isOpen]);
 
   // Variant-based styles
-  const buttonBgClass = variant === "light" ? "bg-white/20 hover:bg-white/30" : "bg-white/50 hover:bg-white/70";
+  const buttonBgClass =
+    variant === "light"
+      ? "bg-white/20 hover:bg-white/30 border-2 border-white"
+      : "bg-white hover:bg-white/90 border-2 border-custom-vivid-red/30 hover:border-custom-vivid-red/50";
   const buttonTextClass = variant === "light" ? "text-white" : "text-custom-vivid-red";
   const chevronClass = variant === "light" ? "text-white" : "text-custom-vivid-red";
 

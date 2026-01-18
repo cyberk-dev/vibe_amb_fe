@@ -110,9 +110,9 @@ export function PlayerSelectionGrid({
 
       {/* Player grid: auto-fit columns based on available width */}
       <motion.div
-        className="grid grid-cols-2 gap-4"
+        className="grid gap-4"
         style={{
-          gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
         }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

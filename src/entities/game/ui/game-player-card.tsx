@@ -70,7 +70,7 @@ export const GamePlayerCard = React.forwardRef<HTMLButtonElement, GamePlayerCard
         type="button"
         disabled={disabled || isCurrentUserCard || isActed}
         className={cn(
-          "w-[178px] h-[100px] flex items-center px-6 py-6 transition-all",
+          "w-full h-[100px] flex items-center px-6 py-6 transition-all overflow-hidden",
           // Background and border based on variant
           isSelected
             ? "bg-[#ffefe4] border-4 border-custom-light-orange"
@@ -103,9 +103,9 @@ export const GamePlayerCard = React.forwardRef<HTMLButtonElement, GamePlayerCard
           </div>
 
           {/* Player info */}
-          <div className="flex flex-col items-start">
+          <div className="flex flex-col items-start min-w-0 flex-1">
             {/* Player name */}
-            <p className="font-space text-[18px] font-bold leading-7 text-black">{name}</p>
+            <p className="font-space text-[18px] font-bold leading-7 text-black truncate max-w-full">{name}</p>
             {/* Secondary label */}
             {secondaryLabel && (
               <p className="font-space text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-custom-dark-grayish-blue">

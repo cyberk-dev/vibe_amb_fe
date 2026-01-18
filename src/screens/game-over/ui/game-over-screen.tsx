@@ -317,14 +317,14 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
             </motion.div>
           </div>
 
-          {/* Footer - Play Again button */}
+          {/* Footer - Back to Home button */}
           <motion.div className="mt-6 md:mt-10 flex-shrink-0" variants={labelVariants}>
             {onBackToHome && (
               <button
                 onClick={onBackToHome}
                 className="w-full h-[50px] md:h-[60px] bg-black text-white font-space font-bold text-xs md:text-sm leading-[1.43] tracking-[2.8px] uppercase hover:bg-black/90 transition-colors"
               >
-                <FormattedMessage id="game_over.play_again" defaultMessage="PLAY AGAIN" />
+                <FormattedMessage id="game_over.back_to_home" defaultMessage="BACK TO HOME" />
               </button>
             )}
           </motion.div>
