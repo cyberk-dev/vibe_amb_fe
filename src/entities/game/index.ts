@@ -6,14 +6,7 @@
 export { gameQueries } from "./api/game.queries";
 
 // Types for admin dashboard
-export type {
-  Player,
-  PlayerWithVote,
-  GameState as AdminGameState,
-  VotingState,
-  RoundPrizes,
-  GameOverview,
-} from "./model/types";
+export type { Player, PlayerWithVote, AdminGameState, VotingState, RoundPrizes, GameOverview } from "./model/types";
 export { GameStatus, Vote } from "./model/types";
 
 // Constants
