@@ -73,7 +73,7 @@ export function SoundButton({
 
   return (
     <motion.div
-      className={cn("rounded-lg p-1 z-20", bgColor, className)}
+      className={cn("rounded-lg p-2 z-20", bgColor, className)}
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{
@@ -85,15 +85,11 @@ export function SoundButton({
     >
       <button
         type="button"
-        className="w-8 h-8 flex items-center justify-center cursor-pointer"
+        className="w-6 h-6 flex items-center justify-center cursor-pointer"
         aria-label="Toggle sound"
         onClick={onToggle}
       >
-        {isMuted ? (
-          <VolumeX className={cn("w-full h-full", iconColor)} />
-        ) : (
-          <Volume2 className={cn("w-full h-full", iconColor)} />
-        )}
+        {isMuted ? <VolumeX className={cn("w-6 h-6", iconColor)} /> : <Volume2 className={cn("w-6 h-6", iconColor)} />}
       </button>
     </motion.div>
   );

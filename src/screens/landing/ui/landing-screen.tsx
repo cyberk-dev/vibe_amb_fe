@@ -4,7 +4,7 @@ import { useState, useRef, Children, type ReactNode } from "react";
 import Image from "next/image";
 import { FormattedMessage, useIntl } from "react-intl";
 import { motion } from "framer-motion";
-import { SoundButton } from "@/shared/ui/sound-button";
+import { PageHeader } from "@/shared/ui/page-header";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useLandingFlow } from "../lib/use-landing-flow";
 import { HowToPlayDialog } from "./how-to-play-dialog";
@@ -213,19 +213,23 @@ export function LandingScreen() {
   };
 
   return (
-    <div className="h-screen bg-[#fff7ed]">
+    <div className="min-h-screen w-full bg-[#fff7ed]">
       {/* Border frame */}
-      <div className="h-full border-8 border-[#f54900] relative overflow-y-auto lg:overflow-hidden">
-        {/* Main content - split layout */}
-        <div className="h-full flex flex-col lg:flex-row">
+      <div className="min-h-screen border-8 border-[#f54900] relative overflow-y-auto lg:overflow-hidden">
+        {/* Main content - split layout with max-width */}
+        <div className="mx-auto max-w-[1440px] flex flex-col lg:flex-row min-h-[calc(100vh-16px)]">
           {/* Left side - Game lore and description */}
           <motion.div
             ref={leftPanelRef}
-            className="w-full lg:w-[63%] min-h-screen lg:h-full flex flex-col justify-between p-4 md:p-8 lg:p-12 lg:p-16 lg:overflow-hidden relative"
+            className="w-full lg:w-[63%] min-h-screen lg:min-h-0 lg:h-full flex flex-col p-4 md:p-8 lg:p-12 lg:p-16 lg:overflow-hidden relative"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
+            {/* Page header - positioned at top right of left panel */}
+            <div className="flex justify-end mb-6 md:mb-8">
+              <PageHeader variant="dark" />
+            </div>
             {/* Top content */}
             <div className="flex-1 flex items-center min-h-0 overflow-hidden">
               <div className="w-full h-full flex flex-col gap-8">
@@ -343,9 +347,6 @@ export function LandingScreen() {
               variants={circleVariants}
               animate={pulseAnimation}
             />
-
-            {/* Sound toggle button */}
-            <SoundButton variant="light" className="absolute top-4 right-4" />
 
             {/* Center content */}
             <div className="relative z-10 w-full max-w-[340px] space-y-12">

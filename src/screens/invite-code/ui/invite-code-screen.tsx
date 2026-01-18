@@ -3,10 +3,10 @@
 import type { ReactNode } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { motion } from "framer-motion";
-import { SoundButton } from "@/shared/ui/sound-button";
 import { GameFormField } from "@/shared/ui/form-field";
+import { PageHeader } from "@/shared/ui/page-header";
 import { useInviteCodeFlow, type FlowState } from "../lib/use-invite-code-flow";
-import { LanguageToggleButton, PopupBlockerWarningDialog } from "@/shared/ui";
+import { PopupBlockerWarningDialog } from "@/shared/ui";
 
 /**
  * Invite Code Screen - Whitelist Registration
@@ -206,39 +206,38 @@ export function InviteCodeScreen() {
         onProceed={proceedWithConnect}
       />
 
-      <div className="min-h-screen bg-custom-vivid-red overflow-hidden relative">
+      <div className="min-h-screen w-full bg-custom-vivid-red overflow-hidden relative">
         {/* Decorative circles with entrance animations */}
-        <motion.div
-          className="absolute rounded-full bg-custom-light-orange will-change-transform
+
+        {/* Main content with max-width */}
+        <div className="mx-auto max-w-[1440px] min-h-screen flex flex-col px-6 md:px-16 py-6 md:py-12 relative z-10">
+          {/* Top right controls: Language toggle, Sound button, and Disconnect */}
+          <div className="flex justify-end mb-6 md:mb-0">
+            <PageHeader variant="light" />
+          </div>
+
+          <motion.div
+            className="absolute rounded-full bg-custom-light-orange will-change-transform z-0
           w-[280px] h-[280px] bottom-[120px] right-[-80px]
           md:w-[524.658px] md:h-[524.658px] md:top-[354px] md:left-[639px] md:bottom-auto md:right-auto"
-          variants={circleVariants}
-          initial="initial"
-          animate="animate"
-          custom={0}
-          whileInView={floatAnimation}
-        />
-        <motion.div
-          className="absolute rounded-full bg-custom-very-dark-blue will-change-transform
+            variants={circleVariants}
+            initial="initial"
+            animate="animate"
+            custom={0}
+            whileInView={floatAnimation}
+          />
+          <motion.div
+            className="absolute rounded-full bg-custom-very-dark-blue will-change-transform z-0
           w-[220px] h-[220px] bottom-[40px] right-[-40px]
           md:w-[431.213px] md:h-[431.213px] md:top-[360.37px] md:left-[965.68px] md:bottom-auto md:right-auto"
-          variants={circleVariants}
-          initial="initial"
-          animate="animate"
-          custom={1}
-          whileInView={floatAnimation}
-        />
-
-        {/* Top right controls: Language toggle and Sound button */}
-        <div className="absolute top-6 right-6 flex items-center gap-3 z-20">
-          <LanguageToggleButton />
-          <SoundButton variant="dark" />
-        </div>
-
-        {/* Main content */}
-        <div className="h-full flex flex-col justify-between gap-8 md:gap-0 px-6 mt-24 md:mt-0 md:p-12 relative z-10">
+            variants={circleVariants}
+            initial="initial"
+            animate="animate"
+            custom={1}
+            whileInView={floatAnimation}
+          />
           {/* Hero title */}
-          <div className="flex-1 flex items-center">
+          <div className=" relative">
             <div className="w-full max-w-[1027px]">
               <motion.div variants={titleContainerVariants} initial="hidden" animate="visible">
                 <h1 className="font-bold leading-[0.9] text-white font-bricolage text-[48px] lg:text-[160px] [font-variation-settings:'opsz'_14,'wdth'_100]">

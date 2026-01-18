@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { FormattedMessage } from "react-intl";
-import { Button } from "@/shared/ui/button";
+import { motion } from "framer-motion";
 import { useLocale, useLocaleActions } from "@/shared/i18n";
 import { ChevronDown, Check } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
@@ -12,7 +12,21 @@ const LANGUAGES = [
   { code: "vi" as const, labelKey: "language.selector.vietnamese", flag: "🇻🇳" },
 ];
 
-export const LanguageToggleButton: React.FC = () => {
+export interface LanguageToggleButtonProps {
+  /**
+   * Style variant for different backgrounds
+   * - "light": For dark/saturated backgrounds (white text, semi-transparent bg)
+   * - "dark": For light backgrounds (dark text)
+   * @default "dark"
+   */
+  variant?: "light" | "dark";
+  /**
+   * Additional classes for container positioning
+   */
+  className?: string;
+}
+
+export const LanguageToggleButton: React.FC<LanguageToggleButtonProps> = ({ variant = "dark", className }) => {
   const locale = useLocale();
   const { setLocale } = useLocaleActions();
   const [mounted, setMounted] = React.useState(false);
@@ -39,11 +53,18 @@ export const LanguageToggleButton: React.FC = () => {
     };
   }, [isOpen]);
 
+  // Variant-based styles
+  const buttonBgClass = variant === "light" ? "bg-white/20 hover:bg-white/30" : "bg-white/50 hover:bg-white/70";
+  const buttonTextClass = variant === "light" ? "text-white" : "text-custom-vivid-red";
+  const chevronClass = variant === "light" ? "text-white" : "text-custom-vivid-red";
+
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon" aria-label="Select language">
-        <span className="text-lg">🇺🇸</span>
-      </Button>
+      <div className={cn("rounded-lg p-2", buttonBgClass, className)}>
+        <button type="button" className="flex items-center gap-2 cursor-pointer" aria-label="Select language">
+          <span className="text-lg">🇺🇸</span>
+        </button>
+      </div>
     );
   }
 
@@ -55,21 +76,32 @@ export const LanguageToggleButton: React.FC = () => {
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label="Select language"
-        aria-expanded={isOpen}
-        className="flex items-center gap-2 h-9"
+    <div className={cn("relative", className)} ref={dropdownRef}>
+      <motion.div
+        className={cn("rounded-lg p-1.5", buttonBgClass)}
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{
+          opacity: { delay: 0.5, duration: 0.3 },
+          scale: { type: "spring" as const, stiffness: 300, damping: 20 },
+        }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
       >
-        <span className="text-base">{currentLanguage.flag}</span>
-        <span className="hidden sm:inline text-sm">
-          <FormattedMessage id={currentLanguage.labelKey} />
-        </span>
-        <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
-      </Button>
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Select language"
+          aria-expanded={isOpen}
+          className={cn("flex items-center gap-2 cursor-pointer px-1", buttonTextClass)}
+        >
+          <span className="text-base">{currentLanguage.flag}</span>
+          <span className="hidden sm:inline text-sm font-medium">
+            <FormattedMessage id={currentLanguage.labelKey} />
+          </span>
+          <ChevronDown className={cn("h-4 w-4 transition-transform", chevronClass, isOpen && "rotate-180")} />
+        </button>
+      </motion.div>
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 rounded-md border bg-popover shadow-lg z-50 animate-in fade-in-0 zoom-in-95">

@@ -3,6 +3,7 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/shared/lib/utils";
+import { PageHeader } from "@/shared/ui/page-header";
 import type { GamePlayer, RedPacket } from "@/entities/game";
 import { PassGameHeader } from "./pass-game-header";
 import { YourPacketPanel } from "./your-packet-panel";
@@ -144,38 +145,46 @@ export function PassGame({
     <div className={cn("min-h-screen w-full bg-[#fff7ed]", className)}>
       {/* Border frame */}
       <motion.div
-        className="min-h-screen border-8 border-[#e7000b] flex flex-col gap-4 px-4 py-8 sm:px-8 md:px-[64px] md:py-[48px]"
+        className="min-h-screen border-8 border-[#e7000b]"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        {/* Header section */}
-        <PassGameHeader round={round} countdown={countdown} />
-
-        {/* Main content: Packet panel + Player grid */}
-        <motion.div className="flex flex-col lg:flex-row gap-12" variants={mainContentVariants}>
-          {/* Left panel: Your packet */}
-          <div className="w-full lg:w-auto lg:shrink-0">
-            <YourPacketPanel packet={packet} />
+        {/* Content with max-width */}
+        <div className="mx-auto max-w-[1440px] flex flex-col gap-4 px-4 py-8 sm:px-8 md:px-16 md:py-12 min-h-screen">
+          {/* Page header */}
+          <div className="flex justify-end">
+            <PageHeader variant="dark" />
           </div>
 
-          {/* Right panel: Player selection + Confirm button */}
-          <div className="flex-1 flex flex-col gap-4 items-end">
-            <PlayerSelectionGrid
-              players={players}
-              currentUserId={currentUserId}
-              selectedPlayerId={selectedPlayerId}
-              onPlayerClick={onPlayerSelect}
-              disabled={isPassing}
-              className="w-full"
-            />
+          {/* Header section */}
+          <PassGameHeader round={round} countdown={countdown} />
 
-            {/* Confirm button */}
-            <motion.div variants={confirmButtonVariants}>
-              <ConfirmPassButton hasSelection={hasSelection} isPending={isPassing} onClick={onConfirmPass} />
-            </motion.div>
-          </div>
-        </motion.div>
+          {/* Main content: Packet panel + Player grid */}
+          <motion.div className="flex flex-col lg:flex-row gap-12" variants={mainContentVariants}>
+            {/* Left panel: Your packet */}
+            <div className="w-full lg:w-auto lg:shrink-0">
+              <YourPacketPanel packet={packet} />
+            </div>
+
+            {/* Right panel: Player selection + Confirm button */}
+            <div className="flex-1 flex flex-col gap-4 items-end">
+              <PlayerSelectionGrid
+                players={players}
+                currentUserId={currentUserId}
+                selectedPlayerId={selectedPlayerId}
+                onPlayerClick={onPlayerSelect}
+                disabled={isPassing}
+                className="w-full"
+              />
+
+              {/* Confirm button */}
+              <motion.div variants={confirmButtonVariants}>
+                <ConfirmPassButton hasSelection={hasSelection} isPending={isPassing} onClick={onConfirmPass} />
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
       </motion.div>
     </div>
   );

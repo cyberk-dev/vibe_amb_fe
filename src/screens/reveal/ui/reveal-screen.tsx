@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Volume2, VolumeX } from "lucide-react";
 import { useIntl, FormattedMessage } from "react-intl";
-import { cn } from "@/shared/lib/utils";
+import { PageHeader } from "@/shared/ui/page-header";
 import type { GameHost, RevealPackData } from "@/entities/game";
 import { RevealPackCard, GameHostBadge } from "@/entities/game";
 
@@ -150,29 +150,37 @@ export function RevealScreen() {
   }, []);
 
   return (
-    <div className="h-screen w-full bg-white overflow-hidden">
+    <div
+      className="min-h-screen w-full overflow-hidden"
+      style={{
+        background:
+          "linear-gradient(134.72deg, rgba(255, 247, 237, 1) 0%, rgba(255, 255, 255, 1) 50%, rgba(254, 242, 242, 1) 100%)",
+      }}
+    >
       {/* Main container with red border frame */}
-      <div
-        className="h-full border-8 border-destructive flex flex-col gap-5 p-8 md:p-12"
-        style={{
-          background:
-            "linear-gradient(134.72deg, rgba(255, 247, 237, 1) 0%, rgba(255, 255, 255, 1) 50%, rgba(254, 242, 242, 1) 100%)",
-        }}
-      >
-        {/* Header section */}
-        <RevealHeader
-          revealedCount={revealedCount}
-          totalCount={totalCount}
-          host={DEFAULT_HOST}
-          isMuted={isMuted}
-          onToggleMute={handleToggleMute}
-        />
+      <div className="min-h-screen border-8 border-destructive">
+        {/* Content with max-width */}
+        <div className="mx-auto max-w-[1440px] flex flex-col gap-5 px-4 py-8 md:px-16 md:py-12 min-h-screen">
+          {/* Page header */}
+          <div className="flex justify-end">
+            <PageHeader variant="dark" />
+          </div>
 
-        {/* Pack grid section */}
-        <RevealPackGrid packs={packs} />
+          {/* Header section */}
+          <RevealHeader
+            revealedCount={revealedCount}
+            totalCount={totalCount}
+            host={DEFAULT_HOST}
+            isMuted={isMuted}
+            onToggleMute={handleToggleMute}
+          />
 
-        {/* Footer section */}
-        {allRevealed && <RevealFooter />}
+          {/* Pack grid section */}
+          <RevealPackGrid packs={packs} />
+
+          {/* Footer section */}
+          {allRevealed && <RevealFooter />}
+        </div>
       </div>
     </div>
   );
