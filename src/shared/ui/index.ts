@@ -1,6 +1,7 @@
 // UI Components
 export * from "./alert";
 export * from "./alert-dialog";
+export * from "./animated-digits";
 export * from "./background-music";
 export * from "./badge";
 export * from "./button";

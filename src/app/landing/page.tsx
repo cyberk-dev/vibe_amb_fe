@@ -1,6 +1,6 @@
 "use client";
 
-import { RegistrationGuard } from "@/shared";
+import { GameFlowGuard } from "@/widgets/game-flow-guard";
 import { LandingScreen } from "@/screens/landing";
 
 /**
@@ -23,8 +23,8 @@ import { LandingScreen } from "@/screens/landing";
  */
 export default function LandingPage() {
   return (
-    <RegistrationGuard>
+    <GameFlowGuard>
       <LandingScreen />
-    </RegistrationGuard>
+    </GameFlowGuard>
   );
 }

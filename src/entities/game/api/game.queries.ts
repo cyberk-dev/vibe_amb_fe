@@ -4,6 +4,13 @@ import { mapAllPlayers, mapVotingState, mapRoundPrizes } from "../lib/mappers";
 import type { AdminGameState, Player, VotingState, RoundPrizes, GameOverview } from "../model/types";
 import { GameStatus } from "@/integrations/aptos";
 
+// Staggered polling to avoid thundering herd with 20 concurrent users
+const getPlayersPollingInterval = () => {
+  const BASE_INTERVAL = 5000; // 5s base
+  const JITTER = 1500; // ±1.5s random
+  return BASE_INTERVAL + (Math.random() * JITTER * 2 - JITTER);
+};
+
 export const gameQueries = {
   // Base key
   all: () => ["game"] as const,
@@ -22,10 +29,10 @@ export const gameQueries = {
         return { status, round, playersCount, eliminationCount };
       },
       staleTime: 5_000, // 5s stale
-      refetchInterval: 10_000, // Auto-refresh every 10s
+      refetchInterval: 5_000, // Auto-refresh every 10s
     }),
 
-  // Player list with action status
+  // Player list with staggered polling for waiting room
   players: () =>
     queryOptions({
       queryKey: [...gameQueries.all(), "players"],
@@ -33,7 +40,8 @@ export const gameQueries = {
         const dto = await gameViewService.getAllPlayers();
         return mapAllPlayers(dto);
       },
-      staleTime: 5_000,
+      staleTime: 3_000, // Consider fresh for 3s (prevents rapid refetches)
+      refetchInterval: getPlayersPollingInterval, // 3.5-6.5s random interval
       placeholderData: keepPreviousData,
     }),
 
@@ -67,6 +75,14 @@ export const gameQueries = {
         return gameViewService.getRoundVictims();
       },
       staleTime: 30_000,
+    }),
+
+  // Check if player has joined current game
+  hasJoined: (address: string) =>
+    queryOptions({
+      queryKey: [...gameQueries.all(), "hasJoined", address],
+      queryFn: () => gameViewService.hasJoined(address),
+      enabled: !!address,
     }),
 
   // Full overview (for dashboard)

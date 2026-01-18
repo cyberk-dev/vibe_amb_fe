@@ -1,8 +1,41 @@
 "use client";
 
-import * as React from "react";
+import { motion } from "framer-motion";
 import { cn } from "@/shared/lib/utils";
 import { FormattedMessage } from "react-intl";
+import { AnimatedDigits } from "@/shared/ui/animated-digits";
+
+// ========================================
+// Animation Variants
+// ========================================
+
+const countdownVariants = {
+  hidden: { opacity: 0, scale: 0.5 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 80,
+      damping: 12,
+      delay: 0.2,
+    },
+  },
+};
+
+const statusBarVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 15,
+      delay: 0.4,
+    },
+  },
+};
 
 interface CountdownPanelProps {
   /**
@@ -28,25 +61,31 @@ interface CountdownPanelProps {
  */
 export function CountdownPanel({ countdown, isActive, className }: CountdownPanelProps) {
   return (
-    <div className={cn("flex flex-col items-center justify-between h-full", className)}>
+    <motion.div
+      className={cn("flex flex-col items-center justify-between h-full", className)}
+      initial="hidden"
+      animate="visible"
+    >
       {/* Countdown number */}
-      <div className="flex-1 flex items-center justify-center">
-        <p
+      <motion.div className="flex-1 flex items-center justify-center" variants={countdownVariants}>
+        <AnimatedDigits
+          value={countdown}
+          minDigits={2}
           className={cn(
-            "font-space font-light text-[80px] md:text-[100px] lg:text-[128px] text-center tracking-[0.7px] uppercase transition-opacity duration-300",
+            "font-space font-light text-[80px] md:text-[100px] lg:text-[128px] text-center tracking-[0.7px] uppercase transition-colors duration-300",
             isActive ? "text-black" : "text-gray-300",
           )}
-        >
-          {countdown}
-        </p>
-      </div>
+        />
+      </motion.div>
 
       {/* Game start button/indicator */}
-      <div
+      <motion.div
         className={cn(
           "w-full bg-black h-[60px] flex items-center justify-center transition-opacity duration-300",
           isActive ? "opacity-100" : "opacity-50",
         )}
+        variants={statusBarVariants}
+        whileHover={isActive ? { scale: 1.02 } : undefined}
       >
         <p className="font-space font-bold text-sm leading-5 text-center text-white tracking-[0.7px] uppercase">
           {isActive ? (
@@ -55,7 +94,7 @@ export function CountdownPanel({ countdown, isActive, className }: CountdownPane
             <FormattedMessage id="waiting_room.status.waiting" defaultMessage="Waiting for players..." />
           )}
         </p>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
