@@ -7,7 +7,14 @@ import { useQuery } from "@tanstack/react-query";
 import { whitelistQueries } from "@/entities/whitelist";
 import { gameQueries, GameStatus } from "@/entities/game";
 
-type PlayerState = "loading" | "not_connected" | "not_registered" | "registered" | "joined" | "playing";
+type PlayerState =
+  | "loading"
+  | "not_connected"
+  | "not_registered"
+  | "name_required"
+  | "registered"
+  | "joined"
+  | "playing";
 
 /**
  * GameFlowGuard - Routes players based on their game state
@@ -15,6 +22,7 @@ type PlayerState = "loading" | "not_connected" | "not_registered" | "registered"
  * State machine:
  * - not_connected → /invite-code (wallet required)
  * - not_registered → /invite-code (need to register)
+ * - name_required → /invite-code (need to set display name)
  * - registered (not joined) → /landing (can join game)
  * - joined → /waiting-room (waiting for game to start)
  * - playing → /pass (game has started, selection phase)
@@ -26,20 +34,29 @@ export function GameFlowGuard({ children }: PropsWithChildren) {
 
   const address = account?.address?.toString();
 
-  // Query invite code (error = not registered)
+  // Query invite code - only runs when address is available (enabled guards)
   const {
     data: inviteCode,
     isLoading: codeLoading,
     isError: codeError,
   } = useQuery({
-    ...whitelistQueries.inviteCode(address ?? ""),
+    ...whitelistQueries.inviteCode(address!),
     enabled: !!address && connected,
+    retry: false, // Error is expected state for new users
   });
 
   // Query if player has joined game (runs independently of inviteCode)
   const { data: hasJoined, isLoading: joinLoading } = useQuery({
-    ...gameQueries.hasJoined(address ?? ""),
+    ...gameQueries.hasJoined(address!),
     enabled: !!address && connected,
+    retry: false, // Error is expected if user hasn't joined
+  });
+
+  // Query if player has set pending name
+  const { data: hasPendingName, isLoading: nameLoading } = useQuery({
+    ...gameQueries.hasPendingName(address!),
+    enabled: !!address && connected && !!inviteCode, // Only if registered
+    retry: false,
   });
 
   // Query game status to detect when game starts
@@ -50,7 +67,7 @@ export function GameFlowGuard({ children }: PropsWithChildren) {
   });
 
   // Determine player state
-  // Priority: playing > joined > registered > not_registered > not_connected
+  // Priority: playing > joined > registered > name_required > not_registered > not_connected
   const getPlayerState = (): PlayerState => {
     if (walletLoading) return "loading";
     if (!connected) return "not_connected";
@@ -67,6 +84,11 @@ export function GameFlowGuard({ children }: PropsWithChildren) {
     }
 
     if (codeError || !inviteCode) return "not_registered";
+
+    // Check if name is set
+    if (nameLoading) return "loading";
+    if (!hasPendingName) return "name_required";
+
     return "registered";
   };
 
@@ -77,6 +99,7 @@ export function GameFlowGuard({ children }: PropsWithChildren) {
     switch (state) {
       case "not_connected":
       case "not_registered":
+      case "name_required":
         return "/invite-code";
       case "registered":
         return "/landing";

@@ -1,7 +1,5 @@
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { gameQueries, type Player, GameStatus } from "@/entities/game";
+import { gameQueries, type Player } from "@/entities/game";
 import type { PlayerSeat } from "@/entities/player-seat";
 
 const MAX_SEATS = 20;
@@ -40,13 +38,6 @@ function mapPlayersToSeats(players: Player[], maxSeats: number): PlayerSeat[] {
 }
 
 export function useWaitingRoomFlow() {
-  const router = useRouter();
-
-  // Query game status (for detecting game start)
-  const { data: gameState } = useQuery({
-    ...gameQueries.status(),
-  });
-
   // Query players list (staggered polling configured in query factory)
   const { data: players = [], isLoading } = useQuery(gameQueries.players());
 
@@ -55,12 +46,7 @@ export function useWaitingRoomFlow() {
   const connectedPlayers = players.length;
   const isRoomFull = connectedPlayers >= MAX_SEATS;
 
-  // Redirect to /pass when game starts (status changes from PENDING to SELECTION)
-  useEffect(() => {
-    if (gameState?.status === GameStatus.SELECTION) {
-      router.push("/pass");
-    }
-  }, [gameState?.status, router]);
+  // Guard will detect gameState.status >= SELECTION → navigate to /pass
 
   return {
     seats,
