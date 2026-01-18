@@ -1,5 +1,56 @@
-// Game Entity - Types
-// Defines the structure for game state and players in the pass game
+// =============================================
+// Admin Dashboard Types (from Aptos contract)
+// =============================================
+
+import { GameStatus, Vote } from "@/integrations/aptos";
+
+export interface Player {
+  address: string;
+  hasActed: boolean;
+}
+
+export interface PlayerWithVote extends Player {
+  hasVoted: boolean;
+  vote?: Vote;
+}
+
+export interface VotingState {
+  stopCount: number;
+  continueCount: number;
+  missingCount: number;
+  total: number;
+}
+
+export interface RoundPrizes {
+  consolationPrize: bigint;
+  remainingPool: bigint;
+}
+
+export interface GameOverview {
+  status: GameStatus;
+  round: number;
+  playersCount: number;
+  eliminationCount: number;
+  prizes: RoundPrizes;
+  players: Player[];
+  voting?: VotingState;
+  victims?: string[];
+}
+
+// Admin game state for dashboard
+export interface AdminGameState {
+  status: GameStatus;
+  round: number;
+  playersCount: number;
+  eliminationCount: number;
+}
+
+// Re-export for convenience
+export { GameStatus, Vote };
+
+// =============================================
+// Game UI Types (for player-facing game)
+// =============================================
 
 /**
  * Represents a player in the game
@@ -46,7 +97,7 @@ export interface RedPacket {
 }
 
 /**
- * Represents the current game state
+ * Represents the current game state (player-facing)
  */
 export interface GameState {
   /** Current round number */
