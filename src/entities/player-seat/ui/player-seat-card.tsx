@@ -96,25 +96,25 @@ export function PlayerSeatCard({ seat, className }: PlayerSeatCardProps) {
   return (
     <motion.div
       className={cn(
-        "border-2 border-solid pb-0.5 pt-[26px] px-[26px] transition-colors duration-200",
+        "border-2 border-solid p-2 md:pb-0.5 md:pt-[26px] md:px-[26px] transition-colors duration-200",
         isOccupied ? "bg-white border-black" : "bg-[#f9fafb] border-[#d1d5dc]",
         className,
       )}
       layout
     >
-      <div className="flex h-12 items-center justify-between">
+      <div className="flex h-full md:h-12 items-center justify-between">
         {/* Left section: Seat number + Player info */}
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-2 md:gap-4 items-center">
           {/* Seat number badge */}
           <motion.div
-            className="size-12 flex items-center justify-center shrink-0"
+            className="size-8 md:size-12 flex items-center justify-center shrink-0"
             variants={seatBadgeVariants}
             animate={isOccupied ? "occupied" : "empty"}
           >
             <p
               className={cn(
-                "font-space text-[20px] font-bold leading-7 transition-colors duration-200",
-                isOccupied ? "text-white" : "text-custom-dark-grayish-blue",
+                "font-space text-sm md:text-[20px] font-bold leading-7 transition-colors duration-200",
+                isOccupied ? "text-white" : "text-custom-light-grayish-blue",
               )}
             >
               {seatNumber}
@@ -133,9 +133,11 @@ export function PlayerSeatCard({ seat, className }: PlayerSeatCardProps) {
                   exit="exit"
                 >
                   {/* Player name */}
-                  <p className="font-space text-[18px] font-bold leading-7 text-black">{player.name}</p>
+                  <p className="font-space text-sm md:text-[18px] font-bold leading-5 md:leading-7 text-black">
+                    {player.name}
+                  </p>
                   {/* Player role */}
-                  <p className="font-space text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-[#6a7282]">
+                  <p className="font-space text-[10px] md:text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-custom-dark-grayish-blue">
                     {player.role}
                   </p>
                 </motion.div>
@@ -148,9 +150,11 @@ export function PlayerSeatCard({ seat, className }: PlayerSeatCardProps) {
                   exit="exit"
                 >
                   {/* Waiting text */}
-                  <p className="font-space text-[18px] font-bold leading-7 text-custom-dark-grayish-blue">Waiting...</p>
+                  <p className="font-space text-sm md:text-[18px] font-bold leading-5 md:leading-7 text-custom-light-grayish-blue">
+                    Waiting...
+                  </p>
                   {/* Empty slot label */}
-                  <p className="font-space text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-custom-dark-grayish-blue">
+                  <p className="font-space text-[10px] md:text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-custom-light-grayish-blue">
                     Empty slot
                   </p>
                 </motion.div>

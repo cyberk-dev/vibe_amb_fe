@@ -47,7 +47,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
   return (
     <div className="h-full w-full bg-gradient-to-br from-[#FFF7ED] via-white to-[#FEF2F2] overflow-auto">
       {/* Main border frame - covers entire page */}
-      <div className="relative border-8 border-[#FF8C42] rounded-none min-h-full w-full">
+      <div className="relative border-8 border-custom-light-orange rounded-none min-h-full w-full">
         {/* Main content container with padding */}
         <div className={`relative z-10 flex flex-col min-h-full ${isMobile ? "px-4 py-6" : "p-[64px]"}`}>
           {/* Header section */}
@@ -56,7 +56,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
             <div className={`flex flex-col gap-4 ${isMobile ? "flex-1" : "w-[544px]"}`}>
               {/* "Final Results" label */}
               <p
-                className={`font-space ${isMobile ? "text-[10px]" : "text-xs"} leading-[1.33] tracking-[3px] uppercase text-[#FF8C42]`}
+                className={`font-space ${isMobile ? "text-[10px]" : "text-xs"} leading-[1.33] tracking-[3px] uppercase text-custom-light-orange`}
               >
                 <FormattedMessage id="game_over.final_results" defaultMessage="FINAL RESULTS" />
               </p>
@@ -79,7 +79,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
             >
               {/* Complete button */}
               <button
-                className={`${isMobile ? "w-full" : "px-[26px]"} border-2 border-[#FF8C42] h-[48px] font-space text-sm font-medium text-[#FF8C42] flex items-center justify-center ${isMobile ? "px-4" : ""}`}
+                className={`${isMobile ? "w-full" : "px-[26px]"} border-2 border-custom-light-orange h-[48px] font-space text-sm font-medium text-custom-light-orange flex items-center justify-center ${isMobile ? "px-4" : ""}`}
               >
                 <FormattedMessage id="game_over.complete" defaultMessage="Complete" />
               </button>
@@ -87,7 +87,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
               {onBackToHome && (
                 <button
                   onClick={onBackToHome}
-                  className="w-12 h-12 flex items-center justify-center text-[#FF8C42] hover:opacity-80 transition-opacity"
+                  className="w-12 h-12 flex items-center justify-center text-custom-light-orange hover:opacity-80 transition-opacity"
                 >
                   <ArrowLeft className="w-6 h-6" />
                 </button>
@@ -97,7 +97,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
 
           {/* Winner section */}
           <div
-            className={`mt-8 ${isMobile ? "px-4 pt-4 pb-2" : "px-[52px] pt-[52px] pb-[4px]"} bg-white border-4 border-[#FF8C42] w-full min-h-[256px]`}
+            className={`mt-8 ${isMobile ? "px-4 pt-4 pb-2" : "px-[52px] pt-[52px] pb-[4px]"} bg-white border-4 border-custom-light-orange w-full min-h-[256px]`}
           >
             <div
               className={`flex ${isMobile ? "flex-col" : "justify-between"} items-center ${isMobile ? "gap-4" : "gap-[649px]"}`}
@@ -107,7 +107,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
                 {/* Winner rank circle with trophy */}
                 <div className="flex items-center gap-2">
                   {/* Rank circle */}
-                  <div className="w-20 h-20 rounded-full bg-[#FF8C42] flex items-center justify-center relative">
+                  <div className="w-20 h-20 rounded-full bg-custom-light-orange flex items-center justify-center relative">
                     <span className="font-space font-bold text-[30px] leading-[1.2] text-white">1</span>
                     {/* Trophy emoji */}
                     <span className="absolute top-[-12px] right-[-8px] text-[36px] leading-[1.11]">🏆</span>
@@ -117,7 +117,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
                 {/* Winner name and label */}
                 <div className="flex flex-col gap-2">
                   <p
-                    className={`font-space ${isMobile ? "text-[10px]" : "text-xs"} leading-[1.33] tracking-[2.4px] uppercase text-[#FF8C42]`}
+                    className={`font-space ${isMobile ? "text-[10px]" : "text-xs"} leading-[1.33] tracking-[2.4px] uppercase text-custom-light-orange`}
                   >
                     <FormattedMessage id="game_over.winner" defaultMessage="WINNER" />
                   </p>
@@ -136,10 +136,10 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
 
               {/* Right - Total winnings */}
               <div
-                className={`${isMobile ? "px-4 pt-4 pb-2" : "px-[50px] pt-[34px] pb-[2px]"} border-2 border-[#FF8C42] bg-[rgba(255,140,66,0.05)] ${isMobile ? "min-h-[100px]" : "min-h-[152px]"} flex flex-col justify-center gap-2`}
+                className={`${isMobile ? "px-4 pt-4 pb-2" : "px-[50px] pt-[34px] pb-[2px]"} border-2 border-custom-light-orange bg-[rgba(255,140,66,0.05)] ${isMobile ? "min-h-[100px]" : "min-h-[152px]"} flex flex-col justify-center gap-2`}
               >
                 <p
-                  className={`font-bricolage font-bold ${isMobile ? "text-2xl" : "text-[60px]"} leading-[1] text-center text-[#FF8C42]`}
+                  className={`font-bricolage font-bold ${isMobile ? "text-2xl" : "text-[60px]"} leading-[1] text-center text-custom-light-orange`}
                 >
                   {formatCurrency(totalWinnings)}
                 </p>
@@ -182,7 +182,7 @@ export function GameOverScreen({ winner, totalWinnings, standings, onBackToHome 
                       {/* Rank badge */}
                       <div
                         className={`${isMobile ? "w-8 h-8" : "w-12 h-12"} flex items-center justify-center ${
-                          isFirst ? "bg-[#FF8C42]" : "bg-black"
+                          isFirst ? "bg-custom-light-orange" : "bg-black"
                         }`}
                       >
                         <span

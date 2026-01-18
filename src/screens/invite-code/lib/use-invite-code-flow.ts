@@ -8,10 +8,13 @@ import { useRegisterWhitelist } from "@/features/register-whitelist";
 
 export type FlowState = "not_connected" | "loading" | "registering" | "ready" | "failed";
 
+const POPUP_WARNING_STORAGE_KEY = "popup-warning-acknowledged";
+
 export function useInviteCodeFlow() {
   const router = useRouter();
   const { connected, account, connect, wallets, isLoading: walletLoading } = useWallet();
   const [displayName, setDisplayName] = useState("");
+  const [showPopupWarning, setShowPopupWarning] = useState(false);
 
   const address = account?.address?.toString();
   const setRegistration = useSetPlayerRegistration();
@@ -47,14 +50,40 @@ export function useInviteCodeFlow() {
     return "loading";
   })();
 
-  // Connect handler
-  const handleConnect = useCallback(() => {
+  // Check if popup warning was acknowledged
+  const isPopupWarningAcknowledged = useCallback(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(POPUP_WARNING_STORAGE_KEY) === "true";
+  }, []);
+
+  // Actual wallet connection logic
+  const performConnect = useCallback(() => {
     const wallet =
       wallets?.find((w) => w.name.includes("Google") || w.name.includes("Connect")) ||
       wallets?.find((w) => w.name === "Petra") ||
       wallets?.[0];
     if (wallet) connect(wallet.name);
   }, [wallets, connect]);
+
+  // Connect handler - shows warning if needed
+  const handleConnect = useCallback(() => {
+    if (!isPopupWarningAcknowledged()) {
+      setShowPopupWarning(true);
+      return;
+    }
+    performConnect();
+  }, [isPopupWarningAcknowledged, performConnect]);
+
+  // Proceed after popup warning acknowledged
+  const proceedWithConnect = useCallback(() => {
+    setShowPopupWarning(false);
+    performConnect();
+  }, [performConnect]);
+
+  // Close popup warning dialog
+  const closePopupWarning = useCallback(() => {
+    setShowPopupWarning(false);
+  }, []);
 
   // Continue handler
   const handleContinue = useCallback(() => {
@@ -71,5 +100,9 @@ export function useInviteCodeFlow() {
     handleConnect,
     handleContinue,
     canContinue: !!inviteCode && displayName.trim().length >= 2,
+    // Popup warning state
+    showPopupWarning,
+    closePopupWarning,
+    proceedWithConnect,
   };
 }

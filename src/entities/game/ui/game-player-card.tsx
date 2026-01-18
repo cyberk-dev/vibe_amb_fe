@@ -103,7 +103,7 @@ export const GamePlayerCard = React.forwardRef<HTMLButtonElement, GamePlayerCard
             <p className="font-space text-[18px] font-bold leading-7 text-black">{name}</p>
             {/* Secondary label */}
             {secondaryLabel && (
-              <p className="font-space text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-[#6a7282]">
+              <p className="font-space text-[12px] font-normal leading-4 tracking-[0.6px] uppercase text-custom-dark-grayish-blue">
                 {secondaryLabel}
               </p>
             )}
