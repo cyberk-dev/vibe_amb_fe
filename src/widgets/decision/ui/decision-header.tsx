@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import { motion } from "framer-motion";
+import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
 import { SoundButton } from "@/shared/ui/sound-button";
 
@@ -74,13 +74,13 @@ export function DecisionHeader({ totalPlayers, className }: DecisionHeaderProps)
           className="font-space text-xs font-normal uppercase tracking-[3.6px] text-custom-teal"
           variants={labelVariants}
         >
-          Critical Decision
+          <FormattedMessage id="decision.header.critical_decision" />
         </motion.p>
         <motion.h1
           className="font-bricolage text-[80px] md:text-[192px] font-bold leading-[0.85] text-black"
           variants={titleVariants}
         >
-          Decision
+          <FormattedMessage id="decision.header.title" />
         </motion.h1>
       </div>
 
@@ -93,7 +93,9 @@ export function DecisionHeader({ totalPlayers, className }: DecisionHeaderProps)
           animate={{ opacity: 1, scale: 1 }}
           transition={{ type: "spring" as const, stiffness: 120, damping: 15, delay: 0.3 }}
         >
-          <span className="font-space text-sm font-medium text-custom-teal">{totalPlayers} Players</span>
+          <span className="font-space text-sm font-medium text-custom-teal">
+            <FormattedMessage id="decision.header.players" values={{ count: totalPlayers }} />
+          </span>
         </motion.div>
 
         {/* Sound toggle button */}

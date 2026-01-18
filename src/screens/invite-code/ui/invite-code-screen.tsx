@@ -124,11 +124,11 @@ function getButtonTextId(flowState: FlowState, canContinue: boolean): string {
   switch (flowState) {
     case "not_connected":
       return "invite_code.form.connect_wallet";
-    case "connecting":
-      return "invite_code.form.connecting";
-    case "checking_registration":
+    case "loading":
     case "registering":
       return "invite_code.form.registering";
+    case "failed":
+      return "invite_code.form.failed";
     case "ready":
       return canContinue ? "invite_code.form.continue" : "invite_code.form.enter_name";
     default:
@@ -149,7 +149,7 @@ export function InviteCodeScreen() {
   const codePlaceholder = intl.formatMessage({ id: "invite_code.form.code_placeholder" });
   const namePlaceholder = intl.formatMessage({ id: "invite_code.form.name_placeholder" });
 
-  const isLoading = ["connecting", "checking_registration", "registering"].includes(flowState);
+  const isLoading = ["loading", "registering"].includes(flowState);
   const isCodeReady = flowState === "ready";
 
   // ========================================

@@ -10,7 +10,7 @@ export {
   buildFunctionPath,
 } from "./config";
 export { GameStatus, Vote, type ViewResponse } from "./types";
-export { parseContractError, isUserRejection } from "./utils/error-parser";
+export { parseContractError, isUserRejection, isAlreadyRegisteredError } from "./utils/error-parser";
 export {
   waitForTransaction,
   handleTransactionError,

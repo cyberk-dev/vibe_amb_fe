@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import { motion } from "framer-motion";
+import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DecisionHeader } from "./decision-header";
@@ -188,7 +188,7 @@ export function DecisionWidget({
                 <span className="font-space text-lg font-bold text-white">{voteCounts.share}</span>
               </div>
               <span className="font-space text-sm font-medium text-custom-teal uppercase tracking-wider">
-                Vote Share
+                <FormattedMessage id="decision.widget.vote_share" />
               </span>
             </motion.div>
 
@@ -202,7 +202,7 @@ export function DecisionWidget({
                 <span className="font-space text-lg font-bold text-white">{voteCounts.continue}</span>
               </div>
               <span className="font-space text-sm font-medium text-custom-vivid-red uppercase tracking-wider">
-                Vote Continue
+                <FormattedMessage id="decision.widget.vote_continue" />
               </span>
             </motion.div>
           </motion.div>
@@ -231,7 +231,9 @@ export function DecisionWidget({
 
           {/* Footer */}
           <motion.div className="border-t-2 border-black/10 py-8" variants={footerVariants}>
-            <p className="font-space text-xs uppercase tracking-[1.6px] text-black/40">we know you are ambitious</p>
+            <p className="font-space text-xs uppercase tracking-[1.6px] text-black/40">
+              <FormattedMessage id="decision.widget.footer" />
+            </p>
           </motion.div>
         </div>
       </motion.div>

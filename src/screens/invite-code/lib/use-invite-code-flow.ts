@@ -6,85 +6,60 @@ import { whitelistQueries } from "@/entities/whitelist";
 import { useSetPlayerRegistration } from "@/entities/player";
 import { useRegisterWhitelist } from "@/features/register-whitelist";
 
-export type FlowState = "not_connected" | "connecting" | "checking_registration" | "registering" | "ready";
+export type FlowState = "not_connected" | "loading" | "registering" | "ready" | "failed";
 
 export function useInviteCodeFlow() {
   const router = useRouter();
-  const { connected, account, connect, wallets } = useWallet();
+  const { connected, account, connect, wallets, isLoading: walletLoading } = useWallet();
   const [displayName, setDisplayName] = useState("");
-  const [isConnecting, setIsConnecting] = useState(false);
 
   const address = account?.address?.toString();
   const setRegistration = useSetPlayerRegistration();
 
-  // Queries
+  // Single query: get_invite_code (error = not registered)
   const {
-    data: isRegistered,
-    isLoading: checkingReg,
-    refetch: refetchReg,
+    data: inviteCode,
+    isLoading: codeLoading,
+    isError,
   } = useQuery({
-    ...whitelistQueries.registration(address ?? ""),
-    enabled: !!address,
-  });
-
-  const { data: inviteCode, refetch: refetchCode } = useQuery({
     ...whitelistQueries.inviteCode(address ?? ""),
-    enabled: !!address && isRegistered === true,
+    enabled: !!address && connected,
+    retry: false,
   });
 
-  // Mutations
-  const { mutateAsync: register, isPending: isRegistering } = useRegisterWhitelist();
+  // Mutation - onSuccess invalidates whitelistQueries.all()
+  const { mutate: register, isPending: isRegistering, error: registerError } = useRegisterWhitelist();
 
-  // Reset connecting state when connected
+  // Auto-register if not registered (query error)
   useEffect(() => {
-    if (connected) {
-      setIsConnecting(false);
+    if (isError && connected && !isRegistering && !registerError) {
+      register();
     }
-  }, [connected]);
+  }, [isError, connected, isRegistering, registerError, register]);
 
-  // Auto-register when connected but not registered
-  useEffect(() => {
-    if (connected && address && isRegistered === false && !isRegistering) {
-      register().then(() => {
-        refetchReg();
-        refetchCode();
-      });
-    }
-  }, [connected, address, isRegistered, isRegistering, register, refetchReg, refetchCode]);
-
-  // Determine current state
-  const getFlowState = (): FlowState => {
-    if (!connected) return isConnecting ? "connecting" : "not_connected";
-    if (checkingReg) return "checking_registration";
-    if (isRegistering) return "registering";
+  // State machine
+  const flowState: FlowState = (() => {
+    if (!connected) return walletLoading ? "loading" : "not_connected";
+    if (codeLoading) return "loading";
+    if (registerError) return "failed";
+    if (isRegistering || isError) return "registering";
     if (inviteCode) return "ready";
-    return "checking_registration";
-  };
+    return "loading";
+  })();
 
-  const flowState = getFlowState();
-
-  // Handlers
+  // Connect handler
   const handleConnect = useCallback(() => {
-    // Find Aptos Connect (Google) or fallback to first available
-    const aptosConnect = wallets?.find((w) => w.name.includes("Google") || w.name.includes("Connect"));
-    const petraWallet = wallets?.find((w) => w.name === "Petra");
-    const wallet = aptosConnect || petraWallet || wallets?.[0];
-    if (wallet) {
-      setIsConnecting(true);
-      connect(wallet.name);
-    }
+    const wallet =
+      wallets?.find((w) => w.name.includes("Google") || w.name.includes("Connect")) ||
+      wallets?.find((w) => w.name === "Petra") ||
+      wallets?.[0];
+    if (wallet) connect(wallet.name);
   }, [wallets, connect]);
 
+  // Continue handler
   const handleContinue = useCallback(() => {
-    if (!inviteCode || !displayName.trim() || displayName.trim().length < 2) return;
-    if (!address) return;
-
-    setRegistration({
-      inviteCode,
-      displayName: displayName.trim(),
-      walletAddress: address,
-    });
-
+    if (!inviteCode || displayName.trim().length < 2 || !address) return;
+    setRegistration({ inviteCode, displayName: displayName.trim(), walletAddress: address });
     router.push("/landing");
   }, [inviteCode, displayName, address, setRegistration, router]);
 
@@ -95,7 +70,6 @@ export function useInviteCodeFlow() {
     setDisplayName,
     handleConnect,
     handleContinue,
-    isCodeReady: !!inviteCode,
     canContinue: !!inviteCode && displayName.trim().length >= 2,
   };
 }

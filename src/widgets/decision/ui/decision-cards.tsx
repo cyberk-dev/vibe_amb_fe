@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import { motion } from "framer-motion";
+import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
 
 // ========================================
@@ -100,19 +100,21 @@ export function DecisionCards({
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <span className="font-space text-xs font-normal uppercase tracking-[2.4px] text-custom-teal">Option A</span>
+            <span className="font-space text-xs font-normal uppercase tracking-[2.4px] text-custom-teal">
+              <FormattedMessage id="decision.cards.option_a" />
+            </span>
           </motion.div>
 
           {/* Title */}
           <h2 className="font-bricolage text-5xl md:text-7xl font-bold leading-[1] text-custom-teal">
-            Share
+            <FormattedMessage id="decision.cards.share_prize_line1" />
             <br />
-            Prize
+            <FormattedMessage id="decision.cards.share_prize_line2" />
           </h2>
 
           {/* Description */}
           <p className="font-space text-sm font-normal uppercase tracking-[0.7px] text-black/60">
-            End the game now and split equally
+            <FormattedMessage id="decision.cards.share_description" />
           </p>
 
           {/* Prize box */}
@@ -124,7 +126,7 @@ export function DecisionCards({
               ${prizePerPlayer.toFixed(2)}
             </span>
             <span className="font-space text-xs font-normal uppercase tracking-[0.6px] text-custom-teal">
-              Per Player
+              <FormattedMessage id="decision.cards.per_player" />
             </span>
           </motion.div>
         </div>
@@ -144,7 +146,11 @@ export function DecisionCards({
           whileHover={!isVoting && !hasVotedShare ? { scale: 1.02 } : undefined}
           whileTap={!isVoting && !hasVotedShare ? { scale: 0.98 } : undefined}
         >
-          {hasVotedShare ? "Voted" : "Share Prize"}
+          {hasVotedShare ? (
+            <FormattedMessage id="decision.cards.voted" />
+          ) : (
+            <FormattedMessage id="decision.cards.share_prize" />
+          )}
         </motion.button>
       </motion.div>
 
@@ -166,19 +172,21 @@ export function DecisionCards({
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <span className="font-space text-xs font-normal uppercase tracking-[2.4px] text-white/90">Option B</span>
+            <span className="font-space text-xs font-normal uppercase tracking-[2.4px] text-white/90">
+              <FormattedMessage id="decision.cards.option_b" />
+            </span>
           </motion.div>
 
           {/* Title */}
           <h2 className="font-bricolage text-5xl md:text-7xl font-bold leading-[1] text-white">
-            Keep
+            <FormattedMessage id="decision.cards.keep_playing_line1" />
             <br />
-            Playing
+            <FormattedMessage id="decision.cards.keep_playing_line2" />
           </h2>
 
           {/* Description */}
           <p className="font-space text-sm font-normal uppercase tracking-[0.7px] text-white/80">
-            Eliminate more players for bigger shares
+            <FormattedMessage id="decision.cards.continue_description" />
           </p>
 
           {/* Prize box */}
@@ -187,7 +195,9 @@ export function DecisionCards({
             variants={prizeBoxVariants}
           >
             <span className="font-bricolage text-5xl md:text-6xl font-bold text-white">${totalPool}</span>
-            <span className="font-space text-xs font-normal uppercase tracking-[0.6px] text-white/80">Total Pool</span>
+            <span className="font-space text-xs font-normal uppercase tracking-[0.6px] text-white/80">
+              <FormattedMessage id="decision.cards.total_pool" />
+            </span>
           </motion.div>
         </div>
 
@@ -206,7 +216,11 @@ export function DecisionCards({
           whileHover={!isVoting && !hasVotedContinue ? { scale: 1.02 } : undefined}
           whileTap={!isVoting && !hasVotedContinue ? { scale: 0.98 } : undefined}
         >
-          {hasVotedContinue ? "Voted" : "Continue Playing"}
+          {hasVotedContinue ? (
+            <FormattedMessage id="decision.cards.voted" />
+          ) : (
+            <FormattedMessage id="decision.cards.continue_playing" />
+          )}
         </motion.button>
       </motion.div>
     </motion.div>

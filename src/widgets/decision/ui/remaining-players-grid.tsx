@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import { motion } from "framer-motion";
+import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
 import type { DecisionPlayer } from "./decision-widget";
 
@@ -96,7 +96,7 @@ export function RemainingPlayersGrid({ players, className }: RemainingPlayersGri
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring" as const, stiffness: 100, damping: 15 }}
       >
-        Remaining Players
+        <FormattedMessage id="decision.remaining_players.label" />
       </motion.p>
 
       {/* Players grid - wrapping flex */}

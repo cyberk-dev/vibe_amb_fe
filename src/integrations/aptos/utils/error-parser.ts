@@ -72,3 +72,14 @@ export function isUserRejection(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
   return message.includes("rejected") || message.includes("cancelled") || message.includes("denied");
 }
+
+/** Error code for already registered - uses WHITELIST_ERRORS[3001] */
+export function isAlreadyRegisteredError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  const codeMatch = message.match(/Move abort.*?(\d{4})/);
+  if (codeMatch) {
+    const code = parseInt(codeMatch[1], 10);
+    return code === 3001; // WHITELIST_ERRORS: "You are already registered"
+  }
+  return false;
+}
