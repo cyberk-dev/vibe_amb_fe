@@ -18,6 +18,7 @@ const GAME_ERRORS: Record<number, string> = {
   2017: "Target player is not active in this game",
   2018: "You must register in whitelist first",
   2019: "Invalid invite code",
+  2020: "Please set your display name first",
 };
 
 const VAULT_ERRORS: Record<number, string> = {
@@ -81,5 +82,33 @@ export function isAlreadyRegisteredError(error: unknown): boolean {
     const code = parseInt(codeMatch[1], 10);
     return code === 3001; // WHITELIST_ERRORS: "You are already registered"
   }
+  return false;
+}
+
+/**
+ * Check if error indicates that the target player has already been selected
+ * This can happen when multiple players try to select the same target at the same time
+ */
+export function isTargetAlreadySelectedError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+
+  // Check for error patterns that might indicate target already selected
+  // This could be a specific error code or message pattern from the contract
+  const lowerMessage = message.toLowerCase();
+
+  // Check for patterns like "already selected", "already picked", "target already", etc.
+  if (
+    lowerMessage.includes("already selected") ||
+    lowerMessage.includes("already picked") ||
+    lowerMessage.includes("target already") ||
+    lowerMessage.includes("player already selected") ||
+    lowerMessage.includes("already chosen")
+  ) {
+    return true;
+  }
+
+  // You can also check for specific error codes here if the contract provides them
+  // For now, we'll rely on message patterns
+
   return false;
 }

@@ -81,8 +81,35 @@ export const gameQueries = {
   hasJoined: (address: string) =>
     queryOptions({
       queryKey: [...gameQueries.all(), "hasJoined", address],
-      queryFn: () => gameViewService.hasJoined(address),
+      queryFn: () => {
+        if (!address) throw new Error("Address required");
+        return gameViewService.hasJoined(address);
+      },
       enabled: !!address,
+    }),
+
+  // Check if player has set pending name
+  hasPendingName: (address: string) =>
+    queryOptions({
+      queryKey: [...gameQueries.all(), "hasPendingName", address],
+      queryFn: () => {
+        if (!address) throw new Error("Address required");
+        return gameViewService.hasPendingName(address);
+      },
+      enabled: !!address,
+      retry: false,
+    }),
+
+  // Get player's pending name
+  pendingName: (address: string) =>
+    queryOptions({
+      queryKey: [...gameQueries.all(), "pendingName", address],
+      queryFn: () => {
+        if (!address) throw new Error("Address required");
+        return gameViewService.getPendingName(address);
+      },
+      enabled: !!address,
+      retry: false,
     }),
 
   // Full overview (for dashboard)

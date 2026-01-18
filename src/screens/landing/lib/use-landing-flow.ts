@@ -1,20 +1,28 @@
-import { useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useQuery } from "@tanstack/react-query";
-import { usePlayerRegistration, useClearPlayerRegistration } from "@/entities/player";
 import { gameQueries } from "@/entities/game";
+import { whitelistQueries } from "@/entities/whitelist";
 import { useJoinGame } from "@/features/join-game";
 
 export type LandingFlowState = "loading" | "ready" | "joining" | "error";
 
 export function useLandingFlow() {
-  const router = useRouter();
   const { account, connected } = useWallet();
-  const registration = usePlayerRegistration();
-  const clearRegistration = useClearPlayerRegistration();
 
   const address = account?.address?.toString();
+
+  // Get invite code from contract
+  const { data: inviteCode, isLoading: codeLoading } = useQuery({
+    ...whitelistQueries.inviteCode(address ?? ""),
+    enabled: !!address && connected,
+  });
+
+  // Get pending name from contract
+  const { data: playerName, isLoading: nameLoading } = useQuery({
+    ...gameQueries.pendingName(address ?? ""),
+    enabled: !!address && connected,
+  });
 
   // Check if player already joined game
   const { data: hasJoined, isLoading: checkingJoined } = useQuery({
@@ -24,40 +32,28 @@ export function useLandingFlow() {
 
   const { mutateAsync: joinGame, isPending: isJoining, error } = useJoinGame();
 
-  // Redirect if already joined
-  useEffect(() => {
-    if (hasJoined === true) {
-      clearRegistration();
-      router.replace("/waiting-room");
-    }
-  }, [hasJoined, clearRegistration, router]);
-
   // State machine
   const state: LandingFlowState = (() => {
-    if (checkingJoined) return "loading";
+    if (checkingJoined || codeLoading || nameLoading) return "loading";
     if (isJoining) return "joining";
     if (error) return "error";
     return "ready";
   })();
 
   const handleJoinMatchmaking = useCallback(async () => {
-    if (!registration || hasJoined) return;
+    if (!inviteCode || hasJoined) return;
 
     try {
-      await joinGame({
-        code: registration.inviteCode,
-        displayName: registration.displayName,
-      });
-      clearRegistration();
-      router.push("/waiting-room");
+      await joinGame({ code: inviteCode });
+      // Guard will detect hasJoined → navigate to /waiting-room
     } catch {
       // Error handled by mutation
     }
-  }, [registration, hasJoined, joinGame, clearRegistration, router]);
+  }, [inviteCode, hasJoined, joinGame]);
 
   return {
     state,
-    playerName: registration?.displayName ?? "",
+    playerName: playerName ?? "",
     isJoining: isJoining || checkingJoined,
     handleJoinMatchmaking,
   };
