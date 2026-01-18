@@ -3,7 +3,7 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/shared/lib/utils";
-import type { GamePlayer, GameHost, RedPacket } from "@/entities/game";
+import type { GamePlayer, RedPacket } from "@/entities/game";
 import { PassGameHeader } from "./pass-game-header";
 import { YourPacketPanel } from "./your-packet-panel";
 import { PlayerSelectionGrid } from "./player-selection-grid";
@@ -72,10 +72,6 @@ export interface PassGameProps {
    */
   currentUserId: string;
   /**
-   * Game host/admin info
-   */
-  host: GameHost;
-  /**
    * Current user's red packet
    */
   packet?: RedPacket;
@@ -123,13 +119,10 @@ export interface PassGameProps {
  *   countdown={60}
  *   players={players}
  *   currentUserId="user-1"
- *   host={{ name: "Mr. Horse", role: "Admin" }}
  *   packetImageUrl="/images/red-packet.png"
  *   selectedPlayerId={selectedId}
  *   onPlayerSelect={handleSelect}
  *   onConfirmPass={handleConfirm}
- *   isMuted={false}
- *   onToggleMute={() => {}}
  * />
  * ```
  */
@@ -138,9 +131,7 @@ export function PassGame({
   countdown,
   players,
   currentUserId,
-  host,
   packet,
-  packetImageUrl,
   selectedPlayerId,
   onPlayerSelect,
   onConfirmPass,
@@ -153,19 +144,19 @@ export function PassGame({
     <div className={cn("min-h-screen w-full bg-[#fff7ed]", className)}>
       {/* Border frame */}
       <motion.div
-        className="min-h-screen border-8 border-[#e7000b] flex flex-col gap-4 px-4 py-8 sm:px-8 md:pl-[72px] md:pr-2 md:py-[48px]"
+        className="min-h-screen border-8 border-[#e7000b] flex flex-col gap-4 px-4 py-8 sm:px-8 md:px-[64px] md:py-[48px]"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         {/* Header section */}
-        <PassGameHeader round={round} countdown={countdown} host={host} />
+        <PassGameHeader round={round} countdown={countdown} />
 
         {/* Main content: Packet panel + Player grid */}
         <motion.div className="flex flex-col lg:flex-row gap-12" variants={mainContentVariants}>
           {/* Left panel: Your packet */}
           <div className="w-full lg:w-auto lg:shrink-0">
-            <YourPacketPanel packet={packet} imageUrl={packetImageUrl} />
+            <YourPacketPanel packet={packet} />
           </div>
 
           {/* Right panel: Player selection + Confirm button */}

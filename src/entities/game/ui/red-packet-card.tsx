@@ -22,12 +22,12 @@ export interface RedPacketCardProps extends React.ComponentPropsWithoutRef<"div"
 }
 
 // Default placeholder image for red packet
-const DEFAULT_PACKET_IMAGE = "/images/red-packet-placeholder.png";
+const DEFAULT_PACKET_IMAGE = "/packet.png";
 
 /**
  * RedPacketCard - Displays a lucky money (lì xì) red packet
  *
- * Shows the red packet illustration with an orange border frame.
+ * Shows the red packet illustration filling the entire container.
  * Used in the pass game to display the user's current packet.
  *
  * @example
@@ -40,23 +40,18 @@ export const RedPacketCard = React.forwardRef<HTMLDivElement, RedPacketCardProps
     return (
       <div
         ref={ref}
-        className={cn(
-          "w-[302px] h-[508px] bg-white border-2 border-custom-light-orange overflow-hidden relative",
-          className,
-        )}
+        className={cn("w-[200px] h-[340px] md:w-[302px] md:h-[508px] overflow-hidden relative", className)}
         {...props}
       >
-        {/* Packet illustration */}
-        <div className="absolute inset-0">
-          <Image
-            src={imgSrc}
-            alt={alt}
-            fill
-            className="object-cover"
-            priority
-            unoptimized // For external URLs
-          />
-        </div>
+        {/* Packet illustration - covers entire container */}
+        <Image
+          src={imgSrc}
+          alt={alt}
+          fill
+          className="object-cover"
+          priority
+          unoptimized // For external URLs
+        />
       </div>
     );
   },
