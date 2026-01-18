@@ -84,3 +84,31 @@ export function isAlreadyRegisteredError(error: unknown): boolean {
   }
   return false;
 }
+
+/**
+ * Check if error indicates that the target player has already been selected
+ * This can happen when multiple players try to select the same target at the same time
+ */
+export function isTargetAlreadySelectedError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+
+  // Check for error patterns that might indicate target already selected
+  // This could be a specific error code or message pattern from the contract
+  const lowerMessage = message.toLowerCase();
+
+  // Check for patterns like "already selected", "already picked", "target already", etc.
+  if (
+    lowerMessage.includes("already selected") ||
+    lowerMessage.includes("already picked") ||
+    lowerMessage.includes("target already") ||
+    lowerMessage.includes("player already selected") ||
+    lowerMessage.includes("already chosen")
+  ) {
+    return true;
+  }
+
+  // You can also check for specific error codes here if the contract provides them
+  // For now, we'll rely on message patterns
+
+  return false;
+}
