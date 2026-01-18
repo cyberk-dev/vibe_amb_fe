@@ -5,6 +5,14 @@ import Image from "next/image";
 import { FormattedMessage, useIntl } from "react-intl";
 import { SoundButton } from "@/shared/ui/sound-button";
 import { useLandingFlow } from "../lib/use-landing-flow";
+import { HowToPlayDialog } from "./how-to-play-dialog";
+
+interface LandingScreenProps {
+  playerName?: string;
+  onJoinMatchmaking?: () => void;
+  onViewDemo?: () => void;
+  onViewWallet?: () => void;
+}
 
 /**
  * Landing Screen - Game Introduction
@@ -29,8 +37,13 @@ export function LandingScreen() {
 
   const { playerName, isJoining, handleJoinMatchmaking, playersCount } = useLandingFlow();
 
+  const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const displayName = playerName?.trim() || intl.formatMessage({ id: "landing.defaults.player_name" });
   const illustrationAlt = intl.formatMessage({ id: "landing.illustration_alt" });
+
+  const handleViewDemo = () => {
+    setIsHowToPlayOpen(true);
+  };
 
   return (
     <div className="h-full bg-[#fff7ed] p-2">
@@ -49,7 +62,13 @@ export function LandingScreen() {
                     <FormattedMessage id="landing.hero.title" />
                   </h1>
                   <p className="text-custom-very-dark-blue text-base font-medium">
-                    <FormattedMessage id="landing.hero.greeting" values={{ playerName: displayName }} />
+                    <FormattedMessage
+                      id="landing.hero.greeting"
+                      values={{
+                        playerName: displayName,
+                        strikethrough: (chunks: ReactNode) => <del className="line-through">{chunks}</del>,
+                      }}
+                    />
                   </p>
                 </div>
 
@@ -140,6 +159,7 @@ export function LandingScreen() {
                   type="button"
                   disabled={isJoining}
                   className="w-full bg-custom-light-orange border-2 border-white/40 text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#ff7a28] transition-colors disabled:opacity-50"
+                  onClick={handleViewDemo}
                 >
                   <FormattedMessage id="landing.actions.view_demo" />
                 </button>
@@ -155,6 +175,9 @@ export function LandingScreen() {
           </div>
         </div>
       </div>
+
+      {/* How to Play Dialog */}
+      <HowToPlayDialog open={isHowToPlayOpen} onOpenChange={setIsHowToPlayOpen} />
     </div>
   );
 }

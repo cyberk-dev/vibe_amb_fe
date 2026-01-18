@@ -5,6 +5,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { SoundButton } from "@/shared/ui/sound-button";
 import { GameFormField } from "@/shared/ui/form-field";
 import { useInviteCodeFlow, type FlowState } from "../lib/use-invite-code-flow";
+import { LanguageToggleButton } from "@/shared/ui";
 
 /**
  * Invite Code Screen - Whitelist Registration
@@ -96,13 +97,11 @@ export function InviteCodeScreen() {
       {/* Decorative circles - static, hoisted for performance */}
       {DECORATIVE_CIRCLES}
 
-      {/* Sound button */}
-      <SoundButton
-        isMuted={isMuted}
-        onToggle={() => setIsMuted(!isMuted)}
-        iconColor="text-custom-vivid-red"
-        className="absolute top-6 right-6"
-      />
+      {/* Top right controls: Language toggle and Sound button */}
+      <div className="absolute top-6 right-6 flex items-center gap-3 z-20">
+        <LanguageToggleButton />
+        <SoundButton isMuted={isMuted} onToggle={() => setIsMuted(!isMuted)} iconColor="text-custom-vivid-red" />
+      </div>
 
       {/* Main content */}
       <div className="h-full flex flex-col justify-between p-6 md:p-12 relative z-10">
