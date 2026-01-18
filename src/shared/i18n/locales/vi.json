@@ -114,7 +114,10 @@
     "round": "Vòng {number}",
     "you": "Bạn",
     "player_label": "Người chơi {number}",
-    "admin": "Quản trị viên"
+    "admin": "Quản trị viên",
+    "errors": {
+      "player_already_selected": "Tiếc quá, người này bị pick trước rồi, hãy chọn lại"
+    }
   },
   "reveal_game": {
     "moment_of_truth": "Khoảnh khắc sự thật",
