@@ -1,7 +1,7 @@
 import { getAptosClient } from "../client";
 
 interface ViewPayload {
-  function: string;
+  function: `${string}::${string}::${string}`;
   typeArguments?: string[];
   functionArguments?: unknown[];
 }
@@ -21,7 +21,7 @@ export async function viewProxy<T = unknown>(payload: ViewPayload): Promise<T> {
       payload: {
         function: payload.function,
         typeArguments: payload.typeArguments || [],
-        functionArguments: payload.functionArguments || [],
+        functionArguments: (payload.functionArguments || []) as never[],
       },
     })) as T;
   } else {
