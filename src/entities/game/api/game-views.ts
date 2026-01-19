@@ -9,6 +9,7 @@ import type {
   AllPlayersWithSeatsDto,
   AllPlayersWithVotesDto,
   AllPlayersWithPrizesDto,
+  AllPlayersWithTargetsDto,
 } from "./dto/game.dto";
 
 class GameViewService {
@@ -218,6 +219,17 @@ class GameViewService {
     const result = await this.aptos.view<[string[], string[], string[], boolean[], string[]]>({
       payload: {
         function: `${GAME_MODULE}::get_all_players_with_prizes`,
+        typeArguments: [],
+        functionArguments: [],
+      },
+    });
+    return { 0: result[0], 1: result[1], 2: result[2], 3: result[3], 4: result[4] };
+  }
+
+  async getAllPlayersWithTargets(): Promise<AllPlayersWithTargetsDto> {
+    const result = await this.aptos.view<[string[], string[], string[], boolean[], boolean[]]>({
+      payload: {
+        function: `${GAME_MODULE}::get_all_players_with_targets`,
         typeArguments: [],
         functionArguments: [],
       },

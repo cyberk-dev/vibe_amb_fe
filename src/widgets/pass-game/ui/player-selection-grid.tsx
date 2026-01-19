@@ -57,7 +57,8 @@ interface PlayerSelectionGridProps {
  * Displays:
  * - "PASS TO PLAYER" label
  * - Responsive grid of player cards (auto-fit)
- * - Current user card is marked and cannot be selected
+ * - Current user card is marked and can select themselves (keep own bao)
+ * - Players who are already targets are disabled
  * - Selected player has orange highlight
  */
 export function PlayerSelectionGrid({
@@ -93,27 +94,29 @@ export function PlayerSelectionGrid({
           const isSelected = player.id === selectedPlayerId;
 
           // Determine variant based on state
-          // Priority: acted current user > currentUser > selected > acted > default
           let variant: "default" | "selected" | "currentUser" | "acted" = "default";
-          if (isCurrentUser && player.hasActed) {
-            variant = "acted"; // Current user who has acted shows orange
-          } else if (isCurrentUser) {
-            variant = "currentUser"; // Current user who hasn't acted shows black
-          } else if (isSelected) {
+          if (isSelected) {
             variant = "selected";
-          } else if (player.hasActed) {
-            variant = "acted";
+          } else if (player.isTarget) {
+            variant = "acted"; // Anyone targeted shows orange
+          } else if (isCurrentUser) {
+            variant = "currentUser";
           }
 
           // Determine secondary label
           let secondaryLabel: string;
-          if (isCurrentUser && player.hasActed) {
-            secondaryLabel = "Đã chọn"; // Show "Đã chọn" instead of "You"
+          if (isCurrentUser && player.isTarget) {
+            secondaryLabel = "Đã chọn"; // Current user who is targeted
           } else if (isCurrentUser) {
             secondaryLabel = "You";
+          } else if (player.isTarget) {
+            secondaryLabel = "Đã được chọn"; // "Already selected"
           } else {
             secondaryLabel = `Player ${player.seatNumber}`;
           }
+
+          // Disable clicking on targets (but not current user - they can keep own bao)
+          const isDisabled = disabled || (player.isTarget && !isCurrentUser);
 
           return (
             <motion.div
@@ -131,8 +134,8 @@ export function PlayerSelectionGrid({
                 player={player}
                 variant={variant}
                 secondaryLabel={secondaryLabel}
-                onClick={() => !isCurrentUser && !player.hasActed && onPlayerClick(player.id)}
-                disabled={disabled || isCurrentUser || player.hasActed}
+                onClick={() => !isDisabled && onPlayerClick(player.id)}
+                disabled={isDisabled}
               />
             </motion.div>
           );

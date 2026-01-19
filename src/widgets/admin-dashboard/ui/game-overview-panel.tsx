@@ -75,7 +75,7 @@ export function GameOverviewPanel() {
           placeholder="Amount (APT)"
           value={fundAmount}
           onChange={(e) => setFundAmount(e.target.value)}
-          className="w-32 rounded border border-white/20 bg-white/5 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-blue-400 focus:outline-none"
+          className="w-32 rounded border border-white/20 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-400 focus:border-blue-400 focus:outline-none"
           disabled={isFunding}
         />
         <button

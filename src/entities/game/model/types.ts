@@ -11,6 +11,10 @@ export interface Player {
   seat?: number; // initial_bao_id (0-indexed)
 }
 
+export interface PlayerWithTarget extends Player {
+  isTarget: boolean; // has been selected as a target by someone
+}
+
 export interface PlayerWithVote extends Player {
   hasVoted: boolean;
   vote?: Vote;
@@ -70,6 +74,8 @@ export interface GamePlayer {
   isEliminated?: boolean;
   /** Whether this player has acted (chosen bao) this round */
   hasActed?: boolean;
+  /** Whether this player has been selected as a target by someone */
+  isTarget?: boolean;
 }
 
 /**
