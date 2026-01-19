@@ -10,21 +10,34 @@ const corsHeaders = {
 };
 
 // Create Aptos client with Origin header for server-side requests
-function createAptosClientForApiRoute(): Aptos {
+function createAptosClientForApiRoute(requestOrigin?: string | null): Aptos {
   const NETWORK = process.env.NEXT_PUBLIC_APTOS_NETWORK === "mainnet" ? Network.MAINNET : Network.TESTNET;
   const API_KEY = process.env.NEXT_PUBLIC_APTOS_API_KEY;
   const gasStationApiKey = process.env.NEXT_PUBLIC_APTOS_GAS_STATION_API_KEY;
 
-  // Get origin: use localhost for development, production URL for production
+  // Get origin: prioritize request origin, then env vars, then fallback
   const getOrigin = () => {
+    // 1. Use origin from request headers (most accurate for Vercel)
+    if (requestOrigin) {
+      return requestOrigin;
+    }
+
+    // 2. Use Vercel URL (automatically set by Vercel)
+    if (process.env.VERCEL_URL) {
+      return `https://${process.env.VERCEL_URL}`;
+    }
+
+    // 3. Use custom app URL from env
     if (process.env.NEXT_PUBLIC_APP_URL) {
       return process.env.NEXT_PUBLIC_APP_URL;
     }
-    // Development: use localhost
+
+    // 4. Development: use localhost
     if (process.env.NODE_ENV === "development") {
       return "http://localhost:3000";
     }
-    // Production fallback
+
+    // 5. Production fallback
     return "https://vibe-amb-fe.vercel.app";
   };
 
@@ -94,8 +107,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create Aptos client with Origin header
-    const aptos = createAptosClientForApiRoute();
+    // Get origin from request headers (for Vercel compatibility)
+    const requestOrigin = request.headers.get("origin") || request.headers.get("referer");
+
+    // Create Aptos client with Origin header from request
+    const aptos = createAptosClientForApiRoute(requestOrigin);
     const result = await aptos.view({
       payload: {
         function: functionName as `${string}::${string}::${string}`,

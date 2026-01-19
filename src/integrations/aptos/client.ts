@@ -13,14 +13,22 @@ function createAptosClient(): Aptos {
   // Add Origin header for server-side requests (Aptos API requires it)
   // Use localhost for development, production URL for production
   const getOrigin = () => {
+    // 1. Use Vercel URL (automatically set by Vercel)
+    if (process.env.VERCEL_URL) {
+      return `https://${process.env.VERCEL_URL}`;
+    }
+
+    // 2. Use custom app URL from env
     if (process.env.NEXT_PUBLIC_APP_URL) {
       return process.env.NEXT_PUBLIC_APP_URL;
     }
-    // Development: use localhost
+
+    // 3. Development: use localhost
     if (process.env.NODE_ENV === "development") {
       return "http://localhost:3000";
     }
-    // Production fallback
+
+    // 4. Production fallback
     return "https://vibe-amb-fe.vercel.app";
   };
 
