@@ -23,7 +23,7 @@ import type {
 } from "../model/types";
 import { GameStatus, Vote } from "@/integrations/aptos";
 
-// Staggered polling to avoid thundering herd with 20 concurrent users
+// Staggered polling to avoid thundering herd with concurrent users
 // Returns a fixed interval with jitter (3-6s range)
 const POLLING_BASE = 3000;
 const POLLING_JITTER = 1500;
