@@ -26,14 +26,21 @@ export const metadata: Metadata = {
     description: "Horse of the Year",
     url: "",
     siteName: "H.O.T.Y",
-    images: [`${process.env.NEXT_PUBLIC_APP_URL}/thumbnail.png`],
+    images: [
+      {
+        url: "/thumbnail.png",
+        width: 1200,
+        height: 630,
+        alt: "H.O.T.Y - Horse of the Year",
+      },
+    ],
     type: "website",
     locale: "en_US",
   },
   twitter: {
     title: "H.O.T.Y",
     card: "summary_large_image",
-    images: [`${process.env.NEXT_PUBLIC_APP_URL}/thumbnail.png`],
+    images: ["/thumbnail.png"],
     description: "Horse of the Year",
   },
 };
