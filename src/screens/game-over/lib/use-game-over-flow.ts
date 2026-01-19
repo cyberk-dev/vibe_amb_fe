@@ -53,12 +53,14 @@ export function useGameOverFlow() {
   const claimable = currentUserPlayer?.prize ?? BigInt(0);
   const hasClaimable = claimable > BigInt(0);
 
-  // Get winner (first survivor)
-  const winner = standings.find((p) => !p.isEliminated) ?? standings[0];
+  // Get winner only if there's exactly 1 survivor (no prize split)
+  const hasSingleWinner = survivors.length === 1;
+  const winner = hasSingleWinner ? standings[0] : undefined;
 
   return {
     standings,
     winner,
+    hasSingleWinner,
     totalPool: formatAptAmount(totalPool),
     claimable: formatAptAmount(claimable),
     hasClaimable,

@@ -210,51 +210,73 @@ export function GameOverScreen({
             </motion.div>
           </div>
 
-          {/* Winner section */}
-          <motion.div
-            className="mt-6 md:mt-8 p-4 md:p-8 bg-white border-2 md:border-4 border-[#FF8C42] w-full"
-            variants={winnerCardVariants}
-          >
-            <div className="flex flex-col md:flex-row md:justify-between items-center gap-4 md:gap-8">
-              {/* Left - Winner info */}
-              <div className="flex items-center gap-4">
-                {/* Winner rank circle with trophy */}
-                <div className="flex items-center gap-2">
-                  {/* Rank circle */}
-                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#FF8C42] flex items-center justify-center relative">
-                    <span className="font-space font-bold text-[24px] md:text-[30px] leading-[1.2] text-white">1</span>
-                    {/* Trophy emoji */}
-                    <span className="absolute top-[-12px] right-[-8px] text-[28px] md:text-[36px] leading-[1.11]">
-                      🏆
-                    </span>
+          {/* Winner section - only show when there's a single winner */}
+          {winner ? (
+            <motion.div
+              className="mt-6 md:mt-8 p-4 md:p-8 bg-white border-2 md:border-4 border-[#FF8C42] w-full"
+              variants={winnerCardVariants}
+            >
+              <div className="flex flex-col md:flex-row md:justify-between items-center gap-4 md:gap-8">
+                {/* Left - Winner info */}
+                <div className="flex items-center gap-4">
+                  {/* Winner rank circle with trophy */}
+                  <div className="flex items-center gap-2">
+                    {/* Rank circle */}
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#FF8C42] flex items-center justify-center relative">
+                      <span className="font-space font-bold text-[24px] md:text-[30px] leading-[1.2] text-white">
+                        1
+                      </span>
+                      {/* Trophy emoji */}
+                      <span className="absolute top-[-12px] right-[-8px] text-[28px] md:text-[36px] leading-[1.11]">
+                        🏆
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Winner name and label */}
+                  <div className="flex flex-col gap-1 md:gap-2">
+                    <p className="font-space text-[10px] md:text-xs leading-[1.33] tracking-[2.4px] uppercase text-[#FF8C42]">
+                      <FormattedMessage id="game_over.winner" defaultMessage="WINNER" />
+                    </p>
+                    <h2 className="font-bricolage font-bold text-2xl md:text-[48px] leading-[1] text-black">
+                      {winner.name}
+                    </h2>
+                    <p className="font-space text-xs md:text-sm leading-[1.43] tracking-[0.7px] uppercase text-black/60">
+                      PLAYER {winner.seatNumber}
+                    </p>
                   </div>
                 </div>
 
-                {/* Winner name and label */}
-                <div className="flex flex-col gap-1 md:gap-2">
-                  <p className="font-space text-[10px] md:text-xs leading-[1.33] tracking-[2.4px] uppercase text-[#FF8C42]">
-                    <FormattedMessage id="game_over.winner" defaultMessage="WINNER" />
+                {/* Right - Total winnings */}
+                <div className="w-full md:w-auto px-4 md:px-[50px] pt-4 md:pt-[34px] pb-2 md:pb-[2px] border-2 border-[#FF8C42] bg-[rgba(255,140,66,0.05)] flex flex-col justify-center gap-1 md:gap-2">
+                  <p className="font-bricolage font-bold text-3xl md:text-[60px] leading-[1] text-center text-[#FF8C42]">
+                    {totalPool}
                   </p>
-                  <h2 className="font-bricolage font-bold text-2xl md:text-[48px] leading-[1] text-black">
-                    {winner?.name ?? "Unknown"}
-                  </h2>
-                  <p className="font-space text-xs md:text-sm leading-[1.43] tracking-[0.7px] uppercase text-black/60">
-                    PLAYER {winner?.seatNumber ?? 0}
+                  <p className="font-space text-[10px] md:text-xs leading-[1.33] tracking-[0.6px] uppercase text-center text-black/60">
+                    <FormattedMessage id="game_over.total_winnings" defaultMessage="Total Pool" />
                   </p>
                 </div>
               </div>
-
-              {/* Right - Total winnings */}
-              <div className="w-full md:w-auto px-4 md:px-[50px] pt-4 md:pt-[34px] pb-2 md:pb-[2px] border-2 border-[#FF8C42] bg-[rgba(255,140,66,0.05)] flex flex-col justify-center gap-1 md:gap-2">
-                <p className="font-bricolage font-bold text-3xl md:text-[60px] leading-[1] text-center text-[#FF8C42]">
+            </motion.div>
+          ) : (
+            /* Prize Split - just show total pool without single winner */
+            <motion.div
+              className="mt-6 md:mt-8 p-4 md:p-8 bg-white border-2 md:border-4 border-[#FF8C42] w-full"
+              variants={winnerCardVariants}
+            >
+              <div className="flex flex-col items-center gap-2 md:gap-4">
+                <p className="font-space text-[10px] md:text-xs leading-[1.33] tracking-[2.4px] uppercase text-[#FF8C42]">
+                  <FormattedMessage id="game_over.prize_split" defaultMessage="PRIZE SPLIT" />
+                </p>
+                <p className="font-bricolage font-bold text-4xl md:text-[72px] leading-[1] text-center text-[#FF8C42]">
                   {totalPool}
                 </p>
                 <p className="font-space text-[10px] md:text-xs leading-[1.33] tracking-[0.6px] uppercase text-center text-black/60">
-                  <FormattedMessage id="game_over.total_winnings" defaultMessage="Total Pool" />
+                  <FormattedMessage id="game_over.total_pool" defaultMessage="Total Pool" />
                 </p>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          )}
 
           {/* Final Standings section */}
           <div className="mt-6 md:mt-10 flex flex-col gap-3 md:gap-6">
