@@ -174,6 +174,7 @@ export function LandingScreen() {
     claimableFormatted,
     isClaiming,
     handleClaimPrize,
+    handleViewWallet,
   } = useLandingFlow();
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const rightPanelRef = useRef<HTMLDivElement>(null);
@@ -383,10 +384,17 @@ export function LandingScreen() {
                   >
                     <FormattedMessage id="landing.actions.view_demo" />
                   </motion.button>
+
+                  {/* Third button: Claim Prize if available, otherwise View Wallet */}
                   <motion.button
                     type="button"
-                    disabled={isJoining}
-                    className="w-full bg-black text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-gray-900 transition-colors cursor-pointer disabled:opacity-50"
+                    onClick={hasClaimable ? handleClaimPrize : handleViewWallet}
+                    disabled={isJoining || isClaiming}
+                    className={`w-full font-bold text-sm tracking-wider uppercase py-5 px-12 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
+                      hasClaimable
+                        ? "bg-[#10B981] text-white hover:bg-[#059669]"
+                        : "bg-black text-white hover:bg-gray-900"
+                    }`}
                     variants={buttonVariants}
                     initial="hidden"
                     animate="visible"
@@ -394,24 +402,8 @@ export function LandingScreen() {
                     whileTap={{ scale: 0.97 }}
                     custom={2}
                   >
-                    <FormattedMessage id="landing.actions.view_wallet" />
-                  </motion.button>
-
-                  {/* Claim Prize button - only show when user has unclaimed prizes */}
-                  {hasClaimable && (
-                    <motion.button
-                      type="button"
-                      onClick={handleClaimPrize}
-                      disabled={isClaiming}
-                      className="w-full bg-[#10B981] text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#059669] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                      variants={buttonVariants}
-                      initial="hidden"
-                      animate="visible"
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      custom={3}
-                    >
-                      {isClaiming ? (
+                    {hasClaimable ? (
+                      isClaiming ? (
                         <>
                           <span className="animate-spin">⏳</span>
                           <FormattedMessage id="landing.actions.claiming" defaultMessage="Claiming..." />
@@ -422,9 +414,11 @@ export function LandingScreen() {
                           defaultMessage="Claim {amount}"
                           values={{ amount: claimableFormatted }}
                         />
-                      )}
-                    </motion.button>
-                  )}
+                      )
+                    ) : (
+                      <FormattedMessage id="landing.actions.view_wallet" />
+                    )}
+                  </motion.button>
                 </div>
               </div>
             </div>
