@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence, type HTMLMotionProps } from "framer-motion";
 import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
+import { useSoundEffects } from "@/shared/lib";
 import type { RevealPackData, PackRevealState } from "../model/types";
 
 export interface RevealPackCardProps extends Omit<HTMLMotionProps<"div">, "ref"> {
@@ -73,7 +74,7 @@ const sizeConfig = {
 };
 
 // Default placeholder image for revealed packs
-const DEFAULT_PACK_IMAGE = "/images/red-packet-placeholder.png";
+const DEFAULT_PACK_IMAGE = "/packet.png";
 
 /**
  * RevealPackCard - Displays a player's pack during the reveal phase
@@ -82,6 +83,7 @@ export const RevealPackCard = React.forwardRef<HTMLDivElement, RevealPackCardPro
   ({ pack, size = "sm", showHeader = true, className, ...props }, ref) => {
     const { player, revealState, packNumber, consolationPrize, trolledBy, imageUrl } = pack;
     const config = sizeConfig[size];
+    const { playSafeReveal, playExplodedReveal } = useSoundEffects();
 
     const isExploded = revealState === "revealed-exploded";
     const isPending = revealState === "pending";
@@ -127,6 +129,14 @@ export const RevealPackCard = React.forwardRef<HTMLDivElement, RevealPackCardPro
                 animate={{ rotateY: 0, opacity: 1 }}
                 transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
                 style={{ transformStyle: "preserve-3d" }}
+                onAnimationComplete={() => {
+                  // Play sound when reveal animation completes
+                  if (isRevealedSafe) {
+                    playSafeReveal();
+                  } else if (isExploded) {
+                    playExplodedReveal();
+                  }
+                }}
               >
                 <PackContainer config={config} state={isExploded ? "exploded" : "safe"}>
                   {isRevealedSafe && <RevealedSafeState imageUrl={imageUrl} packNumber={packNumber} config={config} />}

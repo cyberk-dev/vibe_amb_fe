@@ -8,6 +8,7 @@ import { PageHeader } from "@/shared/ui/page-header";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useLandingFlow } from "../lib/use-landing-flow";
 import { HowToPlayDialog } from "./how-to-play-dialog";
+import { useHoverSound } from "@/shared/lib";
 
 // ========================================
 // Animation Variants
@@ -179,6 +180,7 @@ export function LandingScreen() {
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const rightPanelRef = useRef<HTMLDivElement>(null);
   const leftPanelRef = useRef<HTMLDivElement>(null);
+  const { onMouseEnter: playHoverSound } = useHoverSound();
 
   const handleScrollToMatchmaking = () => {
     rightPanelRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -203,11 +205,11 @@ export function LandingScreen() {
       {/* Border frame */}
       <div className="min-h-screen border-8 border-[#f54900] relative overflow-y-auto lg:overflow-hidden">
         {/* Main content - split layout with max-width */}
-        <div className="mx-auto max-w-[1440px] flex flex-col lg:flex-row min-h-[calc(100vh-16px)]">
+        <div className="mx-auto max-w-[1440px] flex flex-col lg:flex-row min-h-[calc(100vh-16px)] lg:items-stretch">
           {/* Left side - Game lore and description */}
           <motion.div
             ref={leftPanelRef}
-            className="w-full lg:w-[63%] min-h-screen lg:min-h-0 lg:h-full flex flex-col p-4 md:p-8 lg:p-12 lg:p-16 lg:overflow-hidden relative"
+            className="w-full lg:w-[63%] min-h-screen lg:min-h-0 flex flex-col p-4 md:p-8 lg:p-12 lg:p-16 lg:overflow-hidden relative"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -297,7 +299,7 @@ export function LandingScreen() {
           {/* Right side - Matchmaking controls */}
           <motion.div
             ref={rightPanelRef}
-            className="w-full lg:w-[37%] relative flex flex-col p-8 md:p-12 lg:p-16 min-h-screen lg:h-full bg-gradient-to-br from-[#E7000B] to-[#F54900]"
+            className="w-full lg:w-[37%] relative flex flex-col p-8 md:p-12 lg:p-16 min-h-screen lg:min-h-0 bg-gradient-to-br from-[#E7000B] to-[#F54900]"
             variants={rightPanelVariants}
             initial="hidden"
             animate="visible"
@@ -345,6 +347,7 @@ export function LandingScreen() {
                   <motion.button
                     type="button"
                     onClick={handleJoinMatchmaking}
+                    onMouseEnter={playHoverSound}
                     disabled={isJoining}
                     className="w-full bg-custom-very-dark-blue text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#154450] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     variants={buttonVariants}
@@ -368,6 +371,7 @@ export function LandingScreen() {
                     disabled={isJoining}
                     className="w-full bg-custom-light-orange border-2 border-white/40 text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#ff7a28] transition-colors cursor-pointer disabled:opacity-50"
                     onClick={handleViewDemo}
+                    onMouseEnter={playHoverSound}
                     variants={buttonVariants}
                     initial="hidden"
                     animate="visible"
@@ -382,6 +386,7 @@ export function LandingScreen() {
                   <motion.button
                     type="button"
                     onClick={hasClaimable ? handleClaimPrize : handleViewWallet}
+                    onMouseEnter={playHoverSound}
                     disabled={isJoining || isClaiming}
                     className={`w-full font-bold text-sm tracking-wider uppercase py-5 px-12 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
                       hasClaimable

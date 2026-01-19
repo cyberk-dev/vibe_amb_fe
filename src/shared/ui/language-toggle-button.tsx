@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useLocale, useLocaleActions } from "@/shared/i18n";
 import { ChevronDown, Check } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
+import { useHoverSound } from "@/shared/lib";
 
 const LANGUAGES = [
   { code: "en-US" as const, labelKey: "language.selector.english", flag: "🇺🇸" },
@@ -32,6 +33,7 @@ export const LanguageToggleButton: React.FC<LanguageToggleButtonProps> = ({ vari
   const [mounted, setMounted] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const { onMouseEnter: playHoverSound } = useHoverSound();
 
   React.useEffect(() => {
     setMounted(true);
@@ -90,6 +92,7 @@ export const LanguageToggleButton: React.FC<LanguageToggleButtonProps> = ({ vari
         }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
+        onMouseEnter={playHoverSound}
       >
         <button
           type="button"

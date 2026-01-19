@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
-import { gameQueries, formatAptAmount, type LeaderboardPlayer } from "@/entities/game";
+import { gameQueries, formatAptAmount } from "@/entities/game";
 import { useClaimPrize } from "@/features/claim-prize";
 
 export interface GameOverPlayer {
