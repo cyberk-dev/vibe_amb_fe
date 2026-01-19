@@ -38,9 +38,9 @@ export function usePassFlow(): UsePassFlowReturn {
   // Game status query
   const { data: gameStatus } = useQuery(gameQueries.status());
 
-  // Players query (with hasActed) - poll every 3s for updates
+  // Players with target status - poll every 3s for real-time updates
   const { data: players = [] } = useQuery({
-    ...gameQueries.players(),
+    ...gameQueries.playersWithTargets(),
     refetchInterval: 3_000,
   });
 
@@ -60,7 +60,7 @@ export function usePassFlow(): UsePassFlowReturn {
   // Choose bao mutation
   const { mutateAsync: chooseBao, isPending: isConfirming } = useChooseBao();
 
-  // Map players to GamePlayer format
+  // Map players to GamePlayer format with isTarget
   const gamePlayers: GamePlayer[] = players.map((p, index) => ({
     id: p.address,
     name: p.name,
@@ -68,6 +68,7 @@ export function usePassFlow(): UsePassFlowReturn {
     isCurrentUser: p.address === address,
     isEliminated: false,
     hasActed: p.hasActed,
+    isTarget: p.isTarget,
   }));
 
   // Toggle player selection

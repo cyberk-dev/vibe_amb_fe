@@ -8,12 +8,14 @@ import {
   mapRoundPrizes,
   mapVictimsWithSeats,
   mapAllPlayersWithPrizes,
+  mapAllPlayersWithTargets,
   type Victim,
 } from "../lib/mappers";
 import type {
   AdminGameState,
   Player,
   PlayerWithVote,
+  PlayerWithTarget,
   VotingState,
   RoundPrizes,
   GameOverview,
@@ -58,6 +60,19 @@ export const gameQueries = {
       },
       staleTime: 1_000, // 1s - must be less than refetchInterval to actually poll
       refetchInterval: pollingInterval, // 1.5-4.5s jittered interval
+      placeholderData: keepPreviousData,
+    }),
+
+  // Player list with target status (for pass screen - shows who has been selected)
+  playersWithTargets: () =>
+    queryOptions({
+      queryKey: [...gameQueries.all(), "playersWithTargets"],
+      queryFn: async (): Promise<PlayerWithTarget[]> => {
+        const dto = await gameViewService.getAllPlayersWithTargets();
+        return mapAllPlayersWithTargets(dto);
+      },
+      staleTime: 2_000,
+      refetchInterval: 3_000, // Poll every 3s for real-time updates
       placeholderData: keepPreviousData,
     }),
 

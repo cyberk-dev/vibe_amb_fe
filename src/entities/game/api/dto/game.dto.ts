@@ -55,3 +55,11 @@ export interface AllPlayersWithPrizesDto {
   3: boolean[]; // vector<bool> - is_eliminated
   4: string[]; // vector<u64> - prizes (claimable balance)
 }
+
+export interface AllPlayersWithTargetsDto {
+  0: string[]; // vector<address> - addresses
+  1: string[]; // vector<String> - names
+  2: string[]; // vector<u64> - seats (initial_bao_id)
+  3: boolean[]; // vector<bool> - hasActed statuses
+  4: boolean[]; // vector<bool> - isTarget (has been selected as target)
+}
