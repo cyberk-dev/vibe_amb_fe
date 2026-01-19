@@ -6,6 +6,7 @@ import { whitelistQueries } from "@/entities/whitelist";
 import { vaultQueries } from "@/entities/vault";
 import { useJoinGame } from "@/features/join-game";
 import { useClaimPrize } from "@/features/claim-prize";
+import { NETWORK } from "@/integrations/aptos";
 
 export type LandingFlowState = "loading" | "ready" | "joining" | "error";
 
@@ -13,6 +14,14 @@ export function useLandingFlow() {
   const { account, connected } = useWallet();
 
   const address = account?.address?.toString();
+
+  // View wallet handler - opens Aptos explorer
+  const handleViewWallet = useCallback(() => {
+    if (address) {
+      const networkParam = NETWORK === "mainnet" ? "mainnet" : "testnet";
+      window.open(`https://explorer.aptoslabs.com/account/${address}?network=${networkParam}`, "_blank");
+    }
+  }, [address]);
 
   // Get invite code from contract
   const { data: inviteCode, isLoading: codeLoading } = useQuery({
@@ -78,10 +87,11 @@ export function useLandingFlow() {
     playerName: playerName ?? "",
     isJoining: isJoining || checkingJoined,
     handleJoinMatchmaking,
-    // Claim prize
+    // Claim prize / View wallet
     hasClaimable,
     claimableFormatted,
     isClaiming,
     handleClaimPrize,
+    handleViewWallet,
   };
 }
