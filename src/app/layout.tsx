@@ -8,7 +8,7 @@ import { BackgroundMusic } from "@/shared/ui";
 export const metadata: Metadata = {
   title: "H.O.T.Y",
   applicationName: "H.O.T.Y",
-  description: "Web3 frontend for H.O.T.Y",
+  description: "Horse of the Year",
   manifest: "/manifest.json",
   icons: {
     icon: [
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "H.O.T.Y",
-    description: "Web3 frontend for H.O.T.Y",
+    description: "Horse of the Year",
     url: "",
     siteName: "H.O.T.Y",
     images: [`${process.env.NEXT_PUBLIC_APP_URL}/thumbnail.png`],
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     title: "H.O.T.Y",
     card: "summary_large_image",
     images: [`${process.env.NEXT_PUBLIC_APP_URL}/thumbnail.png`],
-    description: "Web3 frontend for H.O.T.Y",
+    description: "Horse of the Year",
   },
 };
 
