@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
 import { PageHeader } from "@/shared/ui/page-header";
+import { useHoverSound } from "@/shared/lib";
 import type { EliminatedPlayer } from "./decision-widget";
 
 // ========================================
@@ -122,6 +123,7 @@ export function MobileDecisionLayout({
 }: MobileDecisionLayoutProps) {
   const hasVotedShare = currentUserVote === "share";
   const hasVotedContinue = currentUserVote === "continue";
+  const { onMouseEnter: playHoverSound } = useHoverSound();
 
   return (
     <div
@@ -254,6 +256,7 @@ export function MobileDecisionLayout({
               <motion.button
                 type="button"
                 onClick={onSharePrize}
+                onMouseEnter={playHoverSound}
                 disabled={isVoting || hasVotedShare}
                 className={cn(
                   "w-full p-6 text-left cursor-pointer",
@@ -284,6 +287,7 @@ export function MobileDecisionLayout({
               <motion.button
                 type="button"
                 onClick={onContinuePlaying}
+                onMouseEnter={playHoverSound}
                 disabled={isVoting || hasVotedContinue}
                 className={cn(
                   "w-full p-6 text-left cursor-pointer",

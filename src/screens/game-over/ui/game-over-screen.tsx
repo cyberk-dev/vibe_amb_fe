@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
 import { PageHeader } from "@/shared/ui";
+import { useHoverSound } from "@/shared/lib";
 
 // ========================================
 // Animation Variants
@@ -138,6 +139,8 @@ export function GameOverScreen({
   isClaiming,
   onBackToHome,
 }: GameOverScreenProps) {
+  const { onMouseEnter: playHoverSound } = useHoverSound();
+
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-[#FFF7ED] via-white to-[#FEF2F2]">
       {/* Main border frame */}
@@ -177,7 +180,10 @@ export function GameOverScreen({
             {/* Right side - Controls */}
             <motion.div className="flex items-center gap-4" variants={labelVariants}>
               {/* Complete button */}
-              <button className="px-[26px] border-2 border-[#FF8C42] h-[48px] font-space text-sm font-medium text-[#FF8C42] flex items-center justify-center hover:bg-[#FF8C42]/5 transition-colors">
+              <button
+                onMouseEnter={playHoverSound}
+                className="px-[26px] border-2 border-[#FF8C42] h-[48px] font-space text-sm font-medium text-[#FF8C42] flex items-center justify-center hover:bg-[#FF8C42]/5 transition-colors"
+              >
                 <FormattedMessage id="game_over.complete" defaultMessage="Complete" />
               </button>
             </motion.div>
@@ -204,7 +210,10 @@ export function GameOverScreen({
             {/* Controls row - under title on mobile */}
             <motion.div className="flex gap-2 items-center" variants={labelVariants}>
               {/* Complete button */}
-              <button className="px-4 border-2 border-[#FF8C42] h-10 font-space text-xs font-medium text-[#FF8C42] flex items-center justify-center">
+              <button
+                onMouseEnter={playHoverSound}
+                className="px-4 border-2 border-[#FF8C42] h-10 font-space text-xs font-medium text-[#FF8C42] flex items-center justify-center"
+              >
                 <FormattedMessage id="game_over.complete" defaultMessage="Complete" />
               </button>
             </motion.div>
@@ -351,6 +360,7 @@ export function GameOverScreen({
             <motion.div className="mt-6 md:mt-8" variants={labelVariants}>
               <button
                 onClick={() => onClaim()}
+                onMouseEnter={playHoverSound}
                 disabled={isClaiming}
                 className="w-full h-[50px] md:h-[60px] bg-[#FF8C42] text-white font-space font-bold text-xs md:text-sm leading-[1.43] tracking-[2.8px] uppercase hover:bg-[#FF8C42]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -372,6 +382,7 @@ export function GameOverScreen({
             {onBackToHome && (
               <button
                 onClick={onBackToHome}
+                onMouseEnter={playHoverSound}
                 className="w-full h-[50px] md:h-[60px] bg-black text-white font-space font-bold text-xs md:text-sm leading-[1.43] tracking-[2.8px] uppercase hover:bg-black/90 transition-colors"
               >
                 <FormattedMessage id="game_over.back_to_home" defaultMessage="BACK TO HOME" />

@@ -1,5 +1,8 @@
+"use client";
+
 import { Loader2 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
+import { useHoverSound } from "@/shared/lib";
 
 interface AdminActionButtonProps {
   onClick: () => void;
@@ -24,9 +27,12 @@ export function AdminActionButton({
   children,
   icon,
 }: AdminActionButtonProps) {
+  const { onMouseEnter: playHoverSound } = useHoverSound();
+
   return (
     <button
       onClick={onClick}
+      onMouseEnter={playHoverSound}
       disabled={isPending || disabled}
       className={cn(
         "inline-flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors",

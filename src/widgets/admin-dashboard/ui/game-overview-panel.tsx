@@ -7,6 +7,7 @@ import { gameQueries, GameStatusBadge, formatAptAmount, STATUS_DESCRIPTIONS } fr
 import { vaultQueries } from "@/entities/vault";
 import { useFundVault } from "@/features/fund-vault";
 import { InlineLoader } from "@/shared/ui";
+import { useHoverSound } from "@/shared/lib";
 
 export function GameOverviewPanel() {
   const { data: state } = useQuery(gameQueries.status());
@@ -15,6 +16,7 @@ export function GameOverviewPanel() {
 
   const { mutate: fundVault, isPending: isFunding } = useFundVault();
   const [fundAmount, setFundAmount] = useState("");
+  const { onMouseEnter: playHoverSound } = useHoverSound();
 
   const handleFund = () => {
     try {
@@ -80,6 +82,7 @@ export function GameOverviewPanel() {
         />
         <button
           onClick={handleFund}
+          onMouseEnter={playHoverSound}
           disabled={isFunding || !fundAmount}
           className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
         >

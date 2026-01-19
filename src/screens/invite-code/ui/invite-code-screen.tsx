@@ -7,6 +7,7 @@ import { GameFormField } from "@/shared/ui/form-field";
 import { PageHeader } from "@/shared/ui/page-header";
 import { useInviteCodeFlow, type FlowState } from "../lib/use-invite-code-flow";
 import { PopupBlockerWarningDialog } from "@/shared/ui";
+import { useHoverSound } from "@/shared/lib";
 
 /**
  * Invite Code Screen - Whitelist Registration
@@ -148,6 +149,7 @@ function getButtonTextId(flowState: FlowState, canContinue: boolean): string {
 
 export function InviteCodeScreen() {
   const intl = useIntl();
+  const { onMouseEnter: playHoverSound } = useHoverSound();
 
   const {
     flowState,
@@ -330,6 +332,7 @@ export function InviteCodeScreen() {
                 {/* Submit button */}
                 <motion.button
                   type="submit"
+                  onMouseEnter={playHoverSound}
                   disabled={isLoading || (flowState === "need_name" && !canContinue)}
                   className="group flex items-center gap-3 text-white text-xl font-medium hover:text-yellow-200 transition-colors pt-2 disabled:opacity-50 disabled:cursor-not-allowed font-space cursor-pointer"
                   variants={buttonVariants}

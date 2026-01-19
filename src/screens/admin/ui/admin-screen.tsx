@@ -2,9 +2,11 @@
 
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { AdminDashboard } from "@/widgets/admin-dashboard";
+import { useHoverSound } from "@/shared/lib";
 
 export function AdminScreen() {
   const { connected, account, connect, disconnect, wallets } = useWallet();
+  const { onMouseEnter: playHoverSound } = useHoverSound();
 
   // Only show Petra wallet
   const petraWallet = wallets?.find((w) => w.name === "Petra");
@@ -26,6 +28,7 @@ export function AdminScreen() {
               </span>
               <button
                 onClick={disconnect}
+                onMouseEnter={playHoverSound}
                 className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
               >
                 Disconnect
@@ -34,6 +37,7 @@ export function AdminScreen() {
           ) : petraWallet ? (
             <button
               onClick={() => connect(petraWallet.name)}
+              onMouseEnter={playHoverSound}
               className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
             >
               Connect Petra
@@ -43,6 +47,7 @@ export function AdminScreen() {
               href="https://petra.app/"
               target="_blank"
               rel="noopener noreferrer"
+              onMouseEnter={playHoverSound}
               className="rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700"
             >
               Install Petra Wallet

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
+import { useHoverSound } from "@/shared/lib";
 
 interface ConfirmPassButtonProps {
   /**
@@ -41,11 +42,13 @@ export function ConfirmPassButton({
   className,
 }: ConfirmPassButtonProps) {
   const isDisabled = disabled || !hasSelection || isPending;
+  const { onMouseEnter: playHoverSound } = useHoverSound();
 
   return (
     <motion.button
       type="button"
       onClick={onClick}
+      onMouseEnter={!isDisabled ? playHoverSound : undefined}
       disabled={isDisabled}
       className={cn(
         "w-[203px] h-[60px] bg-black text-white cursor-pointer",

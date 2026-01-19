@@ -116,6 +116,7 @@ export const LanguageToggleButton: React.FC<LanguageToggleButtonProps> = ({ vari
               <button
                 key={lang.code}
                 onClick={() => handleLanguageChange(lang.code)}
+                onMouseEnter={playHoverSound}
                 className={cn(
                   "flex w-full items-center gap-3 rounded-sm px-3 py-2 text-sm transition-colors",
                   "hover:bg-accent hover:text-accent-foreground",

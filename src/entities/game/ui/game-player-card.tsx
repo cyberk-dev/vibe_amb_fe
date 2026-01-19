@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Check } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
+import { useHoverSound } from "@/shared/lib";
 import type { GamePlayer } from "../model/types";
 
 export type GamePlayerCardVariant = "default" | "selected" | "currentUser" | "acted";
@@ -56,19 +57,31 @@ export interface GamePlayerCardProps extends React.ComponentPropsWithoutRef<"but
  * />
  */
 export const GamePlayerCard = React.forwardRef<HTMLButtonElement, GamePlayerCardProps>(
-  ({ player, variant = "default", secondaryLabel, className, disabled, ...props }, ref) => {
+  ({ player, variant = "default", secondaryLabel, className, disabled, onMouseEnter, ...props }, ref) => {
     const { seatNumber, name, isCurrentUser } = player;
+    const { onMouseEnter: playHoverSound } = useHoverSound();
 
     // Determine if this is the current user card
     const isCurrentUserCard = variant === "currentUser" || isCurrentUser;
     const isSelected = variant === "selected";
     const isActed = variant === "acted";
 
+    const handleMouseEnter = React.useCallback(
+      (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (!isCurrentUserCard && !isActed && !disabled) {
+          playHoverSound();
+        }
+        onMouseEnter?.(e);
+      },
+      [isCurrentUserCard, isActed, disabled, playHoverSound, onMouseEnter],
+    );
+
     return (
       <button
         ref={ref}
         type="button"
         disabled={disabled || isCurrentUserCard || isActed}
+        onMouseEnter={handleMouseEnter}
         className={cn(
           // Responsive sizing: smaller on mobile, original on desktop
           "w-full sm:w-[178px] h-[80px] sm:h-[100px] flex items-center px-3 py-3 sm:px-6 sm:py-6 transition-all overflow-hidden",

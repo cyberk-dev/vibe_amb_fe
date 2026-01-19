@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { FormattedMessage } from "react-intl";
 import { cn } from "@/shared/lib/utils";
+import { useHoverSound } from "@/shared/lib";
 
 // ========================================
 // Animation Variants
@@ -69,6 +70,7 @@ export function DecisionCards({
   const hasVotedShare = currentUserVote === "share";
   const hasVotedContinue = currentUserVote === "continue";
   const hasVoted = currentUserVote !== null;
+  const { onMouseEnter: playHoverSound } = useHoverSound();
 
   return (
     <motion.div
@@ -134,6 +136,7 @@ export function DecisionCards({
         <motion.button
           type="button"
           onClick={onSharePrize}
+          onMouseEnter={playHoverSound}
           disabled={isVoting || hasVoted}
           className={cn(
             "w-full h-[60px] mt-8 md:mt-auto cursor-pointer",
@@ -204,6 +207,7 @@ export function DecisionCards({
         <motion.button
           type="button"
           onClick={onContinuePlaying}
+          onMouseEnter={playHoverSound}
           disabled={isVoting || hasVoted}
           className={cn(
             "w-full h-[60px] mt-8 md:mt-auto cursor-pointer",
