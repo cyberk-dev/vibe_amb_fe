@@ -76,7 +76,7 @@ export interface EliminatedPlayer {
   id: string;
   name: string;
   seatNumber: number;
-  consolationPrize: number;
+  consolationPrize: string;
 }
 
 export interface VoteCounts {
@@ -87,8 +87,8 @@ export interface VoteCounts {
 export interface DecisionWidgetProps {
   /** Total number of players remaining */
   totalPlayers: number;
-  /** Player eliminated this round */
-  eliminatedPlayer: EliminatedPlayer;
+  /** Players eliminated this round */
+  eliminatedPlayers: EliminatedPlayer[];
   /** Remaining active players */
   remainingPlayers: DecisionPlayer[];
   /** Prize per player if sharing */
@@ -124,7 +124,7 @@ export interface DecisionWidgetProps {
  */
 export function DecisionWidget({
   totalPlayers,
-  eliminatedPlayer,
+  eliminatedPlayers,
   remainingPlayers,
   prizePerPlayer,
   totalPool,
@@ -143,7 +143,7 @@ export function DecisionWidget({
     return (
       <MobileDecisionLayout
         totalPlayers={totalPlayers}
-        eliminatedPlayer={eliminatedPlayer}
+        eliminatedPlayers={eliminatedPlayers}
         prizePerPlayer={prizePerPlayer}
         totalPool={totalPool}
         nextRoundPool={nextRoundPool}
@@ -213,9 +213,11 @@ export function DecisionWidget({
             </motion.div>
           </motion.div>
 
-          {/* Eliminated player card */}
-          <motion.div variants={sectionVariants}>
-            <EliminatedPlayerCard player={eliminatedPlayer} />
+          {/* Eliminated player cards */}
+          <motion.div variants={sectionVariants} className="flex flex-col gap-4">
+            {eliminatedPlayers.map((player) => (
+              <EliminatedPlayerCard key={player.id} player={player} />
+            ))}
           </motion.div>
 
           {/* Remaining players section */}

@@ -45,16 +45,13 @@ export function useDecisionFlow() {
     voteStatus: p.hasVoted ? (p.vote === Vote.STOP ? "share" : "continue") : "pending",
   }));
 
-  // First victim as eliminated player (if any)
-  const eliminatedPlayer: EliminatedPlayer | null =
-    victims.length > 0
-      ? {
-          id: victims[0].address,
-          name: victims[0].name,
-          seatNumber: victims[0].seat + 1,
-          consolationPrize: prizes ? Number(formatAptAmount(prizes.consolationPrize).replace(" APT", "")) : 0,
-        }
-      : null;
+  // All victims as eliminated players
+  const eliminatedPlayers: EliminatedPlayer[] = victims.map((v) => ({
+    id: v.address,
+    name: v.name,
+    seatNumber: v.seat + 1,
+    consolationPrize: prizes ? formatAptAmount(prizes.consolationPrize).replace(" APT", "") : "0",
+  }));
 
   // Calculate prize per player using Decimal for precision
   const remainingPool = prizes?.remainingPool ?? BigInt(0);
@@ -97,7 +94,7 @@ export function useDecisionFlow() {
     // Data
     round: gameStatus?.round ?? 1,
     remainingPlayers,
-    eliminatedPlayer,
+    eliminatedPlayers,
     prizePerPlayer,
     totalPool: new Decimal(remainingPool.toString()).div(1e8).toFixed(),
     nextRoundPool: 0,
