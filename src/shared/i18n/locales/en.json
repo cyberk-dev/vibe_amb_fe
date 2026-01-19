@@ -61,7 +61,9 @@
   "landing": {
     "hero": {
       "title": "The lore",
-      "greeting": "Hello {playerName}, let us introduce to you <strikethrough>Year of the Horse</strikethrough> Horse of the Year"
+      "greeting_before": "Hello {playerName}, let us introduce to you",
+      "greeting_strikethrough": "Year of the Horse",
+      "greeting_after": "Horse of the Year"
     },
     "description": {
       "first": "A competitive game with a thrilling CNY theme. Pass red packets until everyone has one, then reveal. One explosive packet eliminates a player.",
