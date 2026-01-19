@@ -1,9 +1,12 @@
 import { useCallback } from "react";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useQuery } from "@tanstack/react-query";
-import { gameQueries } from "@/entities/game";
+import { gameQueries, formatAptAmount } from "@/entities/game";
 import { whitelistQueries } from "@/entities/whitelist";
+import { vaultQueries } from "@/entities/vault";
 import { useJoinGame } from "@/features/join-game";
+import { useClaimPrize } from "@/features/claim-prize";
+import { NETWORK } from "@/integrations/aptos";
 
 export type LandingFlowState = "loading" | "ready" | "joining" | "error";
 
@@ -11,6 +14,14 @@ export function useLandingFlow() {
   const { account, connected } = useWallet();
 
   const address = account?.address?.toString();
+
+  // View wallet handler - opens Aptos explorer
+  const handleViewWallet = useCallback(() => {
+    if (address) {
+      const networkParam = NETWORK === "mainnet" ? "mainnet" : "testnet";
+      window.open(`https://explorer.aptoslabs.com/account/${address}?network=${networkParam}`, "_blank");
+    }
+  }, [address]);
 
   // Get invite code from contract
   const { data: inviteCode, isLoading: codeLoading } = useQuery({
@@ -30,7 +41,18 @@ export function useLandingFlow() {
     enabled: !!address && connected,
   });
 
+  // Check for unclaimed prizes
+  const { data: claimableBalance = BigInt(0) } = useQuery({
+    ...vaultQueries.claimable(address ?? ""),
+    enabled: !!address && connected,
+  });
+
   const { mutateAsync: joinGame, isPending: isJoining, error } = useJoinGame();
+  const { mutateAsync: claimPrize, isPending: isClaiming } = useClaimPrize();
+
+  // Derived state
+  const hasClaimable = claimableBalance > BigInt(0);
+  const claimableFormatted = formatAptAmount(claimableBalance);
 
   // State machine
   const state: LandingFlowState = (() => {
@@ -51,10 +73,25 @@ export function useLandingFlow() {
     }
   }, [inviteCode, hasJoined, joinGame]);
 
+  const handleClaimPrize = useCallback(async () => {
+    if (!hasClaimable) return;
+    try {
+      await claimPrize();
+    } catch {
+      // Error handled by mutation
+    }
+  }, [hasClaimable, claimPrize]);
+
   return {
     state,
     playerName: playerName ?? "",
     isJoining: isJoining || checkingJoined,
     handleJoinMatchmaking,
+    // Claim prize / View wallet
+    hasClaimable,
+    claimableFormatted,
+    isClaiming,
+    handleClaimPrize,
+    handleViewWallet,
   };
 }

@@ -166,7 +166,16 @@ const REQUIRED_PLAYERS = 20;
  */
 export function LandingScreen() {
   const intl = useIntl();
-  const { playerName, isJoining, handleJoinMatchmaking } = useLandingFlow();
+  const {
+    playerName,
+    isJoining,
+    handleJoinMatchmaking,
+    hasClaimable,
+    claimableFormatted,
+    isClaiming,
+    handleClaimPrize,
+    handleViewWallet,
+  } = useLandingFlow();
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const rightPanelRef = useRef<HTMLDivElement>(null);
   const leftPanelRef = useRef<HTMLDivElement>(null);
@@ -375,10 +384,17 @@ export function LandingScreen() {
                   >
                     <FormattedMessage id="landing.actions.view_demo" />
                   </motion.button>
+
+                  {/* Third button: Claim Prize if available, otherwise View Wallet */}
                   <motion.button
                     type="button"
-                    disabled={isJoining}
-                    className="w-full bg-black text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-gray-900 transition-colors cursor-pointer disabled:opacity-50"
+                    onClick={hasClaimable ? handleClaimPrize : handleViewWallet}
+                    disabled={isJoining || isClaiming}
+                    className={`w-full font-bold text-sm tracking-wider uppercase py-5 px-12 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
+                      hasClaimable
+                        ? "bg-[#10B981] text-white hover:bg-[#059669]"
+                        : "bg-black text-white hover:bg-gray-900"
+                    }`}
                     variants={buttonVariants}
                     initial="hidden"
                     animate="visible"
@@ -386,7 +402,22 @@ export function LandingScreen() {
                     whileTap={{ scale: 0.97 }}
                     custom={2}
                   >
-                    <FormattedMessage id="landing.actions.view_wallet" />
+                    {hasClaimable ? (
+                      isClaiming ? (
+                        <>
+                          <span className="animate-spin">⏳</span>
+                          <FormattedMessage id="landing.actions.claiming" defaultMessage="Claiming..." />
+                        </>
+                      ) : (
+                        <FormattedMessage
+                          id="landing.actions.claim_prize"
+                          defaultMessage="Claim {amount}"
+                          values={{ amount: claimableFormatted }}
+                        />
+                      )
+                    ) : (
+                      <FormattedMessage id="landing.actions.view_wallet" />
+                    )}
                   </motion.button>
                 </div>
               </div>
