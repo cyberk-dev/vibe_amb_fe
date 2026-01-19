@@ -116,6 +116,17 @@ class GameViewService {
     return hasJoined;
   }
 
+  async isEliminated(playerAddress: string): Promise<boolean> {
+    const [isEliminated] = await this.aptos.view<[boolean]>({
+      payload: {
+        function: `${GAME_MODULE}::is_eliminated`,
+        typeArguments: [],
+        functionArguments: [playerAddress],
+      },
+    });
+    return isEliminated;
+  }
+
   async hasPendingName(playerAddress: string): Promise<boolean> {
     const [has] = await this.aptos.view<[boolean]>({
       payload: {
