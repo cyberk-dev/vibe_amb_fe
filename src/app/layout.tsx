@@ -3,33 +3,45 @@ import "./globals.css";
 import { Web3AppProvider } from "@/providers/web3-app-provider";
 import { fonts } from "@/shared/assets/fonts";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { BackgroundMusic, RouteChangeSound } from "@/shared/ui";
 
 export const metadata: Metadata = {
-  title: "Cyberk Nextjs Boilerplate",
-  applicationName: "Cyberk Nextjs Boilerplate",
-  description: "Web3 frontend framework base on Nextjs for Cyberk member",
+  title: "H.O.T.Y",
+  applicationName: "H.O.T.Y",
+  description: "Horse of the Year",
+  manifest: "/manifest.json",
   icons: {
     icon: [
-      { url: "/favicon.png", type: "image/png" },
-      { url: "/logo.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon1.png", type: "image/png" },
+      { url: "/icon0.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "48x48" },
     ],
-    apple: "/favicon.png",
+    apple: "/apple-icon.png",
+  },
+  other: {
+    "Horse of the Year": "H.O.T.Y",
   },
   openGraph: {
-    title: "Cyberk Nextjs Boilerplate",
-    description: "Web3 frontend framework base on Nextjs for Cyberk member",
+    title: "H.O.T.Y",
+    description: "Horse of the Year",
     url: "",
-    siteName: "Cyberk Nextjs Boilerplate",
-    images: [`${process.env.NEXT_PUBLIC_APP_URL}/thumbnail.png`],
+    siteName: "H.O.T.Y",
+    images: [
+      {
+        url: "/thumbnail.png",
+        width: 1200,
+        height: 630,
+        alt: "H.O.T.Y - Horse of the Year",
+      },
+    ],
     type: "website",
     locale: "en_US",
   },
   twitter: {
-    title: "Cyberk Nextjs Boilerplate",
+    title: "H.O.T.Y",
     card: "summary_large_image",
-    images: [`${process.env.NEXT_PUBLIC_APP_URL}/thumbnail.png`],
-    description: "Web3 frontend framework base on Nextjs for Cyberk member",
+    images: ["/thumbnail.png"],
+    description: "Horse of the Year",
   },
 };
 
@@ -40,10 +52,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${fonts.audiowide.variable} ${fonts.aeonik.variable} antialiased`}>
-        <Web3AppProvider>
-          <NuqsAdapter>{children}</NuqsAdapter>
-        </Web3AppProvider>
+      <body
+        className={`${fonts.audiowide.variable} ${fonts.aeonik.variable} ${fonts.bricolageGrotesque.variable} ${fonts.spaceGrotesk.variable} antialiased`}
+      >
+        <div className="w-full min-h-screen overflow-hidden">
+          <Web3AppProvider>
+            <NuqsAdapter>
+              <BackgroundMusic />
+              <RouteChangeSound />
+              {children}
+            </NuqsAdapter>
+          </Web3AppProvider>
+        </div>
       </body>
     </html>
   );

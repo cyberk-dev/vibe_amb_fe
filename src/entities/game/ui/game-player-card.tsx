@@ -1,0 +1,125 @@
+"use client";
+
+import * as React from "react";
+import { Check } from "lucide-react";
+import { cn } from "@/shared/lib/utils";
+import type { GamePlayer } from "../model/types";
+
+export type GamePlayerCardVariant = "default" | "selected" | "currentUser" | "acted";
+
+export interface GamePlayerCardProps extends React.ComponentPropsWithoutRef<"button"> {
+  /**
+   * Player data to display
+   */
+  player: GamePlayer;
+  /**
+   * Visual variant of the card
+   * - default: Black seat badge, white background
+   * - selected: Orange seat badge with check icon, light orange background
+   * - currentUser: Black seat badge with number, white background (cannot be selected)
+   * - acted: Orange badge with check icon, light orange background (already chose, disabled)
+   */
+  variant?: GamePlayerCardVariant;
+  /**
+   * Secondary label to display (e.g., "You", "Player 1")
+   */
+  secondaryLabel?: string;
+}
+
+/**
+ * GamePlayerCard - Interactive player card for pass game
+ *
+ * Used in the player selection grid. Shows player seat number, name, and role.
+ * Has three states: default (can select), selected (chosen target), currentUser (self, cannot select).
+ *
+ * @example
+ * // Default selectable player
+ * <GamePlayerCard
+ *   player={{ id: "1", name: "Player", seatNumber: 2 }}
+ *   secondaryLabel="Player 2"
+ * />
+ *
+ * @example
+ * // Selected player (pass target)
+ * <GamePlayerCard
+ *   player={{ id: "2", name: "Player", seatNumber: 3 }}
+ *   variant="selected"
+ *   secondaryLabel="Player 3"
+ * />
+ *
+ * @example
+ * // Current user (cannot select)
+ * <GamePlayerCard
+ *   player={{ id: "3", name: "Manh", seatNumber: 1, isCurrentUser: true }}
+ *   variant="currentUser"
+ *   secondaryLabel="You"
+ * />
+ */
+export const GamePlayerCard = React.forwardRef<HTMLButtonElement, GamePlayerCardProps>(
+  ({ player, variant = "default", secondaryLabel, className, disabled, ...props }, ref) => {
+    const { seatNumber, name, isCurrentUser } = player;
+
+    // Determine if this is the current user card
+    const isCurrentUserCard = variant === "currentUser" || isCurrentUser;
+    const isSelected = variant === "selected";
+    const isActed = variant === "acted";
+
+    return (
+      <button
+        ref={ref}
+        type="button"
+        disabled={disabled || isCurrentUserCard || isActed}
+        className={cn(
+          // Responsive sizing: smaller on mobile, original on desktop
+          "w-full sm:w-[178px] h-[80px] sm:h-[100px] flex items-center px-3 py-3 sm:px-6 sm:py-6 transition-all overflow-hidden",
+          // Background and border based on variant
+          isSelected
+            ? "bg-[#ffefe4] border-4 border-custom-light-orange"
+            : isActed
+              ? "bg-[#fff7ed] border-2 border-custom-light-orange"
+              : "bg-white border-2 border-black hover:border-custom-light-orange",
+          // Disabled state for current user or acted
+          (isCurrentUserCard || isActed) && "cursor-default",
+          isCurrentUserCard && "hover:border-black",
+          !isCurrentUserCard && !isSelected && !isActed && "cursor-pointer hover:bg-[#fffcfa]",
+          className,
+        )}
+        {...props}
+      >
+        <div className="flex gap-2 sm:gap-4 items-center">
+          {/* Seat number badge */}
+          <div
+            className={cn(
+              "size-9 sm:size-12 flex items-center justify-center shrink-0",
+              isSelected || isActed ? "bg-custom-light-orange" : "bg-black",
+            )}
+          >
+            {isSelected || isActed ? (
+              <Check className="size-5 sm:size-6 text-white" strokeWidth={3} />
+            ) : (
+              <span className="font-space text-[16px] sm:text-[20px] font-bold leading-7 text-white">
+                {isCurrentUserCard ? seatNumber : "x"}
+              </span>
+            )}
+          </div>
+
+          {/* Player info */}
+          <div className="flex flex-col items-start min-w-0 flex-1">
+            {/* Player name */}
+            <p className="font-space text-[14px] sm:text-[18px] font-bold leading-5 sm:leading-7 text-black truncate max-w-[80px] sm:max-w-none">
+              {name}
+            </p>
+            {/* Secondary label */}
+            {secondaryLabel && (
+              <p className="font-space text-[10px] sm:text-[12px] font-normal leading-3 sm:leading-4 tracking-[0.6px] uppercase text-custom-dark-grayish-blue">
+                {isActed ? "Đã chọn" : secondaryLabel}
+              </p>
+            )}
+          </div>
+        </div>
+      </button>
+    );
+  },
+);
+
+GamePlayerCard.displayName = "GamePlayerCard";

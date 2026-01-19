@@ -1,4 +1,4 @@
-import { Audiowide } from "next/font/google";
+import { Audiowide, Bricolage_Grotesque, Space_Grotesk } from "next/font/google";
 import localFont from "next/font/local";
 
 const aeonik = localFont({
@@ -86,4 +86,16 @@ const audiowide = Audiowide({
   display: "swap",
 });
 
-export const fonts = { audiowide, aeonik };
+const bricolageGrotesque = Bricolage_Grotesque({
+  subsets: ["latin"],
+  variable: "--font-bricolage-grotesque",
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
+
+export const fonts = { audiowide, aeonik, bricolageGrotesque, spaceGrotesk };

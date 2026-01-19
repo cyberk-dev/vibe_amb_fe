@@ -27,5 +27,195 @@
       "balance_label": "Số dư",
       "disconnect_button": "Ngắt kết nối Ví"
     }
+  },
+  "invite_code": {
+    "hero": {
+      "line1": "Con <money>Ngựa</money>",
+      "line2": "<battle>của</battle> năm",
+      "byline": "bởi VIBE Ambassador"
+    },
+    "form": {
+      "code_label": "Nhập mã",
+      "code_placeholder": "000000",
+      "name_label": "Tên của bạn",
+      "name_placeholder": "Nhập tên của bạn",
+      "submit": "Tham gia trò chơi",
+      "submitting": "Đang xác minh...",
+      "connect_wallet": "Kết nối Ví",
+      "connecting": "Đang kết nối...",
+      "registering": "Đang đăng ký...",
+      "loading": "Đang tải...",
+      "claim_code": "Nhận mã",
+      "claiming": "Đang nhận mã...",
+      "saving": "Đang lưu...",
+      "failed": "Thử lại",
+      "continue": "Tiếp tục",
+      "enter_name": "Nhập tên",
+      "name_hint": "Tên phải có ít nhất 2 ký tự"
+    },
+    "errors": {
+      "invalid_code": "Vui lòng nhập mã 6 chữ số hợp lệ",
+      "missing_name": "Vui lòng nhập tên của bạn"
+    }
+  },
+  "landing": {
+    "hero": {
+      "title": "Con Ngựa của năm",
+      "greeting_before": "Xin chào {playerName}, hãy để chúng tôi giới thiệu với bạn",
+      "greeting_strikethrough": "Năm của con ngựa",
+      "greeting_after": "Con Ngựa của năm"
+    },
+    "description": {
+      "first": "Người chơi sẽ tham gia  \"Lì xì\" Nga và squidgame để tìm ra Con Ngựa của năm. ",
+      "second": "Người bị loại nhận giải khuyến khích nhỏ. Con Ngựa của năm nhận phần lớn của pool $200"
+    },
+    "illustration_alt": "Hình minh họa trò chơi",
+    "footer": "VIBE Ambassador - 2026",
+    "players_required": "Cần đủ người chơi",
+    "actions": {
+      "join_matchmaking": "Gacha time",
+      "view_demo": "Chơi như nào?",
+      "view_wallet": "Gặt lúa ở đây"
+    },
+    "how_to_play": {
+      "title": "Hướng dẫn chơi",
+      "content": {
+        "intro": "Người chơi sẽ tham gia  \"Lì xì\" Nga và squidgame để tìm ra Con Ngựa của năm.",
+        "rounds": "Trò chơi sẽ diễn ra trong 4 vòng, ở mỗi vòng chơi, sẽ có số bao lì xì = tổng số người chơi còn lại. Có số bom là 1/4 tổng số người chơi BAN ĐẦU(làm tròn xuống).",
+        "phase1": "Giai đoạn 1: Người chơi được quyền đưa bao này cho 1 người chơi khác hoặc cho chính mình.",
+        "phase2": "Giai đoạn 2: Giây phút sự thật: mở lì xì, ai \"may mắn\" sẽ nhận được 1 số tiền nhỏ và... bom. Xin vĩnh biệt cụ. (Số tiền an ủi này cũng tăng theo mỗi vòng)",
+        "phase3": "Giai đoạn 3: Những người chơi còn sống sẽ vote xem nên chơi tiếp hay chia tiền. Nếu chia tiền thì pool thưởng sẽ chia đều cho họ,sau đó ai về nhà nấy.",
+        "continue": "Chỉ cần có 1 con ngựa muốn chơi tiếp thì trò chơi sẽ tiếp tục. Cho đến khi chỉ còn 1 con ngựa duy nhất sống sót, trở thành Con Ngựa của năm và nhận toàn bộ số tiền trong pool."
+      }
+    },
+    "defaults": {
+      "player_name": "Người chơi"
+    }
+  },
+  "waiting_room": {
+    "title": "Phòng chờ",
+    "matchmaking": "Ghép trận",
+    "connected_players": "Người chơi kết nối",
+    "status": {
+      "starting_soon": "Trò chơi sẽ sớm bắt đầu",
+      "waiting": "Đang chờ người chơi..."
+    },
+    "aria": {
+      "mute": "Tắt âm thanh",
+      "unmute": "Bật âm thanh"
+    }
+  },
+  "wallet": {
+    "connect_google": "Tiếp tục với Google",
+    "connecting": "Đang kết nối...",
+    "connected": "Đã kết nối"
+  },
+  "pass_game": {
+    "game_in_progress": "Trò chơi đang diễn ra",
+    "pass": "Lì xì",
+    "your_turn_to_pass": "Chọn 1 người có mối liên hệ đặc biệt với bạn",
+    "your_packet": "Phong bao của bạn",
+    "pass_to_player": "Chuyền cho người chơi",
+    "confirm_pass": "Xác nhận chuyền",
+    "round": "Vòng {number}",
+    "you": "Bạn",
+    "player_label": "Người chơi {number}",
+    "admin": "Quản trị viên",
+    "errors": {
+      "player_already_selected": "Tiếc quá, người này bị pick trước rồi, hãy chọn lại"
+    }
+  },
+  "reveal_game": {
+    "moment_of_truth": "Khoảnh khắc sự thật",
+    "reveal": "Trúng hay hụt",
+    "revealing_packets": "Đang mở phong bao",
+    "proceeding_to_next_phase": "→ Tiến tới giai đoạn tiếp theo...",
+    "revealed_count": "{revealed} / {total}",
+    "boom": "TOANG!",
+    "trolled_by": "{name} gửi tặng 💀",
+    "player_label": "Người chơi {number}"
+  },
+  "game_over": {
+    "final_results": "KẾT QUẢ CUỐI CÙNG",
+    "game_over_line1": "Và thế",
+    "game_over_line2": "là hết...",
+    "complete": "Hoàn tất",
+    "winner": "và danh hiệu Con ngựa của năm thuộc về",
+    "total_winnings": "Bú Đẫm",
+    "final_standings": "BẢNG XẾP HẠNG CUỐI CÙNG",
+    "out": "BỊ LOẠI",
+    "footer": "TRÒ CHƠI BỞI VIBE AMBASSADOR · 2026",
+    "back_to_home": "Về nhà ăn Tết"
+  },
+  "decision": {
+    "header": {
+      "critical_decision": "Quyết Định Quan Trọng",
+      "critical_choice": "Lựa Chọn Quan Trọng",
+      "title": "Quyết Định",
+      "players": "{count} Người Chơi",
+      "players_remaining": "{count} người chơi còn lại"
+    },
+    "cards": {
+      "option_a": "Lựa Chọn A",
+      "option_b": "Lựa Chọn B",
+      "share_prize": "Chia Giải",
+      "share_prize_line1": "Chia",
+      "share_prize_line2": "Giải",
+      "keep_playing": "Tiếp Tục Chơi",
+      "keep_playing_line1": "Tiếp",
+      "keep_playing_line2": "Tục Chơi",
+      "share_now": "Chia Ngay",
+      "share_now_line1": "Chia",
+      "share_now_line2": "Ngay",
+      "keep_going": "Tiếp Tục",
+      "keep_going_line1": "Tiếp",
+      "keep_going_line2": "Tục",
+      "share_description": "Kết thúc trò chơi ngay và chia đều",
+      "continue_description": "Loại bỏ thêm người chơi để có phần lớn hơn",
+      "per_player": "Mỗi Người Chơi",
+      "total_pool": "Tổng Giải",
+      "voted": "Đã Bỏ Phiếu",
+      "continue_playing": "Tiếp Tục Chơi",
+      "you_voted_share": "Anh em mình cứ thế thôi hẹ hẹ",
+      "you_voted_continue": "99% con bạc dùng lại trước khi thắng lớn",
+      "split_equally": "Chia đều ${amount}",
+      "risk_for": "Rủi ro cho ${amount}"
+    },
+    "widget": {
+      "vote_share": "Bỏ Phiếu Chia",
+      "vote_continue": "Bỏ Phiếu Tiếp Tục",
+      "footer": "tôi biết bạn tham mà"
+    },
+    "eliminated": {
+      "eliminated_this_round": "Bị Loại Vòng Này",
+      "eliminated_count": "Bị Loại ({count})"
+    },
+    "remaining_players": {
+      "label": "Người Chơi Còn Lại"
+    },
+    "mobile": {
+      "current_prize_pool": "Giải Thưởng Hiện Tại",
+      "if_shared_now": "Nếu chia ngay:",
+      "each": "mỗi người",
+      "next_round_pool": "Giải vòng tiếp theo:",
+      "make_your_choice": "Đưa Ra Lựa Chọn"
+    },
+    "confirm_share": {
+      "message": "Bạn sợ à?",
+      "cancel": "Thôi, sợ lắm",
+      "confirm": "Sợ gì, chơi tiếp"
+    }
+  },
+  "popup_warning": {
+    "title": "Cần bật cửa sổ Pop-up",
+    "description": "Đăng nhập bằng Google yêu cầu bật cửa sổ pop-up trong trình duyệt của bạn.",
+    "instructions": {
+      "title": "Cách bật cửa sổ pop-up:",
+      "chrome": "Chrome: Nhấn vào biểu tượng chặn pop-up trên thanh địa chỉ → Cho phép pop-up",
+      "safari": "Safari: Tùy chọn → Trang web → Cửa sổ Pop-up → Cho phép",
+      "general": "Hoặc tắt trình chặn pop-up của trình duyệt cho trang này"
+    },
+    "dont_show_again": "Không hiển thị lại",
+    "proceed": "Tôi đã hiểu, Tiếp tục"
   }
 }

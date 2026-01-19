@@ -8,6 +8,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-bricolage: var(--font-bricolage-grotesque);
+  --font-space: var(--font-space-grotesk);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -27,6 +29,14 @@
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
+  --color-custom-light-orange: var(--custom-light-orange);
+  --color-custom-vivid-red: var(--custom-vivid-red);
+  --color-custom-vivid-orange: var(--custom-vivid-orange);
+  --color-custom-ready-green: var(--custom-ready-green);
+  --color-custom-very-dark-blue: var(--custom-very-dark-blue);
+  --color-custom-teal: var(--custom-teal);
+  --color-custom-light-grayish-blue: var(--custom-light-grayish-blue);
+  --color-custom-dark-grayish-blue: var(--custom-dark-grayish-blue);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -59,6 +69,14 @@
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
+  --custom-light-orange: oklch(0.7536 0.163659 50.4009); /* #ff8c42 */
+  --custom-vivid-red: oklch(0.6345 0.2116 33.04); /* #ef4523 */
+  --custom-vivid-orange: oklch(0.5874 0.2116 34.63); /* #f54900 */
+  --custom-ready-green: oklch(0.7333 0.1991 145.6); /* #00c950 */
+  --custom-very-dark-blue: oklch(0.4127 0.078 240.1); /* #1b5071 */
+  --custom-teal: oklch(0.42 0.08 200); /* #1b5e71 */
+  --custom-light-grayish-blue: oklch(0.7071 0.0224 261.75); /* #99a1af */
+  --custom-dark-grayish-blue: oklch(0.551 0.0267 264.33); /* #6a7282 */
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
@@ -119,4 +137,82 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.container {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Invite Code Page Animations */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(15px) scale(1.05);
+  }
+}
+
+@keyframes float-delayed {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-20px) scale(1.08);
+  }
+}
+
+@keyframes fade-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-float {
+  animation: float 8s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 6s ease-in-out 1s infinite;
+}
+
+.animate-fade-in-left {
+  animation: fade-in-left 0.8s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out 0.4s both;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
 }

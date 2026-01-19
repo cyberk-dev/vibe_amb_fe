@@ -1,0 +1,114 @@
+// Error codes from docs/contract-integration.md Section 8
+
+const GAME_ERRORS: Record<number, string> = {
+  2001: "Cannot join - game has already started",
+  2002: "You have already joined this game",
+  2003: "Need at least 5 players to start",
+  2005: "You have already made your choice this round",
+  2007: "Cannot choose - not in selection phase",
+  2008: "Player is not active in this game",
+  2009: "Cannot reveal - not in revealing phase",
+  2010: "Cannot vote - not in voting phase",
+  2011: "You have already cast your vote",
+  2012: "Only admin can perform this action",
+  2013: "Vault does not have enough funds",
+  2014: "Payment asset not configured",
+  2015: "Cannot change settings - game already started",
+  2016: "Invalid payment asset",
+  2017: "Target player is not active in this game",
+  2018: "You must register in whitelist first",
+  2019: "Invalid invite code",
+  2020: "Please set your display name first",
+};
+
+const VAULT_ERRORS: Record<number, string> = {
+  1001: "No prizes available to claim",
+  1002: "Claim amount is zero",
+  1003: "Only admin can perform this action",
+  1004: "This asset is not accepted for payment",
+};
+
+const WHITELIST_ERRORS: Record<number, string> = {
+  3001: "You are already registered",
+  3002: "You are not registered",
+  3003: "Only admin can perform this action",
+  3004: "Invalid invite code",
+};
+
+const ROUTER_ERRORS: Record<number, string> = {
+  4001: "Only admin can perform this action",
+};
+
+export function parseContractError(error: unknown): string {
+  const message = error instanceof Error ? error.message : String(error);
+
+  // Try to extract error code
+  const codeMatch = message.match(/Move abort.*?(\d{4})/);
+  if (codeMatch) {
+    const code = parseInt(codeMatch[1], 10);
+
+    if (code >= 4000 && code < 5000) {
+      return ROUTER_ERRORS[code] || `Router error: ${code}`;
+    }
+    if (code >= 3000 && code < 4000) {
+      return WHITELIST_ERRORS[code] || `Whitelist error: ${code}`;
+    }
+    if (code >= 2000 && code < 3000) {
+      return GAME_ERRORS[code] || `Game error: ${code}`;
+    }
+    if (code >= 1000 && code < 2000) {
+      return VAULT_ERRORS[code] || `Vault error: ${code}`;
+    }
+  }
+
+  // User rejection
+  if (message.includes("rejected") || message.includes("cancelled") || message.includes("denied")) {
+    return "Transaction cancelled by user";
+  }
+
+  return "Transaction failed. Please try again.";
+}
+
+export function isUserRejection(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return message.includes("rejected") || message.includes("cancelled") || message.includes("denied");
+}
+
+/** Error code for already registered - uses WHITELIST_ERRORS[3001] */
+export function isAlreadyRegisteredError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  const codeMatch = message.match(/Move abort.*?(\d{4})/);
+  if (codeMatch) {
+    const code = parseInt(codeMatch[1], 10);
+    return code === 3001; // WHITELIST_ERRORS: "You are already registered"
+  }
+  return false;
+}
+
+/**
+ * Check if error indicates that the target player has already been selected
+ * This can happen when multiple players try to select the same target at the same time
+ */
+export function isTargetAlreadySelectedError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+
+  // Check for error patterns that might indicate target already selected
+  // This could be a specific error code or message pattern from the contract
+  const lowerMessage = message.toLowerCase();
+
+  // Check for patterns like "already selected", "already picked", "target already", etc.
+  if (
+    lowerMessage.includes("already selected") ||
+    lowerMessage.includes("already picked") ||
+    lowerMessage.includes("target already") ||
+    lowerMessage.includes("player already selected") ||
+    lowerMessage.includes("already chosen")
+  ) {
+    return true;
+  }
+
+  // You can also check for specific error codes here if the contract provides them
+  // For now, we'll rely on message patterns
+
+  return false;
+}
