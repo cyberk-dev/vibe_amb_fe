@@ -15,10 +15,10 @@ export type SoundEffect = (typeof SoundEffects)[keyof typeof SoundEffects];
 
 // Default volumes for sound effects (independent from background music volume)
 const SFX_VOLUMES = {
-  SAFE_REVEAL: 0.8,
-  EXPLODED_REVEAL: 0.9,
-  SCREEN_TRANSITION: 0.7,
-  BUTTON_HOVER: 0.5,
+  SAFE_REVEAL: 0.4,
+  EXPLODED_REVEAL: 0.4,
+  SCREEN_TRANSITION: 0.3,
+  BUTTON_HOVER: 0.15,
 } as const;
 
 /**
