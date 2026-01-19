@@ -61,7 +61,9 @@
   "landing": {
     "hero": {
       "title": "Con Ngựa của năm",
-      "greeting": "Xin chào {playerName}, hãy để chúng tôi giới thiệu với bạn <strikethrough>Năm của con ngựa</strikethrough> Con Ngựa của năm"
+      "greeting_before": "Xin chào {playerName}, hãy để chúng tôi giới thiệu với bạn",
+      "greeting_strikethrough": "Năm của con ngựa",
+      "greeting_after": "Con Ngựa của năm"
     },
     "description": {
       "first": "Người chơi sẽ tham gia  \"Lì xì\" Nga và squidgame để tìm ra Con Ngựa của năm. ",

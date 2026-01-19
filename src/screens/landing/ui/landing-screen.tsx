@@ -190,6 +190,9 @@ export function LandingScreen() {
 
   const displayName = playerName?.trim() || intl.formatMessage({ id: "landing.defaults.player_name" });
   const illustrationAlt = intl.formatMessage({ id: "landing.illustration_alt" });
+  const greetingBefore = intl.formatMessage({ id: "landing.hero.greeting_before" }, { playerName: displayName });
+  const greetingStrikethrough = intl.formatMessage({ id: "landing.hero.greeting_strikethrough" });
+  const greetingAfter = intl.formatMessage({ id: "landing.hero.greeting_after" });
 
   const handleViewDemo = () => {
     setIsHowToPlayOpen(true);
@@ -221,17 +224,7 @@ export function LandingScreen() {
                     <FormattedMessage id="landing.hero.title" />
                   </motion.h1>
                   <motion.p className="text-custom-very-dark-blue text-base font-medium" variants={greetingVariants}>
-                    <FormattedMessage
-                      id="landing.hero.greeting"
-                      values={{
-                        playerName: displayName,
-                        strikethrough: (chunks: ReactNode) => (
-                          <del className="line-through">{Children.toArray(chunks)}</del>
-                        ),
-                      }}
-                    >
-                      {(chunks) => <>{Children.toArray(chunks)}</>}
-                    </FormattedMessage>
+                    {greetingBefore} <span className="line-through">{greetingStrikethrough}</span> {greetingAfter}
                   </motion.p>
                 </div>
 
