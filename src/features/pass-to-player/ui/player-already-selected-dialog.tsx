@@ -5,7 +5,6 @@ import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -28,18 +27,22 @@ interface PlayerAlreadySelectedDialogProps {
 export function PlayerAlreadySelectedDialog({ open, onOpenChange }: PlayerAlreadySelectedDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
+      <AlertDialogContent className="border-2 border-black">
         <AlertDialogHeader>
-          <AlertDialogTitle>Oops!</AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogTitle className="text-black">
             <FormattedMessage
               id="pass_game.errors.player_already_selected"
               defaultMessage="Tiếc quá, người này bị pick trước rồi, hãy chọn lại"
             />
-          </AlertDialogDescription>
+          </AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogAction onClick={() => onOpenChange(false)}>OK</AlertDialogAction>
+          <AlertDialogAction
+            onClick={() => onOpenChange(false)}
+            className="bg-custom-light-orange text-white hover:bg-custom-light-orange/90 border-2 border-black"
+          >
+            OK
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
