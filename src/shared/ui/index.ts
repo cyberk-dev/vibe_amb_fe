@@ -33,3 +33,4 @@ export * from "./textarea";
 export * from "./theme-toggle-button";
 export * from "./typography";
 export * from "./popup-blocker-warning-dialog";
+export * from "./route-change-sound";

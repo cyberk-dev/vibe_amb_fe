@@ -3,7 +3,7 @@ import "./globals.css";
 import { Web3AppProvider } from "@/providers/web3-app-provider";
 import { fonts } from "@/shared/assets/fonts";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { BackgroundMusic } from "@/shared/ui";
+import { BackgroundMusic, RouteChangeSound } from "@/shared/ui";
 
 export const metadata: Metadata = {
   title: "H.O.T.Y",
@@ -59,6 +59,7 @@ export default function RootLayout({
           <Web3AppProvider>
             <NuqsAdapter>
               <BackgroundMusic />
+              <RouteChangeSound />
               {children}
             </NuqsAdapter>
           </Web3AppProvider>

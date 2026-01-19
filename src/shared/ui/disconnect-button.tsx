@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { cn } from "@/shared/lib/utils";
+import { useHoverSound } from "@/shared/lib";
 
 export interface DisconnectButtonProps {
   /**
@@ -43,6 +44,7 @@ export interface DisconnectButtonProps {
 export function DisconnectButton({ variant = "dark", className }: DisconnectButtonProps) {
   const router = useRouter();
   const { disconnect, connected } = useWallet();
+  const { onMouseEnter: playHoverSound } = useHoverSound();
 
   const handleDisconnect = async () => {
     await disconnect();
@@ -71,6 +73,7 @@ export function DisconnectButton({ variant = "dark", className }: DisconnectButt
       }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
+      onMouseEnter={playHoverSound}
     >
       <button
         type="button"

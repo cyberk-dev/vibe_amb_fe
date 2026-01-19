@@ -4,6 +4,7 @@ import { Volume2, VolumeX } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/shared/lib/utils";
 import { useSoundToggle } from "@/shared/lib/stores";
+import { useHoverSound } from "@/shared/lib";
 
 export interface SoundButtonProps {
   /**
@@ -63,6 +64,7 @@ export function SoundButton({
   className,
 }: SoundButtonProps) {
   const { isMuted: globalMuted, toggleMute: globalToggle } = useSoundToggle();
+  const { onMouseEnter: playHoverSound } = useHoverSound();
 
   // Use controlled props if provided, otherwise use global store
   const isMuted = controlledMuted ?? globalMuted;
@@ -85,6 +87,7 @@ export function SoundButton({
       }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
+      onMouseEnter={playHoverSound}
     >
       <button
         type="button"
