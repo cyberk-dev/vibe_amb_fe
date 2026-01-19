@@ -20,19 +20,20 @@ export function useRevealFlow(): UseRevealFlowReturn {
     staleTime: 10_000,
   });
 
-  // Get victims with seats - ALWAYS fetch fresh on mount
+  // Get victims with seats - poll to detect when bombs are revealed
   const { data: victims = [], isLoading: victimsLoading } = useQuery({
     ...gameQueries.victimsWithNames(),
     staleTime: 0,
     refetchOnMount: "always",
+    refetchInterval: 3_000, // Poll every 3s to detect bombs revealed
   });
 
-  // Get SURVIVOR players with seats - fetch fresh on mount
+  // Get SURVIVOR players with seats - poll to update after bombs revealed
   const { data: survivors = [], isLoading: survivorsLoading } = useQuery({
     ...gameQueries.playersWithSeats(),
     staleTime: 0,
     refetchOnMount: "always",
-    refetchInterval: false,
+    refetchInterval: 3_000, // Poll every 3s to update survivors list
   });
 
   // Get consolation prize amount
