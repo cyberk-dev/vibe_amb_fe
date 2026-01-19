@@ -53,10 +53,13 @@ export function GameFlowGuard({ children }: PropsWithChildren) {
   });
 
   // Query if player has joined game (runs independently of inviteCode)
+  // Poll periodically to detect reset_game clearing player list
   const { data: hasJoined, isLoading: joinLoading } = useQuery({
     ...gameQueries.hasJoined(address!),
     enabled: !!address && connected,
     retry: false, // Error is expected if user hasn't joined
+    staleTime: 5_000, // Consider stale after 5s
+    refetchInterval: 10_000, // Refetch every 10s to detect reset
   });
 
   // Query if player has set pending name

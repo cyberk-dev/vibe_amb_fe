@@ -166,7 +166,15 @@ const REQUIRED_PLAYERS = 20;
  */
 export function LandingScreen() {
   const intl = useIntl();
-  const { playerName, isJoining, handleJoinMatchmaking } = useLandingFlow();
+  const {
+    playerName,
+    isJoining,
+    handleJoinMatchmaking,
+    hasClaimable,
+    claimableFormatted,
+    isClaiming,
+    handleClaimPrize,
+  } = useLandingFlow();
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const rightPanelRef = useRef<HTMLDivElement>(null);
   const leftPanelRef = useRef<HTMLDivElement>(null);
@@ -388,6 +396,35 @@ export function LandingScreen() {
                   >
                     <FormattedMessage id="landing.actions.view_wallet" />
                   </motion.button>
+
+                  {/* Claim Prize button - only show when user has unclaimed prizes */}
+                  {hasClaimable && (
+                    <motion.button
+                      type="button"
+                      onClick={handleClaimPrize}
+                      disabled={isClaiming}
+                      className="w-full bg-[#10B981] text-white font-bold text-sm tracking-wider uppercase py-5 px-12 hover:bg-[#059669] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      variants={buttonVariants}
+                      initial="hidden"
+                      animate="visible"
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                      custom={3}
+                    >
+                      {isClaiming ? (
+                        <>
+                          <span className="animate-spin">⏳</span>
+                          <FormattedMessage id="landing.actions.claiming" defaultMessage="Claiming..." />
+                        </>
+                      ) : (
+                        <FormattedMessage
+                          id="landing.actions.claim_prize"
+                          defaultMessage="Claim {amount}"
+                          values={{ amount: claimableFormatted }}
+                        />
+                      )}
+                    </motion.button>
+                  )}
                 </div>
               </div>
             </div>

@@ -1,9 +1,11 @@
 import { useCallback } from "react";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useQuery } from "@tanstack/react-query";
-import { gameQueries } from "@/entities/game";
+import { gameQueries, formatAptAmount } from "@/entities/game";
 import { whitelistQueries } from "@/entities/whitelist";
+import { vaultQueries } from "@/entities/vault";
 import { useJoinGame } from "@/features/join-game";
+import { useClaimPrize } from "@/features/claim-prize";
 
 export type LandingFlowState = "loading" | "ready" | "joining" | "error";
 
@@ -30,7 +32,18 @@ export function useLandingFlow() {
     enabled: !!address && connected,
   });
 
+  // Check for unclaimed prizes
+  const { data: claimableBalance = BigInt(0) } = useQuery({
+    ...vaultQueries.claimable(address ?? ""),
+    enabled: !!address && connected,
+  });
+
   const { mutateAsync: joinGame, isPending: isJoining, error } = useJoinGame();
+  const { mutateAsync: claimPrize, isPending: isClaiming } = useClaimPrize();
+
+  // Derived state
+  const hasClaimable = claimableBalance > BigInt(0);
+  const claimableFormatted = formatAptAmount(claimableBalance);
 
   // State machine
   const state: LandingFlowState = (() => {
@@ -51,10 +64,24 @@ export function useLandingFlow() {
     }
   }, [inviteCode, hasJoined, joinGame]);
 
+  const handleClaimPrize = useCallback(async () => {
+    if (!hasClaimable) return;
+    try {
+      await claimPrize();
+    } catch {
+      // Error handled by mutation
+    }
+  }, [hasClaimable, claimPrize]);
+
   return {
     state,
     playerName: playerName ?? "",
     isJoining: isJoining || checkingJoined,
     handleJoinMatchmaking,
+    // Claim prize
+    hasClaimable,
+    claimableFormatted,
+    isClaiming,
+    handleClaimPrize,
   };
 }
