@@ -18,6 +18,7 @@ type PlayerState =
   | "selection" // STATUS_SELECTION (1)
   | "revealing" // STATUS_REVEALING (2)
   | "voting" // STATUS_VOTING (3)
+  | "eliminated" // Player was eliminated, waiting for game to end
   | "ended"; // STATUS_ENDED (4)
 
 /**
@@ -62,6 +63,21 @@ export function GameFlowGuard({ children }: PropsWithChildren) {
     refetchInterval: 10_000, // Refetch every 10s to detect reset
   });
 
+  // Query if player was eliminated (only when hasJoined is false)
+  const { data: isEliminated, isLoading: eliminatedLoading } = useQuery({
+    ...gameQueries.isEliminated(address!),
+    enabled: !!address && connected && hasJoined === false,
+    staleTime: 3_000,
+    refetchInterval: 3_000,
+  });
+
+  // Query game status for eliminated players to detect game end
+  const { data: gameStateForEliminated } = useQuery({
+    ...gameQueries.status(),
+    enabled: isEliminated === true,
+    refetchInterval: 3_000,
+  });
+
   // Query if player has set pending name
   const { data: hasPendingName, isLoading: nameLoading } = useQuery({
     ...gameQueries.hasPendingName(address!),
@@ -104,6 +120,17 @@ export function GameFlowGuard({ children }: PropsWithChildren) {
       return "joined";
     }
 
+    // IMPORTANT: When hasJoined becomes false, wait for isEliminated to be determined
+    if (eliminatedLoading) return "loading";
+
+    // Check if player was eliminated (not in players, but was in fixed_players)
+    if (isEliminated === true) {
+      if (gameStateForEliminated?.status === GameStatus.ENDED) {
+        return "ended"; // Game over, show results
+      }
+      return "eliminated"; // Still waiting
+    }
+
     if (codeError || !inviteCode) return "not_registered";
 
     // Check if name is set
@@ -132,6 +159,8 @@ export function GameFlowGuard({ children }: PropsWithChildren) {
         return "/reveal";
       case "voting":
         return "/decision";
+      case "eliminated":
+        return "/eliminated";
       case "ended":
         return "/game-over";
       default:

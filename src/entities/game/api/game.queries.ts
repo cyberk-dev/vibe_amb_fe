@@ -205,6 +205,19 @@ export const gameQueries = {
       staleTime: 3_000,
     }),
 
+  // Check if player was eliminated (in fixed_players but not in players)
+  isEliminated: (address: string) =>
+    queryOptions({
+      queryKey: [...gameQueries.all(), "isEliminated", address],
+      queryFn: () => {
+        if (!address) throw new Error("Address required");
+        return gameViewService.isEliminated(address);
+      },
+      enabled: !!address,
+      staleTime: 5_000,
+      refetchInterval: 5_000,
+    }),
+
   // Selection progress (how many players have chosen)
   selectionProgress: () =>
     queryOptions({
