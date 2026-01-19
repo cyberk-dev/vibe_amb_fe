@@ -1,6 +1,6 @@
 // Contract deployment info from docs/contract-integration.md
 export const CONTRACT_ADDRESS =
-  process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || "0x79547205824a75e9cf206893ce4896e4b0cc244ab0815de1cd9603068e14700e";
+  process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || "0x7ca05455fa4c05f7a56d87b137c43834ec3c60ed03cd43ef106195e462f73cf5";
 
 export const DEPLOYER_ADDRESS = process.env.NEXT_PUBLIC_DEPLOYER_ADDRESS;
 

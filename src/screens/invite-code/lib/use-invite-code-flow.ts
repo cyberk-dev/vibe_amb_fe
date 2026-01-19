@@ -53,20 +53,18 @@ export function useInviteCodeFlow() {
   const { data: inviteCode, isLoading: codeLoading } = useQuery({
     ...whitelistQueries.inviteCode(address ?? ""),
     enabled: !!address && connected,
-    retry: false,
   });
 
   // Mutation - onSuccess invalidates whitelistQueries.all()
-  const { mutate: register, isPending: isRegistering, error: registerError } = useRegisterWhitelist();
+  const { mutate: register, isPending: isRegistering } = useRegisterWhitelist();
 
   // SetDisplayName mutation
   const { mutateAsync: saveDisplayName, isPending: isSaving } = useSetDisplayName();
 
-  // State machine
+  // State machine (errors shown via toast, not stuck state)
   const flowState: FlowState = (() => {
     if (!connected) return walletLoading ? "loading" : "not_connected";
     if (codeLoading) return "loading";
-    if (registerError) return "failed";
     if (isRegistering) return "claiming";
 
     // Has code → check name
@@ -75,7 +73,7 @@ export function useInviteCodeFlow() {
       return "need_name"; // Always need_name until they click Continue
     }
 
-    // No code → need to claim
+    // No code → need to claim (even if there was an error, allow retry)
     return "need_code";
   })();
 

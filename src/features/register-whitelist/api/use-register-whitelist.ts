@@ -37,8 +37,9 @@ export function useRegisterWhitelist() {
       toast.success("Registration successful!");
     },
     onError: async (error) => {
+      await queryClient.invalidateQueries({ queryKey: whitelistQueries.all() });
+
       if (isAlreadyRegisteredError(error)) {
-        await queryClient.invalidateQueries({ queryKey: whitelistQueries.all() });
         return;
       }
 
