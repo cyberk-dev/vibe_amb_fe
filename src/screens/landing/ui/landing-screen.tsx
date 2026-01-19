@@ -4,11 +4,13 @@ import { useState, useRef, Children, type ReactNode } from "react";
 import Image from "next/image";
 import { FormattedMessage, useIntl } from "react-intl";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { PageHeader } from "@/shared/ui/page-header";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useLandingFlow } from "../lib/use-landing-flow";
 import { HowToPlayDialog } from "./how-to-play-dialog";
 import { useHoverSound } from "@/shared/lib";
+import { gameQueries } from "@/entities/game";
 
 // ========================================
 // Animation Variants
@@ -145,9 +147,6 @@ const pulseAnimation = {
   },
 };
 
-/** Number of players required to start a game */
-const REQUIRED_PLAYERS = 20;
-
 /**
  * Landing Screen - Game Introduction
  *
@@ -177,10 +176,12 @@ export function LandingScreen() {
     handleClaimPrize,
     handleViewWallet,
   } = useLandingFlow();
+  const { data: gameStatus } = useQuery(gameQueries.status());
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const rightPanelRef = useRef<HTMLDivElement>(null);
   const leftPanelRef = useRef<HTMLDivElement>(null);
   const { onMouseEnter: playHoverSound } = useHoverSound();
+  const playersCount = gameStatus?.playersCount ?? 0;
 
   const handleScrollToMatchmaking = () => {
     rightPanelRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -335,7 +336,7 @@ export function LandingScreen() {
                 {/* Player count display */}
                 <div className="text-center space-y-4">
                   <h2 className="font-bold text-[180px] md:text-[210px] lg:text-[240px] leading-none text-white/80 font-bricolage">
-                    {REQUIRED_PLAYERS}
+                    {playersCount}
                   </h2>
                   <motion.p className="text-white text-xl tracking-wider uppercase font-space">
                     <FormattedMessage id="landing.players_required" />

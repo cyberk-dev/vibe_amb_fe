@@ -59,7 +59,7 @@ interface WaitingRoomHeaderProps {
   /**
    * Maximum seats available
    */
-  maxSeats: number;
+  maxSeats?: number;
   /**
    * Additional classes for container
    */
@@ -71,13 +71,15 @@ interface WaitingRoomHeaderProps {
  *
  * Displays:
  * - "MATCHMAKING" label and "Waiting Room" title
- * - Player count indicator (e.g., "1 / 20")
+ * - Player count indicator (e.g., "1" or "1 / max")
  * - Sound toggle button
  *
  * Mobile: Controls are under the title
  * Desktop: Controls are on the right side
  */
 export function WaitingRoomHeader({ connectedPlayers, maxSeats, className }: WaitingRoomHeaderProps) {
+  const playerCountLabel = maxSeats ? `${connectedPlayers} / ${maxSeats}` : `${connectedPlayers}`;
+
   return (
     <motion.div className={cn("relative", className)} initial="hidden" animate="visible">
       {/* Desktop layout: side by side */}
@@ -110,7 +112,7 @@ export function WaitingRoomHeader({ connectedPlayers, maxSeats, className }: Wai
             variants={playerCountVariants}
           >
             <p className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-custom-vivid-orange whitespace-nowrap">
-              {connectedPlayers} / {maxSeats}
+              {playerCountLabel}
             </p>
           </motion.div>
         </div>
@@ -138,7 +140,7 @@ export function WaitingRoomHeader({ connectedPlayers, maxSeats, className }: Wai
           {/* Player count indicator */}
           <div className="border-2 border-custom-vivid-orange flex items-center justify-center px-4 py-2 h-10">
             <p className="font-space text-xs font-normal leading-4 tracking-[1.2px] uppercase text-custom-vivid-orange whitespace-nowrap">
-              {connectedPlayers} / {maxSeats}
+              {playerCountLabel}
             </p>
           </div>
         </motion.div>

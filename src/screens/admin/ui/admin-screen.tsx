@@ -1,13 +1,33 @@
 "use client";
 
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import { toast } from "sonner";
 import { AdminDashboard } from "@/widgets/admin-dashboard";
+
+const USER_REJECTION_PATTERN = /rejected|cancelled|denied/i;
+
+const isUserRejection = (error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error);
+  return USER_REJECTION_PATTERN.test(message);
+};
 
 export function AdminScreen() {
   const { connected, account, connect, disconnect, wallets } = useWallet();
 
   // Only show Petra wallet
   const petraWallet = wallets?.find((w) => w.name === "Petra");
+  const handleConnect = async () => {
+    if (!petraWallet) return;
+
+    try {
+      await connect(petraWallet.name);
+    } catch (error) {
+      console.error(error);
+      if (!isUserRejection(error)) {
+        toast.error("Wallet connection failed. Please check your network and try again.");
+      }
+    }
+  };
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8">
@@ -33,7 +53,7 @@ export function AdminScreen() {
             </div>
           ) : petraWallet ? (
             <button
-              onClick={() => connect(petraWallet.name)}
+              onClick={handleConnect}
               className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
             >
               Connect Petra

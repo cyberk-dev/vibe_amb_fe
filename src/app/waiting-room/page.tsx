@@ -8,8 +8,8 @@ import { WaitingRoomScreen } from "@/screens/waiting-room";
  *
  * Route: /waiting-room
  *
- * Displays the matchmaking waiting room where players wait for 20 seats
- * to fill before the game starts. Includes a 60s countdown when full.
+ * Displays the matchmaking waiting room where players join until
+ * the countdown starts. Includes a 60s countdown after the minimum is met.
  */
 export default function WaitingRoomPage() {
   return (

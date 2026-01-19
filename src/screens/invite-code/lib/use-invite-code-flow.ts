@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { whitelistQueries } from "@/entities/whitelist";
 import { gameQueries } from "@/entities/game";
 import { useRegisterWhitelist } from "@/features/register-whitelist";
@@ -17,6 +18,12 @@ export type FlowState =
   | "failed"; // Error state
 
 const POPUP_WARNING_STORAGE_KEY = "popup-warning-acknowledged";
+const USER_REJECTION_PATTERN = /rejected|cancelled|denied/i;
+
+const isUserRejection = (error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error);
+  return USER_REJECTION_PATTERN.test(message);
+};
 
 export function useInviteCodeFlow() {
   const router = useRouter();
@@ -84,12 +91,24 @@ export function useInviteCodeFlow() {
   }, []);
 
   // Actual wallet connection logic
-  const performConnect = useCallback(() => {
+  const performConnect = useCallback(async () => {
     const wallet =
       wallets?.find((w) => w.name.includes("Google") || w.name.includes("Connect")) ||
       wallets?.find((w) => w.name === "Petra") ||
       wallets?.[0];
-    if (wallet) connect(wallet.name);
+    if (!wallet) {
+      toast.error("No Aptos wallet detected. Please install one and try again.");
+      return;
+    }
+
+    try {
+      await connect(wallet.name);
+    } catch (error) {
+      console.error(error);
+      if (!isUserRejection(error)) {
+        toast.error("Wallet connection failed. Please check your network and try again.");
+      }
+    }
   }, [wallets, connect]);
 
   // Connect handler - shows warning if needed
@@ -98,13 +117,13 @@ export function useInviteCodeFlow() {
       setShowPopupWarning(true);
       return;
     }
-    performConnect();
+    void performConnect();
   }, [isPopupWarningAcknowledged, performConnect]);
 
   // Proceed after popup warning acknowledged
   const proceedWithConnect = useCallback(() => {
     setShowPopupWarning(false);
-    performConnect();
+    void performConnect();
   }, [performConnect]);
 
   // Close popup warning dialog

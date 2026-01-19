@@ -50,7 +50,7 @@ const seatCardVariants = {
 
 interface SeatsGridProps {
   /**
-   * Array of player seats (20 seats)
+   * Array of player seats
    */
   seats: PlayerSeat[];
   /**
@@ -64,7 +64,7 @@ interface SeatsGridProps {
  *
  * Displays:
  * - "CONNECTED PLAYERS" label (hidden on mobile, shown in parent)
- * - 5x4 grid of player seat cards (2 columns on mobile)
+ * - Responsive grid of player seat cards (2 columns on mobile)
  */
 export function SeatsGrid({ seats, className }: SeatsGridProps) {
   return (
