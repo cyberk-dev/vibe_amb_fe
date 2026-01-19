@@ -10,7 +10,33 @@ function createAptosClient(): Aptos {
   const gasStationApiKey = process.env.NEXT_PUBLIC_APTOS_GAS_STATION_API_KEY;
 
   // Base client config with API key for rate limiting
-  const clientConfig = API_KEY ? { API_KEY } : undefined;
+  // Add Origin header for server-side requests (Aptos API requires it)
+  // Use localhost for development, production URL for production
+  const getOrigin = () => {
+    if (process.env.NEXT_PUBLIC_APP_URL) {
+      return process.env.NEXT_PUBLIC_APP_URL;
+    }
+    // Development: use localhost
+    if (process.env.NODE_ENV === "development") {
+      return "http://localhost:3000";
+    }
+    // Production fallback
+    return "https://vibe-amb-fe.vercel.app";
+  };
+
+  const origin = getOrigin();
+  const clientConfig = API_KEY
+    ? {
+        API_KEY,
+        HEADERS: {
+          Origin: origin,
+        },
+      }
+    : {
+        HEADERS: {
+          Origin: origin,
+        },
+      };
 
   if (gasStationApiKey) {
     const gasStationClient = new GasStationClient({

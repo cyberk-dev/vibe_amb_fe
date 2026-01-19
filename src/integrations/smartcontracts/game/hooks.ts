@@ -5,8 +5,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
 import { toast } from "sonner";
 import { GAME_MODULE, APTOS_NETWORK, GameStatus } from "./config";
+import { viewProxy } from "@/integrations/aptos/utils/view-proxy";
 
-// Initialize Aptos client
+// Initialize Aptos client (only for transactions, not views)
 const aptosConfig = new AptosConfig({
   network: (APTOS_NETWORK === "mainnet" ? Network.MAINNET : Network.TESTNET) as Network,
 });
@@ -19,12 +20,10 @@ export const useGameStatus = () => {
   return useQuery({
     queryKey: ["game", "status"],
     queryFn: async () => {
-      const response = await aptos.view({
-        payload: {
-          function: `${GAME_MODULE}::get_status`,
-          typeArguments: [],
-          functionArguments: [],
-        },
+      const response = await viewProxy<[number]>({
+        function: `${GAME_MODULE}::get_status`,
+        typeArguments: [],
+        functionArguments: [],
       });
       return response[0] as number as GameStatus;
     },
@@ -39,12 +38,10 @@ export const usePlayersCount = () => {
   return useQuery({
     queryKey: ["game", "players_count"],
     queryFn: async () => {
-      const response = await aptos.view({
-        payload: {
-          function: `${GAME_MODULE}::get_players_count`,
-          typeArguments: [],
-          functionArguments: [],
-        },
+      const response = await viewProxy<[number]>({
+        function: `${GAME_MODULE}::get_players_count`,
+        typeArguments: [],
+        functionArguments: [],
       });
       return response[0] as number;
     },

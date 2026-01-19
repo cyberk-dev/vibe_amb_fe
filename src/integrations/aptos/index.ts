@@ -18,6 +18,7 @@ export {
   showTransactionSuccess,
   type TransactionResult,
 } from "./utils/transaction-helpers";
+export { viewProxy } from "./utils/view-proxy";
 
 // Provider
 export { AptosProvider } from "./aptos-provider";
