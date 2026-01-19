@@ -92,7 +92,7 @@ const footerVariants = {
 
 interface MobileDecisionLayoutProps {
   totalPlayers: number;
-  eliminatedPlayer: EliminatedPlayer;
+  eliminatedPlayers: EliminatedPlayer[];
   prizePerPlayer: string;
   totalPool: string;
   nextRoundPool: number;
@@ -110,7 +110,7 @@ interface MobileDecisionLayoutProps {
  */
 export function MobileDecisionLayout({
   totalPlayers,
-  eliminatedPlayer,
+  eliminatedPlayers,
   prizePerPlayer,
   totalPool,
   nextRoundPool,
@@ -228,20 +228,28 @@ export function MobileDecisionLayout({
             {/* Eliminated section */}
             <motion.div className="flex flex-col gap-3" variants={cardVariants}>
               <p className="font-space text-[10px] font-normal uppercase tracking-[2px] text-black/40">
-                <FormattedMessage id="decision.eliminated.eliminated_count" values={{ count: 1 }} />
+                <FormattedMessage
+                  id="decision.eliminated.eliminated_count"
+                  values={{ count: eliminatedPlayers.length }}
+                />
               </p>
-              <motion.div
-                className="bg-white/50 border border-black/10 px-2 py-2 flex items-center gap-2 w-fit"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ type: "spring" as const, stiffness: 100, damping: 15, delay: 0.3 }}
-                whileHover={{ scale: 1.02 }}
-              >
-                <div className="size-6 bg-black/10 flex items-center justify-center">
-                  <span className="font-space text-[10px] font-bold text-black/30">✕</span>
-                </div>
-                <span className="font-space text-[10px] font-medium text-black/50">{eliminatedPlayer.name}</span>
-              </motion.div>
+              <div className="flex flex-wrap gap-2">
+                {eliminatedPlayers.map((player) => (
+                  <motion.div
+                    key={player.id}
+                    className="bg-white/50 border border-black/10 px-2 py-2 flex items-center gap-2 w-fit"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ type: "spring" as const, stiffness: 100, damping: 15, delay: 0.3 }}
+                    whileHover={{ scale: 1.02 }}
+                  >
+                    <div className="size-6 bg-black/10 flex items-center justify-center">
+                      <span className="font-space text-[10px] font-bold text-black/30">✕</span>
+                    </div>
+                    <span className="font-space text-[10px] font-medium text-black/50">{player.name}</span>
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
 
             {/* Make Your Choice section */}

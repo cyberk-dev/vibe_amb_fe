@@ -11,7 +11,7 @@ export function DecisionScreen() {
 
   const {
     remainingPlayers,
-    eliminatedPlayer,
+    eliminatedPlayers,
     prizePerPlayer,
     totalPool,
     nextRoundPool,
@@ -40,19 +40,11 @@ export function DecisionScreen() {
     );
   }
 
-  // Fallback if no eliminated player
-  const defaultEliminatedPlayer = {
-    id: "0",
-    name: "No one",
-    seatNumber: 0,
-    consolationPrize: 0,
-  };
-
   return (
     <>
       <DecisionWidget
         totalPlayers={remainingPlayers.length}
-        eliminatedPlayer={eliminatedPlayer ?? defaultEliminatedPlayer}
+        eliminatedPlayers={eliminatedPlayers}
         remainingPlayers={remainingPlayers}
         prizePerPlayer={prizePerPlayer}
         totalPool={totalPool}

@@ -42,19 +42,19 @@ const mainContentVariants = {
 
 export interface WaitingRoomProps {
   /**
-   * Array of all player seats (20 seats)
+   * Array of all player seats
    */
   seats: PlayerSeat[];
   /**
-   * Maximum number of seats
+   * Maximum number of seats (optional)
    */
-  maxSeats: number;
+  maxSeats?: number;
   /**
    * Countdown value in seconds
    */
   countdown: number;
   /**
-   * Whether countdown is active (all seats are full)
+   * Whether countdown is active
    */
   isCountdownActive: boolean;
   /**
@@ -68,7 +68,7 @@ export interface WaitingRoomProps {
  *
  * A complete waiting room UI that displays:
  * - Header with title, player count, and sound toggle
- * - Grid of player seats (5x4 = 20 seats)
+ * - Grid of player seats (responsive)
  * - Countdown panel on the right side
  *
  * Design based on Figma node 4-151
@@ -77,7 +77,6 @@ export interface WaitingRoomProps {
  * ```tsx
  * <WaitingRoom
  *   seats={seats}
- *   maxSeats={20}
  *   countdown={60}
  *   isCountdownActive={false}
  * />

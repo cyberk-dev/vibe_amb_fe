@@ -43,7 +43,7 @@ interface CountdownPanelProps {
    */
   countdown: number;
   /**
-   * Whether the countdown is active (all seats full)
+   * Whether the countdown is active
    */
   isActive: boolean;
   /**
